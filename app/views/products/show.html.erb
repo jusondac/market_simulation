@@ -1,8 +1,8 @@
 <div class="px-4 sm:px-0">
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h1 class="text-3xl font-bold text-gray-900"><%= @product.name %></h1>
-      <p class="text-gray-600 mt-2">Based on <%= link_to @product.recipe.name, recipe_path(@product.recipe), class: "text-indigo-600 hover:text-indigo-700" %></p>
+      <h1 class="text-3xl font-bold text-gray-100"><%= @product.name %></h1>
+      <p class="text-gray-400 mt-2">Based on <%= link_to @product.recipe.name, recipe_path(@product.recipe), class: "text-indigo-400 hover:text-indigo-300" %></p>
     </div>
     <div class="space-x-2">
       <%= link_to "Edit Product", edit_product_path(@product), class: button_classes(:secondary) %>
@@ -15,65 +15,65 @@
     <div class="lg:col-span-2 space-y-6">
       <!-- Pricing Overview -->
       <div class="<%= card_classes %>">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">Pricing Overview</h2>
+        <h2 class="text-lg font-semibold text-gray-100 mb-4">Pricing Overview</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="text-center">
-            <div class="text-2xl font-bold text-red-600">$<%= number_with_precision(@product.cost, precision: 2) %></div>
-            <div class="text-sm text-gray-500">Cost</div>
+            <div class="text-2xl font-bold text-red-400">$<%= number_with_precision(@product.cost, precision: 2) %></div>
+            <div class="text-sm text-gray-400">Cost</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-blue-600"><%= @product.margin %>%</div>
-            <div class="text-sm text-gray-500">Margin</div>
+            <div class="text-2xl font-bold text-blue-400"><%= @product.margin %>%</div>
+            <div class="text-sm text-gray-400">Margin</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-green-600">$<%= number_with_precision(@product.price, precision: 2) %></div>
-            <div class="text-sm text-gray-500">Selling Price</div>
+            <div class="text-2xl font-bold text-green-400">$<%= number_with_precision(@product.price, precision: 2) %></div>
+            <div class="text-sm text-gray-400">Selling Price</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-green-600">$<%= number_with_precision(@product.profit_per_unit, precision: 2) %></div>
-            <div class="text-sm text-gray-500">Profit</div>
+            <div class="text-2xl font-bold text-green-400">$<%= number_with_precision(@product.profit_per_unit, precision: 2) %></div>
+            <div class="text-sm text-gray-400">Profit</div>
           </div>
         </div>
-        <div class="mt-6 p-4 bg-green-50 rounded-lg">
+        <div class="mt-6 p-4 bg-green-900 rounded-lg border border-green-800">
           <div class="flex items-center justify-between">
-            <span class="text-green-800 font-medium">Profit Margin:</span>
-            <span class="text-green-800 font-bold"><%= @product.profit_margin_percentage %>%</span>
+            <span class="text-green-300 font-medium">Profit Margin:</span>
+            <span class="text-green-300 font-bold"><%= @product.profit_margin_percentage %>%</span>
           </div>
         </div>
       </div>
       <!-- Recipe Details -->
       <div class="<%= card_classes %>">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">Recipe: <%= @product.recipe.name %></h2>
+        <h2 class="text-lg font-semibold text-gray-100 mb-4">Recipe: <%= @product.recipe.name %></h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div class="text-center">
-            <div class="text-lg font-bold text-indigo-600"><%= @product.recipe.servings %></div>
-            <div class="text-sm text-gray-500">Servings</div>
+            <div class="text-lg font-bold text-indigo-400"><%= @product.recipe.servings %></div>
+            <div class="text-sm text-gray-400">Servings</div>
           </div>
           <div class="text-center">
-            <div class="text-lg font-bold text-indigo-600"><%= @product.recipe.preparation_time %></div>
-            <div class="text-sm text-gray-500">Minutes</div>
+            <div class="text-lg font-bold text-indigo-400"><%= @product.recipe.preparation_time %></div>
+            <div class="text-sm text-gray-400">Minutes</div>
           </div>
           <div class="text-center">
-            <div class="text-lg font-bold text-indigo-600">$<%= number_with_precision(@product.recipe.cost_per_serving, precision: 2) %></div>
-            <div class="text-sm text-gray-500">Cost/Serving</div>
+            <div class="text-lg font-bold text-indigo-400">$<%= number_with_precision(@product.recipe.cost_per_serving, precision: 2) %></div>
+            <div class="text-sm text-gray-400">Cost/Serving</div>
           </div>
         </div>
         <div class="space-y-3">
-          <h3 class="font-medium text-gray-900">Ingredients:</h3>
+          <h3 class="font-medium text-gray-100">Ingredients:</h3>
           <% @product.recipe.recipe_ingredients.includes(:ingredient).each do |ri| %>
-            <div class="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+            <div class="flex items-center justify-between py-2 border-b border-gray-800 last:border-b-0">
               <div class="flex items-center space-x-2">
                 <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
-                <span class="text-gray-900"><%= ri.ingredient.name %></span>
-                <span class="text-sm text-gray-500">(<%= ri.quantity %> <%= ri.ingredient.unit %>)</span>
+                <span class="text-gray-100"><%= ri.ingredient.name %></span>
+                <span class="text-sm text-gray-400">(<%= ri.quantity %> <%= ri.ingredient.unit %>)</span>
               </div>
-              <span class="text-sm font-medium text-gray-900">
+              <span class="text-sm font-medium text-gray-100">
                 $<%= number_with_precision(ri.ingredient.price * ri.quantity, precision: 2) %>
               </span>
             </div>
           <% end %>
         </div>
-        <div class="mt-4 pt-4 border-t border-gray-200">
+        <div class="mt-4 pt-4 border-t border-gray-800">
           <%= link_to "View Full Recipe", recipe_path(@product.recipe), class: button_classes(:outline, :small) %>
         </div>
       </div>
@@ -82,27 +82,27 @@
     <div class="space-y-6">
       <!-- Market Performance -->
       <div class="<%= card_classes %>">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Market Performance</h3>
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Market Performance</h3>
         <% total_sold = @product.simulation_results.sum(:quantity_sold) %>
         <% total_profit = @product.simulation_results.sum(:profit) %>
         <% simulations_count = @product.market_simulations.count %>
         <div class="space-y-4">
           <div class="text-center">
-            <div class="text-3xl font-bold text-indigo-600"><%= total_sold %></div>
-            <div class="text-sm text-gray-500">Units Sold (All Simulations)</div>
+            <div class="text-3xl font-bold text-indigo-400"><%= total_sold %></div>
+            <div class="text-sm text-gray-400">Units Sold (All Simulations)</div>
           </div>
           <div class="text-center">
-            <div class="text-3xl font-bold text-green-600">$<%= number_with_precision(total_profit, precision: 2) %></div>
-            <div class="text-sm text-gray-500">Total Profit Generated</div>
+            <div class="text-3xl font-bold text-green-400">$<%= number_with_precision(total_profit, precision: 2) %></div>
+            <div class="text-sm text-gray-400">Total Profit Generated</div>
           </div>
           <div class="text-center">
-            <div class="text-3xl font-bold text-blue-600"><%= simulations_count %></div>
-            <div class="text-sm text-gray-500">Market Simulations</div>
+            <div class="text-3xl font-bold text-blue-400"><%= simulations_count %></div>
+            <div class="text-sm text-gray-400">Market Simulations</div>
           </div>
         </div>
         <% if total_sold > 0 %>
-          <div class="mt-4 p-3 bg-blue-50 rounded-lg">
-            <div class="text-sm text-blue-800">
+          <div class="mt-4 p-3 bg-blue-900 rounded-lg border border-blue-800">
+            <div class="text-sm text-blue-300">
               <div class="font-medium">Average per simulation:</div>
               <div><%= (total_sold.to_f / simulations_count).round(1) %> units sold</div>
               <div>$<%= number_with_precision(total_profit / simulations_count, precision: 2) %> profit</div>
@@ -112,32 +112,32 @@
       </div>
       <!-- Production Calculator -->
       <div class="<%= card_classes %>">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Production Calculator</h3>
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Production Calculator</h3>
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Units to Produce</label>
+            <label class="block text-sm font-medium text-gray-300 mb-1">Units to Produce</label>
             <input type="number" id="production-units" value="10" min="1" 
                    class="<%= input_classes %>" placeholder="10">
           </div>
           <div id="production-results" class="space-y-2">
             <div class="flex justify-between text-sm">
-              <span class="text-gray-600">Total Cost:</span>
-              <span id="total-cost" class="font-medium">$<%= number_with_precision(@product.cost * 10, precision: 2) %></span>
+              <span class="text-gray-400">Total Cost:</span>
+              <span id="total-cost" class="font-medium text-gray-100">$<%= number_with_precision(@product.cost * 10, precision: 2) %></span>
             </div>
             <div class="flex justify-between text-sm">
-              <span class="text-gray-600">Total Revenue:</span>
-              <span id="total-revenue" class="font-medium">$<%= number_with_precision(@product.price * 10, precision: 2) %></span>
+              <span class="text-gray-400">Total Revenue:</span>
+              <span id="total-revenue" class="font-medium text-gray-100">$<%= number_with_precision(@product.price * 10, precision: 2) %></span>
             </div>
-            <div class="flex justify-between text-sm pt-2 border-t border-gray-200">
-              <span class="text-gray-900 font-medium">Total Profit:</span>
-              <span id="total-profit" class="font-bold text-green-600">$<%= number_with_precision(@product.profit_per_unit * 10, precision: 2) %></span>
+            <div class="flex justify-between text-sm pt-2 border-t border-gray-800">
+              <span class="text-gray-100 font-medium">Total Profit:</span>
+              <span id="total-profit" class="font-bold text-green-400">$<%= number_with_precision(@product.profit_per_unit * 10, precision: 2) %></span>
             </div>
           </div>
         </div>
       </div>
       <!-- Quick Actions -->
       <div class="<%= card_classes %>">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Quick Actions</h3>
         <div class="space-y-2">
           <%= link_to "Edit Product", edit_product_path(@product), 
               class: "#{button_classes(:outline, :small)} w-full" %>

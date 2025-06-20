@@ -1,8 +1,8 @@
 <div class="px-4 sm:px-0">
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h1 class="text-3xl font-bold text-gray-900"><%= @recipe.name %></h1>
-      <p class="text-gray-600 mt-2"><%= @recipe.description %></p>
+      <h1 class="text-3xl font-bold text-gray-100"><%= @recipe.name %></h1>
+      <p class="text-gray-400 mt-2"><%= @recipe.description %></p>
     </div>
     <div class="space-x-2">
       <%= link_to "Edit Recipe", edit_recipe_path(@recipe), class: button_classes(:secondary) %>
@@ -17,40 +17,40 @@
       <div class="<%= card_classes %>">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div class="text-center">
-            <div class="text-2xl font-bold text-indigo-600"><%= @recipe.servings %></div>
-            <div class="text-sm text-gray-500">Servings</div>
+            <div class="text-2xl font-bold text-indigo-400"><%= @recipe.servings %></div>
+            <div class="text-sm text-gray-400">Servings</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-indigo-600"><%= @recipe.preparation_time %></div>
-            <div class="text-sm text-gray-500">Minutes</div>
+            <div class="text-2xl font-bold text-indigo-400"><%= @recipe.preparation_time %></div>
+            <div class="text-sm text-gray-400">Minutes</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-green-600">$<%= number_with_precision(@recipe.total_cost, precision: 2) %></div>
-            <div class="text-sm text-gray-500">Total Cost</div>
+            <div class="text-2xl font-bold text-green-400">$<%= number_with_precision(@recipe.total_cost, precision: 2) %></div>
+            <div class="text-sm text-gray-400">Total Cost</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-green-600">$<%= number_with_precision(@recipe.cost_per_serving, precision: 2) %></div>
-            <div class="text-sm text-gray-500">Per Serving</div>
+            <div class="text-2xl font-bold text-green-400">$<%= number_with_precision(@recipe.cost_per_serving, precision: 2) %></div>
+            <div class="text-sm text-gray-400">Per Serving</div>
           </div>
         </div>
       </div>
       <!-- Ingredients -->
       <div class="<%= card_classes %>">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">Ingredients</h2>
+        <h2 class="text-lg font-semibold text-gray-100 mb-4">Ingredients</h2>
         <% if @recipe_ingredients.any? %>
           <div class="space-y-3">
             <% @recipe_ingredients.each do |recipe_ingredient| %>
-              <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+              <div class="flex items-center justify-between py-3 border-b border-gray-800 last:border-b-0">
                 <div class="flex items-center space-x-3">
                   <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
                   <div>
-                    <span class="font-medium text-gray-900"><%= recipe_ingredient.ingredient.name %></span>
-                    <div class="text-sm text-gray-500">
+                    <span class="font-medium text-gray-100"><%= recipe_ingredient.ingredient.name %></span>
+                    <div class="text-sm text-gray-400">
                       <%= recipe_ingredient.quantity %> <%= recipe_ingredient.ingredient.unit %>
                     </div>
                   </div>
                 </div>
-                <div class="text-sm font-medium text-gray-900">
+                <div class="text-sm font-medium text-gray-100">
                   $<%= number_with_precision(recipe_ingredient.ingredient.price * recipe_ingredient.quantity, precision: 2) %>
                 </div>
               </div>
@@ -58,8 +58,8 @@
           </div>
         <% else %>
           <div class="text-center py-8">
-            <div class="text-gray-400 text-4xl mb-2">🥕</div>
-            <p class="text-gray-500">No ingredients added yet.</p>
+            <div class="text-gray-500 text-4xl mb-2">🥕</div>
+            <p class="text-gray-400">No ingredients added yet.</p>
             <div class="mt-4">
               <%= link_to "Add Ingredients", edit_recipe_path(@recipe), class: button_classes(:primary, :small) %>
             </div>
@@ -68,15 +68,15 @@
       </div>
       <!-- Instructions -->
       <div class="<%= card_classes %>">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">Instructions</h2>
+        <h2 class="text-lg font-semibold text-gray-100 mb-4">Instructions</h2>
         <% if @recipe.instructions.present? %>
-          <div class="prose prose-sm max-w-none">
+          <div class="prose prose-sm max-w-none text-gray-300">
             <%= simple_format(@recipe.instructions) %>
           </div>
         <% else %>
           <div class="text-center py-8">
-            <div class="text-gray-400 text-4xl mb-2">📝</div>
-            <p class="text-gray-500">No instructions added yet.</p>
+            <div class="text-gray-500 text-4xl mb-2">📝</div>
+            <p class="text-gray-400">No instructions added yet.</p>
             <div class="mt-4">
               <%= link_to "Add Instructions", edit_recipe_path(@recipe), class: button_classes(:primary, :small) %>
             </div>
@@ -88,20 +88,20 @@
     <div class="space-y-6">
       <!-- Cost Breakdown -->
       <div class="<%= card_classes %>">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Cost Breakdown</h3>
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Cost Breakdown</h3>
         <div class="space-y-3">
           <% @recipe_ingredients.each do |ri| %>
             <div class="flex justify-between text-sm">
-              <span class="text-gray-600"><%= ri.ingredient.name %></span>
-              <span class="font-medium">$<%= number_with_precision(ri.ingredient.price * ri.quantity, precision: 2) %></span>
+              <span class="text-gray-400"><%= ri.ingredient.name %></span>
+              <span class="font-medium text-gray-100">$<%= number_with_precision(ri.ingredient.price * ri.quantity, precision: 2) %></span>
             </div>
           <% end %>
-          <div class="pt-3 border-t border-gray-200">
-            <div class="flex justify-between font-semibold">
+          <div class="pt-3 border-t border-gray-800">
+            <div class="flex justify-between font-semibold text-gray-100">
               <span>Total Cost</span>
               <span>$<%= number_with_precision(@recipe.total_cost, precision: 2) %></span>
             </div>
-            <div class="flex justify-between text-sm text-gray-500 mt-1">
+            <div class="flex justify-between text-sm text-gray-400 mt-1">
               <span>Cost per serving</span>
               <span>$<%= number_with_precision(@recipe.cost_per_serving, precision: 2) %></span>
             </div>
@@ -110,14 +110,14 @@
       </div>
       <!-- Products -->
       <div class="<%= card_classes %>">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Products</h3>
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Products</h3>
         <% if @recipe.products.any? %>
           <div class="space-y-3">
             <% @recipe.products.each do |product| %>
-              <div class="border border-gray-200 rounded-lg p-3">
+              <div class="border border-gray-700 rounded-lg p-3 bg-gray-800">
                 <%= link_to product.name, product_path(product), 
-                    class: "text-sm font-medium text-gray-900 hover:text-indigo-600 block" %>
-                <div class="text-xs text-gray-500 mt-1">
+                    class: "text-sm font-medium text-gray-100 hover:text-indigo-400 block" %>
+                <div class="text-xs text-gray-400 mt-1">
                   Margin: <%= product.margin %>% • Price: $<%= number_with_precision(product.price, precision: 2) %>
                 </div>
               </div>
@@ -125,8 +125,8 @@
           </div>
         <% else %>
           <div class="text-center py-6">
-            <div class="text-gray-400 text-3xl mb-2">🛍️</div>
-            <p class="text-gray-500 text-sm mb-3">No products created from this recipe yet.</p>
+            <div class="text-gray-500 text-3xl mb-2">🛍️</div>
+            <p class="text-gray-400 text-sm mb-3">No products created from this recipe yet.</p>
             <%= link_to "Create Product", new_product_path(recipe_id: @recipe.id), 
                 class: "#{button_classes(:primary, :small)} w-full" %>
           </div>
@@ -134,7 +134,7 @@
       </div>
       <!-- Quick Actions -->
       <div class="<%= card_classes %>">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Quick Actions</h3>
         <div class="space-y-2">
           <%= link_to "Edit Recipe", edit_recipe_path(@recipe), 
               class: "#{button_classes(:outline, :small)} w-full" %>

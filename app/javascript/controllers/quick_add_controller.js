@@ -38,7 +38,7 @@ export default class extends Controller {
             <div>
               <label class="block text-sm font-medium text-gray-700">Ingredient</label>
               <select name="recipe[recipe_ingredients_attributes][${timestamp}][ingredient_id]" 
-                      class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                      class="block w-full px-3 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                 <option value="${ingredientId}" selected>${ingredientName}</option>
               </select>
             </div>
@@ -47,7 +47,7 @@ export default class extends Controller {
               <label class="block text-sm font-medium text-gray-700">Quantity</label>
               <input type="number" step="0.01" 
                      name="recipe[recipe_ingredients_attributes][${timestamp}][quantity]" 
-                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
+                     class="block w-full px-3 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm placeholder-gray-400" 
                      placeholder="1.0" value="1.0" autofocus>
             </div>
           </div>

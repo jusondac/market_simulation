@@ -28,7 +28,7 @@
             </div>
             <div>
               <%= form.label :description, class: label_classes %>
-              <%= form.text_area :description, rows: 3, class: input_classes, 
+              <%= form.text_area :description, rows: 3, class: textarea_classes, 
                   placeholder: "Brief description of your recipe..." %>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -43,7 +43,7 @@
             </div>
             <div>
               <%= form.label :instructions, class: label_classes %>
-              <%= form.text_area :instructions, rows: 6, class: input_classes, 
+              <%= form.text_area :instructions, rows: 6, class: textarea_classes, 
                   placeholder: "1. Preheat oven to 350°F...\n2. Mix dry ingredients...\n3. Add wet ingredients..." %>
             </div>
           </div>
@@ -74,7 +74,7 @@
                       <%= ingredient_form.select :ingredient_id, 
                             options_from_collection_for_select(@ingredients, :id, :name, ingredient_form.object.ingredient_id),
                             { prompt: 'Select ingredient' },
-                            { class: input_classes } %>
+                            { class: select_classes } %>
                     </div>
                     <div>
                       <%= ingredient_form.label :quantity, class: "block text-sm font-medium text-gray-700" %>
@@ -106,7 +106,7 @@
                   <div>
                     <label class="block text-sm font-medium text-gray-700">Ingredient</label>
                     <select name="recipe[recipe_ingredients_attributes][NEW_RECORD][ingredient_id]" 
-                            class="<%= input_classes %>">
+                            class="<%= select_classes %>">
                       <option value="">Select ingredient</option>
                       <% @ingredients.each do |ingredient| %>
                         <option value="<%= ingredient.id %>"><%= ingredient.name %></option>

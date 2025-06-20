@@ -27,7 +27,7 @@
                   options_from_collection_for_select(@recipes, :id, :name, 
                     params[:recipe_id] || @product.recipe_id),
                   { prompt: 'Select a recipe' },
-                  { class: input_classes, data: { action: "change->product-calculator#updateCost" } } %>
+                  { class: select_classes, data: { action: "change->product-calculator#updateCost" } } %>
             <p class="text-sm text-gray-500 mt-1">Choose the recipe this product is based on</p>
           </div>
           <div>

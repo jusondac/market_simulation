@@ -1,21 +1,21 @@
 <div class="px-4 sm:px-0">
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h1 class="text-3xl font-bold text-gray-900">Market Simulations</h1>
-      <p class="text-gray-600 mt-2">Test your products' market performance</p>
+      <h1 class="text-3xl font-bold text-gray-100">Market Simulations</h1>
+      <p class="text-gray-400 mt-2">Test your products' market performance</p>
     </div>
     <%= link_to "Run New Simulation", new_market_simulation_path, class: button_classes %>
   </div>
   <% if @market_simulations.any? %>
     <div class="space-y-6">
       <% @market_simulations.each do |simulation| %>
-        <div class="<%= card_classes %> hover:shadow-md transition-shadow">
+        <div class="<%= card_classes %> hover:shadow-2xl transition-shadow card-hover">
           <div class="flex items-start justify-between mb-4">
             <div>
-              <h3 class="text-lg font-semibold text-gray-900">
-                <%= link_to simulation.name, market_simulation_path(simulation), class: "hover:text-indigo-600" %>
+              <h3 class="text-lg font-semibold text-gray-100">
+                <%= link_to simulation.name, market_simulation_path(simulation), class: "hover:text-indigo-400" %>
               </h3>
-              <p class="text-gray-600 text-sm mt-1"><%= simulation.description %></p>
+              <p class="text-gray-400 text-sm mt-1"><%= simulation.description %></p>
             </div>
             <span class="text-xs text-gray-500">
               <%= time_ago_in_words(simulation.created_at) %> ago
@@ -23,20 +23,20 @@
           </div>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div class="text-center">
-              <div class="text-2xl font-bold text-indigo-600"><%= simulation.simulation_products.count %></div>
-              <div class="text-sm text-gray-500">Products</div>
+              <div class="text-2xl font-bold text-indigo-400"><%= simulation.simulation_products.count %></div>
+              <div class="text-sm text-gray-400">Products</div>
             </div>
             <div class="text-center">
-              <div class="text-2xl font-bold text-green-600">
+              <div class="text-2xl font-bold text-green-400">
                 <%= simulation.simulation_results.sum(:quantity_sold) %>
               </div>
-              <div class="text-sm text-gray-500">Units Sold</div>
+              <div class="text-sm text-gray-400">Units Sold</div>
             </div>
             <div class="text-center">
-              <div class="text-2xl font-bold text-green-600">
+              <div class="text-2xl font-bold text-green-400">
                 $<%= number_with_precision(simulation.simulation_results.sum(:profit), precision: 2) %>
               </div>
-              <div class="text-sm text-gray-500">Total Profit</div>
+              <div class="text-sm text-gray-400">Total Profit</div>
             </div>
           </div>
           <div class="flex space-x-2">
@@ -59,12 +59,12 @@
     <div class="<%= card_classes %>">
       <div class="text-center py-12">
         <div class="text-6xl mb-4">📊</div>
-        <h3 class="text-lg font-medium text-gray-900 mb-2">No simulations yet</h3>
-        <p class="text-gray-600 mb-6">Create your first market simulation to test how your products perform.</p>
+        <h3 class="text-lg font-medium text-gray-100 mb-2">No simulations yet</h3>
+        <p class="text-gray-400 mb-6">Create your first market simulation to test how your products perform.</p>
         <% if Product.any? %>
           <%= link_to "Run First Simulation", new_market_simulation_path, class: button_classes %>
         <% else %>
-          <p class="text-gray-500 mb-4">You need products before running simulations.</p>
+          <p class="text-gray-400 mb-4">You need products before running simulations.</p>
           <%= link_to "Create Products First", products_path, class: button_classes %>
         <% end %>
       </div>

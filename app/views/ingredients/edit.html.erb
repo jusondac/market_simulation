@@ -46,12 +46,12 @@
                   ['Package', 'package']
                 ], @ingredient.unit),
                 { prompt: 'Select unit' },
-                { class: input_classes } %>
+                { class: select_classes } %>
         </div>
       </div>
       <div>
         <%= form.label :description, class: label_classes %>
-        <%= form.text_area :description, rows: 3, class: input_classes, 
+        <%= form.text_area :description, rows: 3, class: textarea_classes, 
             placeholder: "Optional description of the ingredient..." %>
       </div>
       <div class="flex items-center justify-between pt-4 border-t border-gray-200">

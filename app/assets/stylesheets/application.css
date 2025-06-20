@@ -16,7 +16,64 @@
 
 .sortable-chosen {
   transform: scale(1.02);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark theme enhancements */
+body {
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+  min-height: 100vh;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Enhanced card hover effects */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Button hover animations */
+button,
+.btn {
+  transition: all 0.2s ease;
+}
+
+button:hover,
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Form focus states for dark theme */
+input:focus,
+textarea:focus,
+select:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Enhanced mobile menu */
+.mobile-menu {
+  backdrop-filter: blur(10px);
 }
 
 .sortable-drag {

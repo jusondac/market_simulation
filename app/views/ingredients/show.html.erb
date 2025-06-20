@@ -1,8 +1,8 @@
 <div class="px-4 sm:px-0">
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h1 class="text-3xl font-bold text-gray-900"><%= @ingredient.name %></h1>
-      <p class="text-gray-600 mt-2">Ingredient details and usage</p>
+      <h1 class="text-3xl font-bold text-gray-100"><%= @ingredient.name %></h1>
+      <p class="text-gray-400 mt-2">Ingredient details and usage</p>
     </div>
     <div class="space-x-2">
       <%= link_to "Edit", edit_ingredient_path(@ingredient), class: button_classes(:secondary) %>
@@ -13,41 +13,41 @@
     <!-- Ingredient Details -->
     <div class="lg:col-span-2">
       <div class="<%= card_classes %> mb-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">Details</h2>
+        <h2 class="text-lg font-semibold text-gray-100 mb-4">Details</h2>
         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <dt class="text-sm font-medium text-gray-500">Price per unit</dt>
-            <dd class="text-lg font-semibold text-gray-900">$<%= number_with_precision(@ingredient.price, precision: 2) %></dd>
+            <dt class="text-sm font-medium text-gray-400">Price per unit</dt>
+            <dd class="text-lg font-semibold text-gray-100">$<%= number_with_precision(@ingredient.price, precision: 2) %></dd>
           </div>
           <div>
-            <dt class="text-sm font-medium text-gray-500">Unit</dt>
-            <dd class="text-lg font-semibold text-gray-900"><%= @ingredient.unit %></dd>
+            <dt class="text-sm font-medium text-gray-400">Unit</dt>
+            <dd class="text-lg font-semibold text-gray-100"><%= @ingredient.unit %></dd>
           </div>
         </dl>
         <% if @ingredient.description.present? %>
           <div class="mt-6">
-            <dt class="text-sm font-medium text-gray-500 mb-2">Description</dt>
-            <dd class="text-gray-900"><%= @ingredient.description %></dd>
+            <dt class="text-sm font-medium text-gray-400 mb-2">Description</dt>
+            <dd class="text-gray-100"><%= @ingredient.description %></dd>
           </div>
         <% end %>
       </div>
       <!-- Recipes using this ingredient -->
       <div class="<%= card_classes %>">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">Used in Recipes</h2>
+        <h2 class="text-lg font-semibold text-gray-100 mb-4">Used in Recipes</h2>
         <% recipes_using_ingredient = @ingredient.recipes.includes(:recipe_ingredients) %>
         <% if recipes_using_ingredient.any? %>
           <div class="space-y-3">
             <% recipes_using_ingredient.each do |recipe| %>
               <% recipe_ingredient = recipe.recipe_ingredients.find { |ri| ri.ingredient_id == @ingredient.id } %>
-              <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+              <div class="flex items-center justify-between py-3 border-b border-gray-800 last:border-b-0">
                 <div>
                   <%= link_to recipe.name, recipe_path(recipe), 
-                      class: "text-gray-900 hover:text-indigo-600 font-medium" %>
-                  <div class="text-sm text-gray-500">
+                      class: "text-gray-100 hover:text-indigo-400 font-medium" %>
+                  <div class="text-sm text-gray-400">
                     Uses <%= recipe_ingredient&.quantity %> <%= @ingredient.unit %>
                   </div>
                 </div>
-                <div class="text-sm text-gray-500">
+                <div class="text-sm text-gray-400">
                   Cost: $<%= number_with_precision((@ingredient.price * (recipe_ingredient&.quantity || 0)), precision: 2) %>
                 </div>
               </div>
@@ -55,8 +55,8 @@
           </div>
         <% else %>
           <div class="text-center py-8">
-            <div class="text-gray-400 text-4xl mb-2">📖</div>
-            <p class="text-gray-500">This ingredient is not used in any recipes yet.</p>
+            <div class="text-gray-500 text-4xl mb-2">📖</div>
+            <p class="text-gray-400">This ingredient is not used in any recipes yet.</p>
             <div class="mt-4">
               <%= link_to "Create Recipe", new_recipe_path, class: button_classes(:primary, :small) %>
             </div>
@@ -67,28 +67,28 @@
     <!-- Stats sidebar -->
     <div class="space-y-6">
       <div class="<%= card_classes %>">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Usage Statistics</h3>
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Usage Statistics</h3>
         <div class="space-y-4">
           <div class="text-center">
-            <div class="text-3xl font-bold text-indigo-600"><%= @ingredient.recipes.count %></div>
-            <div class="text-sm text-gray-500">Recipes</div>
+            <div class="text-3xl font-bold text-indigo-400"><%= @ingredient.recipes.count %></div>
+            <div class="text-sm text-gray-400">Recipes</div>
           </div>
           <div class="text-center">
-            <div class="text-3xl font-bold text-green-600">
+            <div class="text-3xl font-bold text-green-400">
               <%= @ingredient.recipe_ingredients.sum(:quantity).round(2) %>
             </div>
-            <div class="text-sm text-gray-500">Total <%= @ingredient.unit %> used</div>
+            <div class="text-sm text-gray-400">Total <%= @ingredient.unit %> used</div>
           </div>
           <div class="text-center">
-            <div class="text-3xl font-bold text-green-600">
+            <div class="text-3xl font-bold text-green-400">
               $<%= number_with_precision(@ingredient.recipe_ingredients.sum { |ri| ri.quantity * @ingredient.price }, precision: 2) %>
             </div>
-            <div class="text-sm text-gray-500">Total value in recipes</div>
+            <div class="text-sm text-gray-400">Total value in recipes</div>
           </div>
         </div>
       </div>
       <div class="<%= card_classes %>">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Quick Actions</h3>
         <div class="space-y-2">
           <%= link_to "Edit Ingredient", edit_ingredient_path(@ingredient), 
               class: "#{button_classes(:outline, :small)} w-full" %>
