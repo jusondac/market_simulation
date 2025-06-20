@@ -1,0 +1,152 @@
+<div class="px-4 sm:px-0">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900"><%= @recipe.name %></h1>
+      <p class="text-gray-600 mt-2"><%= @recipe.description %></p>
+    </div>
+    <div class="space-x-2">
+      <%= link_to "Edit Recipe", edit_recipe_path(@recipe), class: button_classes(:secondary) %>
+      <%= link_to "Create Product", new_product_path(recipe_id: @recipe.id), class: button_classes(:primary) %>
+      <%= link_to "All Recipes", recipes_path, class: button_classes(:outline) %>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Recipe Content -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Recipe Info -->
+      <div class="<%= card_classes %>">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-indigo-600"><%= @recipe.servings %></div>
+            <div class="text-sm text-gray-500">Servings</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-indigo-600"><%= @recipe.preparation_time %></div>
+            <div class="text-sm text-gray-500">Minutes</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-green-600">$<%= number_with_precision(@recipe.total_cost, precision: 2) %></div>
+            <div class="text-sm text-gray-500">Total Cost</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-green-600">$<%= number_with_precision(@recipe.cost_per_serving, precision: 2) %></div>
+            <div class="text-sm text-gray-500">Per Serving</div>
+          </div>
+        </div>
+      </div>
+      <!-- Ingredients -->
+      <div class="<%= card_classes %>">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Ingredients</h2>
+        <% if @recipe_ingredients.any? %>
+          <div class="space-y-3">
+            <% @recipe_ingredients.each do |recipe_ingredient| %>
+              <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+                <div class="flex items-center space-x-3">
+                  <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                  <div>
+                    <span class="font-medium text-gray-900"><%= recipe_ingredient.ingredient.name %></span>
+                    <div class="text-sm text-gray-500">
+                      <%= recipe_ingredient.quantity %> <%= recipe_ingredient.ingredient.unit %>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-sm font-medium text-gray-900">
+                  $<%= number_with_precision(recipe_ingredient.ingredient.price * recipe_ingredient.quantity, precision: 2) %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-8">
+            <div class="text-gray-400 text-4xl mb-2">🥕</div>
+            <p class="text-gray-500">No ingredients added yet.</p>
+            <div class="mt-4">
+              <%= link_to "Add Ingredients", edit_recipe_path(@recipe), class: button_classes(:primary, :small) %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <!-- Instructions -->
+      <div class="<%= card_classes %>">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Instructions</h2>
+        <% if @recipe.instructions.present? %>
+          <div class="prose prose-sm max-w-none">
+            <%= simple_format(@recipe.instructions) %>
+          </div>
+        <% else %>
+          <div class="text-center py-8">
+            <div class="text-gray-400 text-4xl mb-2">📝</div>
+            <p class="text-gray-500">No instructions added yet.</p>
+            <div class="mt-4">
+              <%= link_to "Add Instructions", edit_recipe_path(@recipe), class: button_classes(:primary, :small) %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <!-- Sidebar -->
+    <div class="space-y-6">
+      <!-- Cost Breakdown -->
+      <div class="<%= card_classes %>">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Cost Breakdown</h3>
+        <div class="space-y-3">
+          <% @recipe_ingredients.each do |ri| %>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600"><%= ri.ingredient.name %></span>
+              <span class="font-medium">$<%= number_with_precision(ri.ingredient.price * ri.quantity, precision: 2) %></span>
+            </div>
+          <% end %>
+          <div class="pt-3 border-t border-gray-200">
+            <div class="flex justify-between font-semibold">
+              <span>Total Cost</span>
+              <span>$<%= number_with_precision(@recipe.total_cost, precision: 2) %></span>
+            </div>
+            <div class="flex justify-between text-sm text-gray-500 mt-1">
+              <span>Cost per serving</span>
+              <span>$<%= number_with_precision(@recipe.cost_per_serving, precision: 2) %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Products -->
+      <div class="<%= card_classes %>">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Products</h3>
+        <% if @recipe.products.any? %>
+          <div class="space-y-3">
+            <% @recipe.products.each do |product| %>
+              <div class="border border-gray-200 rounded-lg p-3">
+                <%= link_to product.name, product_path(product), 
+                    class: "text-sm font-medium text-gray-900 hover:text-indigo-600 block" %>
+                <div class="text-xs text-gray-500 mt-1">
+                  Margin: <%= product.margin %>% • Price: $<%= number_with_precision(product.price, precision: 2) %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-6">
+            <div class="text-gray-400 text-3xl mb-2">🛍️</div>
+            <p class="text-gray-500 text-sm mb-3">No products created from this recipe yet.</p>
+            <%= link_to "Create Product", new_product_path(recipe_id: @recipe.id), 
+                class: "#{button_classes(:primary, :small)} w-full" %>
+          </div>
+        <% end %>
+      </div>
+      <!-- Quick Actions -->
+      <div class="<%= card_classes %>">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <div class="space-y-2">
+          <%= link_to "Edit Recipe", edit_recipe_path(@recipe), 
+              class: "#{button_classes(:outline, :small)} w-full" %>
+          <%= link_to "Duplicate Recipe", new_recipe_path(duplicate_from: @recipe.id), 
+              class: "#{button_classes(:secondary, :small)} w-full" %>
+          <%= link_to "Create Product", new_product_path(recipe_id: @recipe.id), 
+              class: "#{button_classes(:primary, :small)} w-full" %>
+          <%= link_to "Delete Recipe", recipe_path(@recipe), method: :delete,
+              confirm: "Are you sure? This will also delete associated products.", 
+              class: "#{button_classes(:danger, :small)} w-full" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

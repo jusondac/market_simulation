@@ -1,0 +1,114 @@
+<div class="px-4 sm:px-0">
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Create New Product</h1>
+    <p class="text-gray-600 mt-2">Turn your recipe into a marketable product</p>
+  </div>
+  <div class="<%= card_classes %>">
+    <%= form_with model: @product, local: true, class: "space-y-6", 
+                  data: { controller: "product-calculator" } do |form| %>
+      <% if @product.errors.any? %>
+        <div class="bg-red-50 border border-red-200 rounded-md p-4">
+          <div class="text-red-800 text-sm">
+            <h4 class="font-medium mb-2">Please fix the following errors:</h4>
+            <ul class="list-disc list-inside space-y-1">
+              <% @product.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Product Details -->
+        <div class="space-y-6">
+          <div>
+            <%= form.label :recipe_id, "Base Recipe", class: label_classes %>
+            <%= form.select :recipe_id, 
+                  options_from_collection_for_select(@recipes, :id, :name, 
+                    params[:recipe_id] || @product.recipe_id),
+                  { prompt: 'Select a recipe' },
+                  { class: input_classes, data: { action: "change->product-calculator#updateCost" } } %>
+            <p class="text-sm text-gray-500 mt-1">Choose the recipe this product is based on</p>
+          </div>
+          <div>
+            <%= form.label :name, "Product Name", class: label_classes %>
+            <%= form.text_field :name, class: input_classes, 
+                placeholder: "e.g., Artisan Chocolate Chip Cookie Pack (12 pieces)" %>
+            <p class="text-sm text-gray-500 mt-1">Give your product a marketable name</p>
+          </div>
+          <div>
+            <%= form.label :margin, "Profit Margin (%)", class: label_classes %>
+            <%= form.number_field :margin, step: 0.1, class: input_classes, 
+                placeholder: "150", data: { action: "input->product-calculator#updatePrice" } %>
+            <p class="text-sm text-gray-500 mt-1">What percentage markup do you want?</p>
+          </div>
+        </div>
+        <!-- Cost Calculator -->
+        <div class="<%= card_classes %> bg-gray-50">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Cost Calculator</h3>
+          <div id="cost-breakdown" class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">Recipe Cost per Serving:</span>
+              <span id="recipe-cost" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">Servings per Product:</span>
+              <span id="servings-count" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between items-center pt-2 border-t border-gray-200">
+              <span class="text-gray-600">Total Product Cost:</span>
+              <span id="product-cost" class="font-medium text-lg">-</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">Profit Margin:</span>
+              <span id="margin-display" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between items-center pt-2 border-t border-gray-200">
+              <span class="text-gray-900 font-semibold">Selling Price:</span>
+              <span id="selling-price" class="font-bold text-xl text-green-600">-</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">Profit per Unit:</span>
+              <span id="profit-per-unit" class="font-medium text-green-600">-</span>
+            </div>
+          </div>
+          <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+            <h4 class="font-medium text-blue-900 mb-2">Pricing Suggestions</h4>
+            <div class="text-sm text-blue-800 space-y-1">
+              <div>Conservative (100-150%): Good for new products</div>
+              <div>Standard (150-200%): Industry average</div>
+              <div>Premium (200%+): For specialty/luxury items</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Recipe Ingredients Preview -->
+      <div id="recipe-preview" class="hidden">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Recipe Ingredients</h3>
+        <div id="ingredients-list" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <!-- Ingredients will be loaded here -->
+        </div>
+      </div>
+      <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+        <%= link_to "Cancel", products_path, class: button_classes(:outline) %>
+        <%= form.submit "Create Product", class: button_classes %>
+      </div>
+    <% end %>
+  </div>
+  <!-- Recipe Data for JavaScript -->
+  <script type="application/json" id="recipes-data">
+    <%= raw @recipes.map { |recipe| {
+      id: recipe.id,
+      name: recipe.name,
+      cost_per_serving: recipe.cost_per_serving,
+      servings: recipe.servings,
+      total_cost: recipe.total_cost,
+      ingredients: recipe.recipe_ingredients.includes(:ingredient).map { |ri| {
+        name: ri.ingredient.name,
+        quantity: ri.quantity,
+        unit: ri.ingredient.unit,
+        cost: ri.ingredient.price * ri.quantity
+      }}
+    }}.to_json %>
+  </script>
+</div>

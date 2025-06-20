@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  market_simulation: one
+  person: one
+  product: one
+  quantity_sold: 1
+  total_revenue: 9.99
+  profit: 9.99
+
+two:
+  market_simulation: two
+  person: two
+  product: two
+  quantity_sold: 1
+  total_revenue: 9.99
+  profit: 9.99

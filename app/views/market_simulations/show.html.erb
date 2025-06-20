@@ -1,0 +1,222 @@
+<div class="px-4 sm:px-0">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900"><%= @market_simulation.name %></h1>
+      <p class="text-gray-600 mt-2"><%= @market_simulation.description %></p>
+    </div>
+    <div class="space-x-2">
+      <% if @simulation_results.any? %>
+        <%= button_to "Re-run Simulation", simulate_market_simulation_path(@market_simulation), 
+                      method: :post, confirm: "This will replace existing results. Continue?", 
+                      class: button_classes(:secondary) %>
+      <% else %>
+        <%= button_to "Run Simulation", simulate_market_simulation_path(@market_simulation), 
+                      method: :post, class: button_classes(:primary) %>
+      <% end %>
+      <%= link_to "All Simulations", market_simulations_path, class: button_classes(:outline) %>
+    </div>
+  </div>
+  <% if @simulation_results.any? %>
+    <!-- Results Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <% total_units_sold = @simulation_results.sum(:quantity_sold) %>
+      <% total_revenue = @simulation_results.sum(:total_revenue) %>
+      <% total_profit = @simulation_results.sum(:profit) %>
+      <% unique_customers = @simulation_results.select(:person_id).distinct.count %>
+      <div class="<%= card_classes %> text-center">
+        <div class="text-3xl font-bold text-indigo-600"><%= total_units_sold %></div>
+        <div class="text-sm text-gray-500">Units Sold</div>
+      </div>
+      <div class="<%= card_classes %> text-center">
+        <div class="text-3xl font-bold text-green-600">$<%= number_with_precision(total_revenue, precision: 2) %></div>
+        <div class="text-sm text-gray-500">Total Revenue</div>
+      </div>
+      <div class="<%= card_classes %> text-center">
+        <div class="text-3xl font-bold text-green-600">$<%= number_with_precision(total_profit, precision: 2) %></div>
+        <div class="text-sm text-gray-500">Total Profit</div>
+      </div>
+      <div class="<%= card_classes %> text-center">
+        <div class="text-3xl font-bold text-blue-600"><%= unique_customers %></div>
+        <div class="text-sm text-gray-500">Customers</div>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Product Performance -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="<%= card_classes %>">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Product Performance</h2>
+          <div class="space-y-4">
+            <% @simulation_products.each do |sim_product| %>
+              <% product_results = @simulation_results.where(product: sim_product.product) %>
+              <% units_sold = product_results.sum(:quantity_sold) %>
+              <% revenue = product_results.sum(:total_revenue) %>
+              <% profit = product_results.sum(:profit) %>
+              <% customers = product_results.select(:person_id).distinct.count %>
+              <div class="border border-gray-200 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="font-medium text-gray-900"><%= sim_product.product.name %></h3>
+                  <span class="text-sm text-gray-500">
+                    $<%= number_with_precision(sim_product.price, precision: 2) %> each
+                  </span>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                  <div>
+                    <div class="text-xl font-bold text-indigo-600"><%= units_sold %></div>
+                    <div class="text-xs text-gray-500">Sold</div>
+                  </div>
+                  <div>
+                    <div class="text-xl font-bold text-green-600">$<%= number_with_precision(revenue, precision: 2) %></div>
+                    <div class="text-xs text-gray-500">Revenue</div>
+                  </div>
+                  <div>
+                    <div class="text-xl font-bold text-green-600">$<%= number_with_precision(profit, precision: 2) %></div>
+                    <div class="text-xs text-gray-500">Profit</div>
+                  </div>
+                  <div>
+                    <div class="text-xl font-bold text-blue-600"><%= customers %></div>
+                    <div class="text-xs text-gray-500">Customers</div>
+                  </div>
+                </div>
+                <div class="mt-3 bg-gray-50 rounded p-2">
+                  <div class="text-sm text-gray-600">
+                    <% conversion_rate = (customers.to_f / Person.count * 100).round(1) %>
+                    <strong>Conversion Rate:</strong> <%= conversion_rate %>% 
+                    (<%= customers %> out of <%= Person.count %> people bought this product)
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <!-- Customer Breakdown -->
+        <div class="<%= card_classes %>">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Customer Demographics</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <% ['kid', 'teenager', 'adult'].each do |classification| %>
+              <% group_results = @simulation_results.joins(:person).where(people: { classification: classification }) %>
+              <% group_units = group_results.sum(:quantity_sold) %>
+              <% group_profit = group_results.sum(:profit) %>
+              <% group_customers = group_results.select(:person_id).distinct.count %>
+              <% total_in_group = Person.where(classification: classification).count %>
+              <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <h3 class="font-medium text-gray-900 capitalize mb-2"><%= classification.pluralize %></h3>
+                <div class="space-y-1">
+                  <div class="text-lg font-bold text-indigo-600"><%= group_units %></div>
+                  <div class="text-xs text-gray-500">Units Bought</div>
+                  <div class="text-sm text-gray-600">
+                    <%= group_customers %>/<%= total_in_group %> purchased
+                  </div>
+                  <div class="text-sm font-medium text-green-600">
+                    $<%= number_with_precision(group_profit, precision: 2) %> profit
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <!-- Sidebar -->
+      <div class="space-y-6">
+        <!-- Simulation Info -->
+        <div class="<%= card_classes %>">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Simulation Info</h3>
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Created:</span>
+              <span class="font-medium"><%= @market_simulation.created_at.strftime("%m/%d/%Y") %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Products:</span>
+              <span class="font-medium"><%= @simulation_products.count %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Market Size:</span>
+              <span class="font-medium"><%= Person.count %> people</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Transactions:</span>
+              <span class="font-medium"><%= @simulation_results.count %></span>
+            </div>
+          </div>
+        </div>
+        <!-- Top Customers -->
+        <div class="<%= card_classes %>">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Customers</h3>
+          <% top_customers = @simulation_results.joins(:person)
+                                               .group(:person_id, 'people.name', 'people.classification')
+                                               .sum(:quantity_sold)
+                                               .sort_by { |_, quantity| -quantity }
+                                               .first(5) %>
+          <div class="space-y-3">
+            <% top_customers.each do |(person_id, name, classification), quantity| %>
+              <% customer_profit = @simulation_results.where(person_id: person_id).sum(:profit) %>
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-sm font-medium text-gray-900"><%= name %></div>
+                  <div class="text-xs text-gray-500 capitalize"><%= classification %></div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm font-medium"><%= quantity %> units</div>
+                  <div class="text-xs text-green-600">$<%= number_with_precision(customer_profit, precision: 2) %></div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <!-- Actions -->
+        <div class="<%= card_classes %>">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Actions</h3>
+          <div class="space-y-2">
+            <%= button_to "Re-run Simulation", simulate_market_simulation_path(@market_simulation), 
+                          method: :post, confirm: "Replace current results?",
+                          class: "#{button_classes(:primary, :small)} w-full" %>
+            <%= link_to "Create New Simulation", new_market_simulation_path, 
+                        class: "#{button_classes(:outline, :small)} w-full" %>
+            <%= link_to export_market_simulation_path(@market_simulation, format: :csv), 
+                        class: "#{button_classes(:secondary, :small)} w-full flex items-center justify-center space-x-2" do %>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <span>Export Results</span>
+            <% end %>
+            <div class="pt-2 border-t border-gray-200">
+              <%= button_to "Delete Simulation", @market_simulation, 
+                            method: :delete, 
+                            confirm: "Are you sure? This will permanently delete this simulation and all its results.",
+                            class: "#{button_classes(:danger, :small)} w-full flex items-center justify-center space-x-2" do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+                <span>Delete</span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <!-- No Results Yet -->
+    <div class="<%= card_classes %>">
+      <div class="text-center py-12">
+        <div class="text-6xl mb-4">🎯</div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Simulation Ready</h3>
+        <p class="text-gray-600 mb-6">
+          Your simulation is set up with <%= @simulation_products.count %> product(s). 
+          Click the button below to run the simulation and see how your products perform in the market.
+        </p>
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-md mx-auto">
+            <% @simulation_products.each do |sim_product| %>
+              <div class="text-center p-3 bg-gray-50 rounded">
+                <div class="text-sm font-medium text-gray-900"><%= sim_product.product.name %></div>
+                <div class="text-xs text-gray-500"><%= sim_product.quantity %> units at $<%= number_with_precision(sim_product.price, precision: 2) %></div>
+              </div>
+            <% end %>
+          </div>
+          <%= button_to "Run Simulation Now", simulate_market_simulation_path(@market_simulation), 
+                        method: :post, class: button_classes %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

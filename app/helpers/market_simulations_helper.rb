@@ -1,0 +1,2 @@
+module MarketSimulationsHelper
+end

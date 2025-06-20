@@ -1,0 +1,114 @@
+<div class="px-4 sm:px-0">
+  <!-- Hero Section -->
+  <div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">
+      🍽️ Market Simulation Platform
+    </h1>
+    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+      Create recipes, manage ingredients, build products, and simulate market performance with our comprehensive food business platform.
+    </p>
+  </div>
+  <!-- Quick Actions -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+    <%= link_to new_recipe_path, class: "#{card_classes} hover:shadow-md transition-shadow group" do %>
+      <div class="text-center">
+        <div class="text-3xl mb-3">📖</div>
+        <h3 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-600">Create Recipe</h3>
+        <p class="text-gray-600 text-sm">Add new recipes with ingredients</p>
+      </div>
+    <% end %>
+    <%= link_to new_ingredient_path, class: "#{card_classes} hover:shadow-md transition-shadow group" do %>
+      <div class="text-center">
+        <div class="text-3xl mb-3">🥕</div>
+        <h3 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-600">Add Ingredient</h3>
+        <p class="text-gray-600 text-sm">Manage your ingredient inventory</p>
+      </div>
+    <% end %>
+    <%= link_to new_product_path, class: "#{card_classes} hover:shadow-md transition-shadow group" do %>
+      <div class="text-center">
+        <div class="text-3xl mb-3">🛍️</div>
+        <h3 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-600">Create Product</h3>
+        <p class="text-gray-600 text-sm">Turn recipes into sellable products</p>
+      </div>
+    <% end %>
+    <%= link_to new_market_simulation_path, class: "#{card_classes} hover:shadow-md transition-shadow group" do %>
+      <div class="text-center">
+        <div class="text-3xl mb-3">📊</div>
+        <h3 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-600">Run Simulation</h3>
+        <p class="text-gray-600 text-sm">Test market performance</p>
+      </div>
+    <% end %>
+  </div>
+  <!-- Recent Items -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Recent Recipes -->
+    <div class="<%= card_classes %>">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-900">Recent Recipes</h2>
+        <%= link_to "View All", recipes_path, class: "text-indigo-600 hover:text-indigo-700 text-sm font-medium" %>
+      </div>
+      <div class="space-y-3">
+        <% if @recent_recipes.any? %>
+          <% @recent_recipes.each do |recipe| %>
+            <div class="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+              <div>
+                <%= link_to recipe.name, recipe_path(recipe), class: "text-gray-900 hover:text-indigo-600 font-medium" %>
+                <div class="text-sm text-gray-500"><%= recipe.servings %> servings</div>
+              </div>
+              <div class="text-sm text-gray-500">
+                $<%= number_with_precision(recipe.cost_per_serving, precision: 2) %>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="text-gray-500 text-sm">No recipes yet. <%= link_to "Create your first recipe", new_recipe_path, class: "text-indigo-600 hover:text-indigo-700" %>!</p>
+        <% end %>
+      </div>
+    </div>
+    <!-- Recent Products -->
+    <div class="<%= card_classes %>">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-900">Recent Products</h2>
+        <%= link_to "View All", products_path, class: "text-indigo-600 hover:text-indigo-700 text-sm font-medium" %>
+      </div>
+      <div class="space-y-3">
+        <% if @recent_products.any? %>
+          <% @recent_products.each do |product| %>
+            <div class="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+              <div>
+                <%= link_to product.name, product_path(product), class: "text-gray-900 hover:text-indigo-600 font-medium" %>
+                <div class="text-sm text-gray-500"><%= product.margin %>% margin</div>
+              </div>
+              <div class="text-sm text-gray-900 font-medium">
+                $<%= number_with_precision(product.price, precision: 2) %>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="text-gray-500 text-sm">No products yet. <%= link_to "Create your first product", new_product_path, class: "text-indigo-600 hover:text-indigo-700" %>!</p>
+        <% end %>
+      </div>
+    </div>
+    <!-- Recent Simulations -->
+    <div class="<%= card_classes %>">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-900">Recent Simulations</h2>
+        <%= link_to "View All", market_simulations_path, class: "text-indigo-600 hover:text-indigo-700 text-sm font-medium" %>
+      </div>
+      <div class="space-y-3">
+        <% if @recent_simulations.any? %>
+          <% @recent_simulations.each do |simulation| %>
+            <div class="py-2 border-b border-gray-100 last:border-b-0">
+              <%= link_to simulation.name, market_simulation_path(simulation), class: "text-gray-900 hover:text-indigo-600 font-medium block" %>
+              <div class="text-sm text-gray-500 mt-1">
+                <%= simulation.simulation_products.count %> products
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="text-gray-500 text-sm">No simulations yet. <%= link_to "Run your first simulation", new_market_simulation_path, class: "text-indigo-600 hover:text-indigo-700" %>!</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
