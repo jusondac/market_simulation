@@ -5,11 +5,11 @@ export default class extends Controller {
 
   quickAdd(event) {
     event.preventDefault()
-
+    
     const ingredientId = event.params.ingredientId
     const ingredientName = event.params.ingredientName
     const ingredientUnit = event.params.ingredientUnit
-
+    
     // Check if this ingredient is already added
     const existingIngredient = this.containerTarget.querySelector(`select[value="${ingredientId}"]`)
     if (existingIngredient) {
@@ -19,10 +19,10 @@ export default class extends Controller {
       quantityInput.select()
       return
     }
-
+    
     // Generate a unique timestamp for the new record
     const timestamp = Date.now()
-
+    
     // Create the new ingredient field HTML
     const newFieldHTML = `
       <div class="nested-fields bg-gray-50 rounded-lg p-4 border border-gray-200" 
@@ -38,7 +38,7 @@ export default class extends Controller {
             <div>
               <label class="block text-sm font-medium text-gray-700">Ingredient</label>
               <select name="recipe[recipe_ingredients_attributes][${timestamp}][ingredient_id]" 
-                      class="block w-full px-3 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                      class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                 <option value="${ingredientId}" selected>${ingredientName}</option>
               </select>
             </div>
@@ -47,7 +47,7 @@ export default class extends Controller {
               <label class="block text-sm font-medium text-gray-700">Quantity</label>
               <input type="number" step="0.01" 
                      name="recipe[recipe_ingredients_attributes][${timestamp}][quantity]" 
-                     class="block w-full px-3 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm placeholder-gray-400" 
+                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
                      placeholder="1.0" value="1.0" autofocus>
             </div>
           </div>
@@ -63,16 +63,16 @@ export default class extends Controller {
         </div>
       </div>
     `
-
+    
     // Add the new field to the container
     this.containerTarget.insertAdjacentHTML('beforeend', newFieldHTML)
-
+    
     // Focus on the quantity input
     const newField = this.containerTarget.lastElementChild
     const quantityInput = newField.querySelector('input[name*="quantity"]')
     quantityInput.focus()
     quantityInput.select()
-
+    
     // Show success feedback
     event.target.classList.add('bg-green-100', 'text-green-800')
     setTimeout(() => {

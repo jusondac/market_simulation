@@ -1,17 +1,17 @@
 <div class="px-4 sm:px-0">
   <div class="mb-6">
-    <h1 class="text-3xl font-bold text-gray-900">Create New Recipe</h1>
-    <p class="text-gray-600 mt-2">Add ingredients and instructions for your recipe</p>
+    <h1 class="text-3xl font-bold text-gray-100">Create New Recipe</h1>
+    <p class="text-gray-400 mt-2">Add ingredients and instructions for your recipe</p>
   </div>
   <%= form_with model: @recipe, local: true, data: { controller: "nested-form quick-add" } do |form| %>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Recipe Details -->
       <div class="lg:col-span-2 space-y-6">
         <div class="<%= card_classes %>">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">Recipe Details</h2>
+          <h2 class="text-lg font-semibold text-gray-100 mb-4">Recipe Details</h2>
           <% if @recipe.errors.any? %>
-            <div class="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-              <div class="text-red-800 text-sm">
+            <div class="bg-red-900 border border-red-700 rounded-md p-4 mb-6">
+              <div class="text-red-300 text-sm">
                 <h4 class="font-medium mb-2">Please fix the following errors:</h4>
                 <ul class="list-disc list-inside space-y-1">
                   <% @recipe.errors.full_messages.each do |message| %>
@@ -51,7 +51,7 @@
         <!-- Ingredients Section -->
         <div class="<%= card_classes %>">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold text-gray-900">Ingredients</h2>
+            <h2 class="text-lg font-semibold text-gray-100">Ingredients</h2>
             <button type="button" data-action="click->nested-form#add" 
               class="<%= button_classes(:primary, :small) %>">
               Add Ingredient
@@ -60,24 +60,24 @@
           <div data-nested-form-target="container" data-controller="sortable" class="space-y-3" 
                data-quick-add-target="container">
             <%= form.fields_for :recipe_ingredients do |ingredient_form| %>
-              <div class="nested-fields bg-gray-50 rounded-lg p-4 border border-gray-200" 
+              <div class="nested-fields bg-gray-900 rounded-lg p-4 border border-gray-700" 
                    data-sortable-target="item">
                 <div class="flex items-center space-x-3">
-                  <div class="drag-handle cursor-move text-gray-400 hover:text-gray-600">
+                  <div class="drag-handle cursor-move text-gray-400 hover:text-gray-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
                     </svg>
                   </div>
                   <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <%= ingredient_form.label :ingredient_id, "Ingredient", class: "block text-sm font-medium text-gray-700" %>
+                      <%= ingredient_form.label :ingredient_id, "Ingredient", class: label_classes %>
                       <%= ingredient_form.select :ingredient_id, 
                             options_from_collection_for_select(@ingredients, :id, :name, ingredient_form.object.ingredient_id),
                             { prompt: 'Select ingredient' },
                             { class: select_classes } %>
                     </div>
                     <div>
-                      <%= ingredient_form.label :quantity, class: "block text-sm font-medium text-gray-700" %>
+                      <%= ingredient_form.label :quantity, class: label_classes %>
                       <%= ingredient_form.number_field :quantity, step: 0.01, class: input_classes, placeholder: "1.5" %>
                     </div>
                   </div>
@@ -94,10 +94,10 @@
           </div>
           <!-- Template for new ingredients -->
           <template data-nested-form-target="template">
-            <div class="nested-fields bg-gray-50 rounded-lg p-4 border border-gray-200" 
+            <div class="nested-fields bg-gray-900 rounded-lg p-4 border border-gray-700" 
                  data-sortable-target="item">
               <div class="flex items-center space-x-3">
-                <div class="drag-handle cursor-move text-gray-400 hover:text-gray-600">
+                <div class="drag-handle cursor-move text-gray-400 hover:text-gray-400">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
                   </svg>
@@ -106,7 +106,7 @@
                   <div>
                     <label class="block text-sm font-medium text-gray-700">Ingredient</label>
                     <select name="recipe[recipe_ingredients_attributes][NEW_RECORD][ingredient_id]" 
-                            class="<%= select_classes %>">
+                            class="<%= input_classes %>">
                       <option value="">Select ingredient</option>
                       <% @ingredients.each do |ingredient| %>
                         <option value="<%= ingredient.id %>"><%= ingredient.name %></option>
@@ -135,28 +135,28 @@
       <!-- Sidebar -->
       <div class="space-y-6">
         <div class="<%= card_classes %>">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Recipe Cost Calculator</h3>
+          <h3 class="text-lg font-semibold text-gray-100 mb-4">Recipe Cost Calculator</h3>
           <div id="cost-calculator" class="space-y-3">
-            <div class="text-sm text-gray-500">Add ingredients to see cost breakdown</div>
+            <div class="text-sm text-gray-400">Add ingredients to see cost breakdown</div>
           </div>
         </div>
         <div class="<%= card_classes %>">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Add Ingredients</h3>
+          <h3 class="text-lg font-semibold text-gray-100 mb-4">Quick Add Ingredients</h3>
           <div class="space-y-2 max-h-64 overflow-y-auto">
             <% @ingredients.each do |ingredient| %>
               <button type="button" 
-                      class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-indigo-50 rounded-lg text-sm transition-colors duration-200 group"
+                      class="w-full flex items-center justify-between p-3 bg-gray-900 hover:bg-gray-700 rounded-lg text-sm transition-colors duration-200 group"
                       data-action="click->quick-add#quickAdd"
                 data-quick-add-ingredient-id-param="<%= ingredient.id %>"
                 data-quick-add-ingredient-name-param="<%= ingredient.name %>"
                 data-quick-add-ingredient-unit-param="<%= ingredient.unit %>">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-indigo-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <span class="font-medium text-gray-900"><%= ingredient.name %></span>
+                  <span class="font-medium text-gray-100"><%= ingredient.name %></span>
                 </div>
                 <div class="text-right">
-                  <div class="text-gray-500">$<%= number_with_precision(ingredient.price, precision: 2) %>/<%= ingredient.unit %></div>
-                  <div class="text-xs text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity">Click to add</div>
+                  <div class="text-gray-400">$<%= number_with_precision(ingredient.price, precision: 2) %>/<%= ingredient.unit %></div>
+                  <div class="text-xs text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity">Click to add</div>
                 </div>
               </button>
             <% end %>
@@ -168,7 +168,7 @@
         </div>
       </div>
     </div>
-    <div class="mt-8 flex items-center justify-between pt-4 border-t border-gray-200">
+    <div class="mt-8 flex items-center justify-between pt-4 border-t border-gray-700">
       <%= link_to "Cancel", recipes_path, class: button_classes(:outline) %>
       <%= form.submit "Create Recipe", class: button_classes %>
     </div>

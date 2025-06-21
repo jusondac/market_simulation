@@ -9,7 +9,7 @@ export default class extends Controller {
   updateCost() {
     const recipeSelect = this.element.querySelector('select[name*="recipe_id"]')
     const selectedRecipeId = recipeSelect?.value
-
+    
     if (!selectedRecipeId) {
       this.clearCalculator()
       return
@@ -25,7 +25,7 @@ export default class extends Controller {
 
     // Update ingredients preview
     this.updateIngredientsPreview(recipe)
-
+    
     // Update price calculation
     this.updatePrice()
   }
@@ -33,7 +33,7 @@ export default class extends Controller {
   updatePrice() {
     const recipeSelect = this.element.querySelector('select[name*="recipe_id"]')
     const marginInput = this.element.querySelector('input[name*="margin"]')
-
+    
     const selectedRecipeId = recipeSelect?.value
     const margin = parseFloat(marginInput?.value) || 0
 
@@ -54,7 +54,7 @@ export default class extends Controller {
   updateIngredientsPreview(recipe) {
     const ingredientsList = document.getElementById('ingredients-list')
     const recipePreview = document.getElementById('recipe-preview')
-
+    
     if (recipe.ingredients && recipe.ingredients.length > 0) {
       ingredientsList.innerHTML = recipe.ingredients.map(ingredient => `
         <div class="flex justify-between items-center p-3 bg-white rounded border">
@@ -65,7 +65,7 @@ export default class extends Controller {
           <span class="font-medium">$${ingredient.cost.toFixed(2)}</span>
         </div>
       `).join('')
-
+      
       recipePreview.classList.remove('hidden')
     } else {
       recipePreview.classList.add('hidden')

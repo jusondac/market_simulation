@@ -1,20 +1,20 @@
 class RecipeIngredientsController < ApplicationController
   before_action :set_recipe
-  before_action :set_recipe_ingredient, only: [ :destroy ]
+  before_action :set_recipe_ingredient, only: [:destroy]
 
   def create
     @recipe_ingredient = @recipe.recipe_ingredients.build(recipe_ingredient_params)
-
+    
     if @recipe_ingredient.save
-      redirect_to @recipe, notice: "Ingredient added to recipe."
+      redirect_to @recipe, notice: 'Ingredient added to recipe.'
     else
-      redirect_to @recipe, alert: "Failed to add ingredient to recipe."
+      redirect_to @recipe, alert: 'Failed to add ingredient to recipe.'
     end
   end
 
   def destroy
     @recipe_ingredient.destroy
-    redirect_to @recipe, notice: "Ingredient removed from recipe."
+    redirect_to @recipe, notice: 'Ingredient removed from recipe.'
   end
 
   private

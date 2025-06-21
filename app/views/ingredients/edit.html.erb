@@ -1,13 +1,13 @@
 <div class="px-4 sm:px-0">
   <div class="mb-6">
-    <h1 class="text-3xl font-bold text-gray-900">Edit Ingredient</h1>
-    <p class="text-gray-600 mt-2">Update ingredient details</p>
+    <h1 class="text-3xl font-bold text-gray-100">Edit Ingredient</h1>
+    <p class="text-gray-400 mt-2">Update ingredient details</p>
   </div>
   <div class="<%= card_classes %>">
     <%= form_with model: @ingredient, local: true, class: "space-y-6" do |form| %>
       <% if @ingredient.errors.any? %>
-        <div class="bg-red-50 border border-red-200 rounded-md p-4">
-          <div class="text-red-800 text-sm">
+        <div class="bg-red-900 border border-red-700 rounded-md p-4">
+          <div class="text-red-300 text-sm">
             <h4 class="font-medium mb-2">Please fix the following errors:</h4>
             <ul class="list-disc list-inside space-y-1">
               <% @ingredient.errors.full_messages.each do |message| %>
@@ -26,7 +26,7 @@
           <%= form.label :price, "Price per unit", class: label_classes %>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span class="text-gray-500 sm:text-sm">$</span>
+              <span class="text-gray-400 sm:text-sm">$</span>
             </div>
             <%= form.number_field :price, step: 0.01, class: "#{input_classes} pl-8", placeholder: "0.00" %>
           </div>
@@ -54,7 +54,7 @@
         <%= form.text_area :description, rows: 3, class: textarea_classes, 
             placeholder: "Optional description of the ingredient..." %>
       </div>
-      <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+      <div class="flex items-center justify-between pt-4 border-t border-gray-700">
         <div class="space-x-2">
           <%= link_to "Cancel", ingredient_path(@ingredient), class: button_classes(:outline) %>
           <%= link_to "Delete", ingredient_path(@ingredient), method: :delete, 

@@ -39,28 +39,28 @@ puts "Creating people with different taste preferences..."
 # Create people with different demographics and taste preferences
 people_data = [
   # Kids
-  { name: "Emma", age: 8, taste_preferences: [ "sweet", "chocolate", "vanilla", "strawberry" ] },
-  { name: "Liam", age: 10, taste_preferences: [ "chocolate", "banana", "sweet" ] },
-  { name: "Olivia", age: 7, taste_preferences: [ "strawberry", "vanilla", "sweet" ] },
-  { name: "Noah", age: 9, taste_preferences: [ "chocolate", "cookie", "sweet" ] },
-  { name: "Sophia", age: 11, taste_preferences: [ "vanilla", "strawberry", "sweet" ] },
-
+  { name: "Emma", age: 8, taste_preferences: ["sweet", "chocolate", "vanilla", "strawberry"] },
+  { name: "Liam", age: 10, taste_preferences: ["chocolate", "banana", "sweet"] },
+  { name: "Olivia", age: 7, taste_preferences: ["strawberry", "vanilla", "sweet"] },
+  { name: "Noah", age: 9, taste_preferences: ["chocolate", "cookie", "sweet"] },
+  { name: "Sophia", age: 11, taste_preferences: ["vanilla", "strawberry", "sweet"] },
+  
   # Teenagers
-  { name: "Ava", age: 15, taste_preferences: [ "chocolate", "coffee", "sweet" ] },
-  { name: "William", age: 17, taste_preferences: [ "vanilla", "banana", "healthy" ] },
-  { name: "Isabella", age: 14, taste_preferences: [ "strawberry", "cream", "sweet" ] },
-  { name: "James", age: 16, taste_preferences: [ "chocolate", "nuts", "energy" ] },
-  { name: "Charlotte", age: 18, taste_preferences: [ "healthy", "oats", "honey" ] },
-
+  { name: "Ava", age: 15, taste_preferences: ["chocolate", "coffee", "sweet"] },
+  { name: "William", age: 17, taste_preferences: ["vanilla", "banana", "healthy"] },
+  { name: "Isabella", age: 14, taste_preferences: ["strawberry", "cream", "sweet"] },
+  { name: "James", age: 16, taste_preferences: ["chocolate", "nuts", "energy"] },
+  { name: "Charlotte", age: 18, taste_preferences: ["healthy", "oats", "honey"] },
+  
   # Adults
-  { name: "Benjamin", age: 28, taste_preferences: [ "coffee", "dark chocolate", "sophisticated" ] },
-  { name: "Amelia", age: 32, taste_preferences: [ "healthy", "low sugar", "natural" ] },
-  { name: "Lucas", age: 24, taste_preferences: [ "sweet", "nostalgic", "comfort" ] },
-  { name: "Harper", age: 29, taste_preferences: [ "gourmet", "unique", "artisanal" ] },
-  { name: "Alexander", age: 35, taste_preferences: [ "classic", "simple", "quality" ] },
-  { name: "Evelyn", age: 26, taste_preferences: [ "healthy", "fruit", "natural" ] },
-  { name: "Henry", age: 31, taste_preferences: [ "rich", "indulgent", "premium" ] },
-  { name: "Abigail", age: 27, taste_preferences: [ "balanced", "moderate", "wholesome" ] }
+  { name: "Benjamin", age: 28, taste_preferences: ["coffee", "dark chocolate", "sophisticated"] },
+  { name: "Amelia", age: 32, taste_preferences: ["healthy", "low sugar", "natural"] },
+  { name: "Lucas", age: 24, taste_preferences: ["sweet", "nostalgic", "comfort"] },
+  { name: "Harper", age: 29, taste_preferences: ["gourmet", "unique", "artisanal"] },
+  { name: "Alexander", age: 35, taste_preferences: ["classic", "simple", "quality"] },
+  { name: "Evelyn", age: 26, taste_preferences: ["healthy", "fruit", "natural"] },
+  { name: "Henry", age: 31, taste_preferences: ["rich", "indulgent", "premium"] },
+  { name: "Abigail", age: 27, taste_preferences: ["balanced", "moderate", "wholesome"] }
 ]
 
 people_data.each do |person_attrs|

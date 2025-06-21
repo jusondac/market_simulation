@@ -39,7 +39,7 @@
           <div class="space-y-3">
             <% recipes_using_ingredient.each do |recipe| %>
               <% recipe_ingredient = recipe.recipe_ingredients.find { |ri| ri.ingredient_id == @ingredient.id } %>
-              <div class="flex items-center justify-between py-3 border-b border-gray-800 last:border-b-0">
+              <div class="flex items-center justify-between py-3 border-b border-gray-700 last:border-b-0">
                 <div>
                   <%= link_to recipe.name, recipe_path(recipe), 
                       class: "text-gray-100 hover:text-indigo-400 font-medium" %>
@@ -55,7 +55,7 @@
           </div>
         <% else %>
           <div class="text-center py-8">
-            <div class="text-gray-500 text-4xl mb-2">📖</div>
+            <div class="text-gray-400 text-4xl mb-2">📖</div>
             <p class="text-gray-400">This ingredient is not used in any recipes yet.</p>
             <div class="mt-4">
               <%= link_to "Create Recipe", new_recipe_path, class: button_classes(:primary, :small) %>

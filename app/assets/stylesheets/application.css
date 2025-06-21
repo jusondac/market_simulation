@@ -16,64 +16,7 @@
 
 .sortable-chosen {
   transform: scale(1.02);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-}
-
-/* Dark theme enhancements */
-body {
-  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
-  min-height: 100vh;
-}
-
-/* Custom scrollbar for dark theme */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #1f2937;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #4b5563;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
-}
-
-/* Enhanced card hover effects */
-.card-hover {
-  transition: all 0.3s ease;
-}
-
-.card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-}
-
-/* Button hover animations */
-button,
-.btn {
-  transition: all 0.2s ease;
-}
-
-button:hover,
-.btn:hover {
-  transform: translateY(-1px);
-}
-
-/* Form focus states for dark theme */
-input:focus,
-textarea:focus,
-select:focus {
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-/* Enhanced mobile menu */
-.mobile-menu {
-  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .sortable-drag {
@@ -120,16 +63,65 @@ select:focus {
   transition: all 0.3s ease;
 }
 
-/* Button forms inline display */
-form[action*="simulate"] {
-  display: inline-block;
+/* Dark mode hover effects */
+.hover\:bg-gray-750:hover {
+  background-color: #374151;
 }
 
-/* Fix spacing for inline button forms */
-.space-x-2>form {
-  display: inline-block;
+/* Dark mode success flash for dark theme */
+.success-flash-dark {
+  background-color: #065f46 !important;
+  color: #d1fae5 !important;
+  transition: all 0.3s ease;
 }
 
-.flex.space-x-2>form {
-  display: inline-flex;
+/* Dark mode ingredient item hover */
+.ingredient-item-dark:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+/* Additional dark mode utility classes */
+.text-gray-750 {
+  color: #374151;
+}
+
+.bg-gray-750 {
+  background-color: #374151;
+}
+
+/* Dark mode selection styling */
+::selection {
+  background-color: #4F46E5;
+  color: #FFFFFF;
+}
+
+/* Dark mode scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1F2937;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4B5563;
+}
+
+/* Dark mode input focus rings */
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Smooth transitions for dark mode */
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }

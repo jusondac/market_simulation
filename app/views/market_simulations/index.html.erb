@@ -9,7 +9,7 @@
   <% if @market_simulations.any? %>
     <div class="space-y-6">
       <% @market_simulations.each do |simulation| %>
-        <div class="<%= card_classes %> hover:shadow-2xl transition-shadow card-hover">
+        <div class="<%= card_classes %> hover:shadow-md transition-shadow">
           <div class="flex items-start justify-between mb-4">
             <div>
               <h3 class="text-lg font-semibold text-gray-100">
@@ -17,7 +17,7 @@
               </h3>
               <p class="text-gray-400 text-sm mt-1"><%= simulation.description %></p>
             </div>
-            <span class="text-xs text-gray-500">
+            <span class="text-xs text-gray-400">
               <%= time_ago_in_words(simulation.created_at) %> ago
             </span>
           </div>
@@ -42,15 +42,12 @@
           <div class="flex space-x-2">
             <%= link_to "View Results", market_simulation_path(simulation), class: button_classes(:outline, :small) %>
             <% if simulation.simulation_results.empty? %>
-              <%= button_to "Run Simulation", simulate_market_simulation_path(simulation), method: :post, 
-                            class: button_classes(:primary, :small) %>
+              <%= link_to "Run Simulation", simulate_market_simulation_path(simulation), method: :post, 
+                          class: button_classes(:primary, :small) %>
             <% else %>
-              <%= button_to "Re-run Simulation", simulate_market_simulation_path(simulation), method: :post, 
-                            confirm: "This will replace existing results. Continue?", class: button_classes(:secondary, :small) %>
+              <%= link_to "Re-run Simulation", simulate_market_simulation_path(simulation), method: :post, 
+                          confirm: "This will replace existing results. Continue?", class: button_classes(:secondary, :small) %>
             <% end %>
-            <%= button_to "Delete", simulation, method: :delete, 
-                          confirm: "Are you sure? This will permanently delete this simulation and all its results.",
-                          class: button_classes(:danger, :small) %>
           </div>
         </div>
       <% end %>

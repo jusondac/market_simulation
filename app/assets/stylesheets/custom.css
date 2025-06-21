@@ -26,19 +26,19 @@
 }
 
 .nested-fields:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
 }
 
 /* Market simulation product item styling */
 [data-market-simulation-target="productItem"]:hover {
-  border-color: #6366F1;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border-color: #818CF8;
+  box-shadow: 0 1px 3px 0 rgba(255, 255, 255, 0.1), 0 1px 2px 0 rgba(255, 255, 255, 0.06);
 }
 
 /* Custom scrollbar for ingredient lists */
 .ingredients-scroll {
   scrollbar-width: thin;
-  scrollbar-color: #CBD5E0 #F7FAFC;
+  scrollbar-color: #4B5563 #1F2937;
 }
 
 .ingredients-scroll::-webkit-scrollbar {
@@ -46,17 +46,17 @@
 }
 
 .ingredients-scroll::-webkit-scrollbar-track {
-  background: #F7FAFC;
+  background: #1F2937;
   border-radius: 3px;
 }
 
 .ingredients-scroll::-webkit-scrollbar-thumb {
-  background: #CBD5E0;
+  background: #4B5563;
   border-radius: 3px;
 }
 
 .ingredients-scroll::-webkit-scrollbar-thumb:hover {
-  background: #A0AEC0;
+  background: #6B7280;
 }
 
 /* Animation for form errors */

@@ -5,14 +5,14 @@ export default class extends Controller {
 
   add(event) {
     event.preventDefault()
-
+    
     const content = this.templateTarget.innerHTML.replace(/NEW_RECORD/g, Date.now())
     this.containerTarget.insertAdjacentHTML('beforeend', content)
   }
 
   remove(event) {
     event.preventDefault()
-
+    
     const item = event.target.closest('.nested-fields')
     if (item) {
       const destroyInput = item.querySelector('input[name*="_destroy"]')
