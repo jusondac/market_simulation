@@ -2,10 +2,10 @@
   <!-- Hero Section -->
   <div class="text-center mb-12">
     <h1 class="text-4xl font-bold text-gray-100 mb-4">
-      🍽️ Market Simulation Platform
+      🍽️ Platform Simulasi Pasar
     </h1>
     <p class="text-xl text-gray-400 max-w-3xl mx-auto">
-      Create recipes, manage ingredients, build products, and simulate market performance with our comprehensive food business platform.
+      Buat resep, kelola bahan, bangun produk, dan simulasikan performa pasar dengan platform bisnis makanan yang komprehensif.
     </p>
   </div>
   <!-- Quick Actions -->
@@ -13,29 +13,29 @@
     <%= link_to new_recipe_path, class: "#{card_classes} hover:shadow-md transition-shadow group" do %>
       <div class="text-center">
         <div class="text-3xl mb-3">📖</div>
-        <h3 class="text-lg font-semibold text-gray-100 group-hover:text-indigo-400">Create Recipe</h3>
-        <p class="text-gray-400 text-sm">Add new recipes with ingredients</p>
+        <h3 class="text-lg font-semibold text-gray-100 group-hover:text-indigo-400">Buat Resep</h3>
+        <p class="text-gray-400 text-sm">Tambahkan resep baru dengan bahan-bahan</p>
       </div>
     <% end %>
     <%= link_to new_ingredient_path, class: "#{card_classes} hover:shadow-md transition-shadow group" do %>
       <div class="text-center">
         <div class="text-3xl mb-3">🥕</div>
-        <h3 class="text-lg font-semibold text-gray-100 group-hover:text-indigo-400">Add Ingredient</h3>
-        <p class="text-gray-400 text-sm">Manage your ingredient inventory</p>
+        <h3 class="text-lg font-semibold text-gray-100 group-hover:text-indigo-400">Tambah Bahan</h3>
+        <p class="text-gray-400 text-sm">Kelola inventaris bahan Anda</p>
       </div>
     <% end %>
     <%= link_to new_product_path, class: "#{card_classes} hover:shadow-md transition-shadow group" do %>
       <div class="text-center">
         <div class="text-3xl mb-3">🛍️</div>
-        <h3 class="text-lg font-semibold text-gray-100 group-hover:text-indigo-400">Create Product</h3>
-        <p class="text-gray-400 text-sm">Turn recipes into sellable products</p>
+        <h3 class="text-lg font-semibold text-gray-100 group-hover:text-indigo-400">Buat Produk</h3>
+        <p class="text-gray-400 text-sm">Ubah resep menjadi produk yang dapat dijual</p>
       </div>
     <% end %>
     <%= link_to new_market_simulation_path, class: "#{card_classes} hover:shadow-md transition-shadow group" do %>
       <div class="text-center">
         <div class="text-3xl mb-3">📊</div>
-        <h3 class="text-lg font-semibold text-gray-100 group-hover:text-indigo-400">Run Simulation</h3>
-        <p class="text-gray-400 text-sm">Test market performance</p>
+        <h3 class="text-lg font-semibold text-gray-100 group-hover:text-indigo-400">Jalankan Simulasi</h3>
+        <p class="text-gray-400 text-sm">Uji performa pasar</p>
       </div>
     <% end %>
   </div>
@@ -44,8 +44,8 @@
     <!-- Recent Recipes -->
     <div class="<%= card_classes %>">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold text-gray-100">Recent Recipes</h2>
-        <%= link_to "View All", recipes_path, class: "text-indigo-400 hover:text-indigo-300 text-sm font-medium" %>
+        <h2 class="text-lg font-semibold text-gray-100">Resep Terbaru</h2>
+        <%= link_to "Lihat Semua", recipes_path, class: "text-indigo-400 hover:text-indigo-300 text-sm font-medium" %>
       </div>
       <div class="space-y-3">
         <% if @recent_recipes.any? %>
@@ -53,23 +53,23 @@
             <div class="flex items-center justify-between py-2 border-b border-gray-700 last:border-b-0">
               <div>
                 <%= link_to recipe.name, recipe_path(recipe), class: "text-gray-100 hover:text-indigo-400 font-medium" %>
-                <div class="text-sm text-gray-400"><%= recipe.servings %> servings</div>
+                <div class="text-sm text-gray-400"><%= recipe.servings %> porsi</div>
               </div>
               <div class="text-sm text-gray-400">
-                $<%= number_with_precision(recipe.cost_per_serving, precision: 2) %>
+                <%= format_rupiah(recipe.cost_per_serving) %>
               </div>
             </div>
           <% end %>
         <% else %>
-          <p class="text-gray-400 text-sm">No recipes yet. <%= link_to "Create your first recipe", new_recipe_path, class: "text-indigo-400 hover:text-indigo-300" %>!</p>
+          <p class="text-gray-400 text-sm">Belum ada resep. <%= link_to "Buat resep pertama Anda", new_recipe_path, class: "text-indigo-400 hover:text-indigo-300" %>!</p>
         <% end %>
       </div>
     </div>
     <!-- Recent Products -->
     <div class="<%= card_classes %>">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold text-gray-100">Recent Products</h2>
-        <%= link_to "View All", products_path, class: "text-indigo-400 hover:text-indigo-300 text-sm font-medium" %>
+        <h2 class="text-lg font-semibold text-gray-100">Produk Terbaru</h2>
+        <%= link_to "Lihat Semua", products_path, class: "text-indigo-400 hover:text-indigo-300 text-sm font-medium" %>
       </div>
       <div class="space-y-3">
         <% if @recent_products.any? %>
@@ -80,20 +80,20 @@
                 <div class="text-sm text-gray-400"><%= product.margin %>% margin</div>
               </div>
               <div class="text-sm text-gray-100 font-medium">
-                $<%= number_with_precision(product.price, precision: 2) %>
+                <%= format_rupiah(product.price) %>
               </div>
             </div>
           <% end %>
         <% else %>
-          <p class="text-gray-400 text-sm">No products yet. <%= link_to "Create your first product", new_product_path, class: "text-indigo-400 hover:text-indigo-300" %>!</p>
+          <p class="text-gray-400 text-sm">Belum ada produk. <%= link_to "Buat produk pertama Anda", new_product_path, class: "text-indigo-400 hover:text-indigo-300" %>!</p>
         <% end %>
       </div>
     </div>
     <!-- Recent Simulations -->
     <div class="<%= card_classes %>">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold text-gray-100">Recent Simulations</h2>
-        <%= link_to "View All", market_simulations_path, class: "text-indigo-400 hover:text-indigo-300 text-sm font-medium" %>
+        <h2 class="text-lg font-semibold text-gray-100">Simulasi Terbaru</h2>
+        <%= link_to "Lihat Semua", market_simulations_path, class: "text-indigo-400 hover:text-indigo-300 text-sm font-medium" %>
       </div>
       <div class="space-y-3">
         <% if @recent_simulations.any? %>
@@ -101,12 +101,12 @@
             <div class="py-2 border-b border-gray-700 last:border-b-0">
               <%= link_to simulation.name, market_simulation_path(simulation), class: "text-gray-100 hover:text-indigo-400 font-medium block" %>
               <div class="text-sm text-gray-400 mt-1">
-                <%= simulation.simulation_products.count %> products
+                <%= simulation.simulation_products.count %> produk
               </div>
             </div>
           <% end %>
         <% else %>
-          <p class="text-gray-400 text-sm">No simulations yet. <%= link_to "Run your first simulation", new_market_simulation_path, class: "text-indigo-400 hover:text-indigo-300" %>!</p>
+          <p class="text-gray-400 text-sm">Belum ada simulasi. <%= link_to "Jalankan simulasi pertama Anda", new_market_simulation_path, class: "text-indigo-400 hover:text-indigo-300" %>!</p>
         <% end %>
       </div>
     </div>

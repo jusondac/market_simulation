@@ -23,5 +23,14 @@ module Marketsimulation
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Set Indonesian as default locale
+    config.i18n.default_locale = :id
+    config.i18n.available_locales = [ :id, :en ]
+
+    # Configure XLSX MIME type for Excel export functionality
+    config.to_prepare do
+      Mime::Type.register "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", :xlsx unless Mime::Type.lookup_by_extension(:xlsx)
+    end
   end
 end

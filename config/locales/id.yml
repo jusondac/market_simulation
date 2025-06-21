@@ -1,0 +1,181 @@
+id:
+  hello: "Halo dunia"
+  
+  # Common terms
+  name: "Nama"
+  description: "Deskripsi"
+  price: "Harga"
+  quantity: "Jumlah"
+  unit: "Satuan"
+  total: "Total"
+  save: "Simpan"
+  cancel: "Batal"
+  edit: "Edit"
+  delete: "Hapus"
+  create: "Buat"
+  update: "Perbarui"
+  back: "Kembali"
+  show: "Lihat"
+  loading: "Memuat..."
+  
+  # Navigation
+  home: "Beranda"
+  recipes: "Resep"
+  ingredients: "Bahan"
+  products: "Produk"
+  simulations: "Simulasi"
+  
+  # Currency
+  currency:
+    format:
+      format: "Rp %n"
+      unit: "Rp"
+      delimiter: "."
+      separator: ","
+      precision: 0
+  
+  # Recipe related
+  recipe:
+    title: "Resep"
+    new: "Resep Baru"
+    edit: "Edit Resep"
+    show: "Detail Resep"
+    create: "Buat Resep"
+    update: "Perbarui Resep"
+    delete: "Hapus Resep"
+    servings: "Porsi"
+    preparation_time: "Waktu Persiapan"
+    minutes: "menit"
+    instructions: "Instruksi"
+    cost_per_serving: "Harga per Porsi"
+    total_cost: "Total Biaya"
+    no_recipes: "Belum ada resep"
+    create_first: "Buat resep pertama Anda"
+    
+    instructions:
+      title: "Instruksi Memasak"
+      placeholder: "1. Panaskan oven hingga 175°C...\n2. Campurkan bahan kering...\n3. Tambahkan bahan basah..."
+      step: "Langkah"
+      add_step: "Tambah Langkah"
+      remove_step: "Hapus Langkah"
+      reorder: "Ubah Urutan"
+  
+  # Ingredient related
+  ingredient:
+    title: "Bahan"
+    new: "Bahan Baru"
+    edit: "Edit Bahan"
+    show: "Detail Bahan"
+    create: "Buat Bahan"
+    update: "Perbarui Bahan"
+    delete: "Hapus Bahan"
+    price_per_unit: "Harga per Satuan"
+    no_ingredients: "Belum ada bahan"
+    add_first: "Tambahkan bahan pertama Anda"
+    used_in_recipes: "Digunakan dalam Resep"
+    total_used: "Total Digunakan"
+    total_value: "Total Nilai dalam Resep"
+    download_xlsx: "Unduh sebagai Excel"
+    import_xlsx: "Impor dari Excel"
+    
+    units:
+      cup: "Cangkir"
+      tbsp: "Sendok Makan"
+      tablespoon: "Sendok Makan"
+      tsp: "Sendok Teh"
+      teaspoon: "Sendok Teh"
+      g: "Gram"
+      gram: "Gram"
+      kg: "Kilogram"
+      kilogram: "Kilogram"
+      lb: "Pon"
+      pound: "Pon"
+      oz: "Ons"
+      ounce: "Ons"
+      piece: "Buah"
+      pieces: "Buah"
+      item: "Item"
+      items: "Item"
+      package: "Kemasan"
+      packages: "Kemasan"
+      ml: "Mililiter"
+      milliliter: "Mililiter"
+      l: "Liter"
+      liter: "Liter"
+  
+  # Product related
+  product:
+    title: "Produk"
+    new: "Produk Baru"
+    edit: "Edit Produk"
+    show: "Detail Produk"
+    create: "Buat Produk"
+    update: "Perbarui Produk"
+    delete: "Hapus Produk"
+    base_recipe: "Resep Dasar"
+    margin: "Margin"
+    no_products: "Belum ada produk"
+    create_first: "Buat produk pertama Anda"
+  
+  # Messages
+  messages:
+    created: "%{model} berhasil dibuat."
+    updated: "%{model} berhasil diperbarui."
+    deleted: "%{model} berhasil dihapus."
+    not_found: "%{model} tidak ditemukan."
+    error: "Terjadi kesalahan."
+    confirm_delete: "Apakah Anda yakin ingin menghapus %{name}?"
+    
+  # XLSX
+  xlsx:
+    download: "Unduh Excel"
+    import: "Impor Excel"
+    recipe_sheet: "Resep"
+    ingredients_sheet: "Bahan"
+    export_success: "File Excel berhasil diunduh"
+    import_success: "Data berhasil diimpor dari Excel"
+    import_error: "Terjadi kesalahan saat mengimpor file Excel"
+    invalid_file: "File tidak valid. Pastikan file berformat .xlsx"
+    
+  # Errors
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      blank: "tidak boleh kosong"
+      invalid: "tidak valid"
+      taken: "sudah digunakan"
+      too_short: "terlalu pendek (minimum %{count} karakter)"
+      too_long: "terlalu panjang (maksimum %{count} karakter)"
+      greater_than: "harus lebih besar dari %{count}"
+      greater_than_or_equal_to: "harus lebih besar atau sama dengan %{count}"
+      
+  activerecord:
+    models:
+      recipe: "Resep"
+      ingredient: "Bahan"
+      product: "Produk"
+      recipe_ingredient: "Bahan Resep"
+      
+    attributes:
+      recipe:
+        name: "Nama Resep"
+        description: "Deskripsi"
+        instructions: "Instruksi"
+        servings: "Porsi"
+        preparation_time: "Waktu Persiapan"
+        
+      ingredient:
+        name: "Nama Bahan"
+        description: "Deskripsi"
+        price: "Harga"
+        unit: "Satuan"
+        
+      product:
+        name: "Nama Produk"
+        recipe: "Resep"
+        price: "Harga"
+        margin: "Margin"
+        
+      recipe_ingredient:
+        ingredient: "Bahan"
+        quantity: "Jumlah"

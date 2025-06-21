@@ -2,38 +2,38 @@
   <div class="flex items-center justify-between mb-6">
     <div>
       <h1 class="text-3xl font-bold text-gray-100"><%= @ingredient.name %></h1>
-      <p class="text-gray-400 mt-2">Ingredient details and usage</p>
+      <p class="text-gray-400 mt-2">Detail bahan dan penggunaan</p>
     </div>
     <div class="space-x-2">
       <%= link_to "Edit", edit_ingredient_path(@ingredient), class: button_classes(:secondary) %>
-      <%= link_to "All Ingredients", ingredients_path, class: button_classes(:outline) %>
+      <%= link_to "Semua Bahan", ingredients_path, class: button_classes(:outline) %>
     </div>
   </div>
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <!-- Ingredient Details -->
     <div class="lg:col-span-2">
       <div class="<%= card_classes %> mb-6">
-        <h2 class="text-lg font-semibold text-gray-100 mb-4">Details</h2>
+        <h2 class="text-lg font-semibold text-gray-100 mb-4">Detail</h2>
         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <dt class="text-sm font-medium text-gray-400">Price per unit</dt>
-            <dd class="text-lg font-semibold text-gray-100">$<%= number_with_precision(@ingredient.price, precision: 2) %></dd>
+            <dt class="text-sm font-medium text-gray-400">Harga per satuan</dt>
+            <dd class="text-lg font-semibold text-gray-100"><%= format_rupiah(@ingredient.price) %></dd>
           </div>
           <div>
-            <dt class="text-sm font-medium text-gray-400">Unit</dt>
+            <dt class="text-sm font-medium text-gray-400">Satuan</dt>
             <dd class="text-lg font-semibold text-gray-100"><%= @ingredient.unit %></dd>
           </div>
         </dl>
         <% if @ingredient.description.present? %>
           <div class="mt-6">
-            <dt class="text-sm font-medium text-gray-400 mb-2">Description</dt>
+            <dt class="text-sm font-medium text-gray-400 mb-2">Deskripsi</dt>
             <dd class="text-gray-100"><%= @ingredient.description %></dd>
           </div>
         <% end %>
       </div>
       <!-- Recipes using this ingredient -->
       <div class="<%= card_classes %>">
-        <h2 class="text-lg font-semibold text-gray-100 mb-4">Used in Recipes</h2>
+        <h2 class="text-lg font-semibold text-gray-100 mb-4">Digunakan dalam Resep</h2>
         <% recipes_using_ingredient = @ingredient.recipes.includes(:recipe_ingredients) %>
         <% if recipes_using_ingredient.any? %>
           <div class="space-y-3">
@@ -44,11 +44,11 @@
                   <%= link_to recipe.name, recipe_path(recipe), 
                       class: "text-gray-100 hover:text-indigo-400 font-medium" %>
                   <div class="text-sm text-gray-400">
-                    Uses <%= recipe_ingredient&.quantity %> <%= @ingredient.unit %>
+                    Menggunakan <%= recipe_ingredient&.quantity %> <%= @ingredient.unit %>
                   </div>
                 </div>
                 <div class="text-sm text-gray-400">
-                  Cost: $<%= number_with_precision((@ingredient.price * (recipe_ingredient&.quantity || 0)), precision: 2) %>
+                  Biaya: <%= format_rupiah(@ingredient.price * (recipe_ingredient&.quantity || 0)) %>
                 </div>
               </div>
             <% end %>
@@ -56,9 +56,9 @@
         <% else %>
           <div class="text-center py-8">
             <div class="text-gray-400 text-4xl mb-2">📖</div>
-            <p class="text-gray-400">This ingredient is not used in any recipes yet.</p>
+            <p class="text-gray-400">Bahan ini belum digunakan dalam resep apapun.</p>
             <div class="mt-4">
-              <%= link_to "Create Recipe", new_recipe_path, class: button_classes(:primary, :small) %>
+              <%= link_to "Buat Resep", new_recipe_path, class: button_classes(:primary, :small) %>
             </div>
           </div>
         <% end %>
@@ -67,35 +67,35 @@
     <!-- Stats sidebar -->
     <div class="space-y-6">
       <div class="<%= card_classes %>">
-        <h3 class="text-lg font-semibold text-gray-100 mb-4">Usage Statistics</h3>
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Statistik Penggunaan</h3>
         <div class="space-y-4">
           <div class="text-center">
             <div class="text-3xl font-bold text-indigo-400"><%= @ingredient.recipes.count %></div>
-            <div class="text-sm text-gray-400">Recipes</div>
+            <div class="text-sm text-gray-400">Resep</div>
           </div>
           <div class="text-center">
             <div class="text-3xl font-bold text-green-400">
               <%= @ingredient.recipe_ingredients.sum(:quantity).round(2) %>
             </div>
-            <div class="text-sm text-gray-400">Total <%= @ingredient.unit %> used</div>
+            <div class="text-sm text-gray-400">Total <%= @ingredient.unit %> digunakan</div>
           </div>
           <div class="text-center">
             <div class="text-3xl font-bold text-green-400">
-              $<%= number_with_precision(@ingredient.recipe_ingredients.sum { |ri| ri.quantity * @ingredient.price }, precision: 2) %>
+              <%= format_rupiah(@ingredient.recipe_ingredients.sum { |ri| ri.quantity * @ingredient.price }) %>
             </div>
-            <div class="text-sm text-gray-400">Total value in recipes</div>
+            <div class="text-sm text-gray-400">Total nilai dalam resep</div>
           </div>
         </div>
       </div>
       <div class="<%= card_classes %>">
-        <h3 class="text-lg font-semibold text-gray-100 mb-4">Quick Actions</h3>
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Aksi Cepat</h3>
         <div class="space-y-2">
-          <%= link_to "Edit Ingredient", edit_ingredient_path(@ingredient), 
+          <%= link_to "Edit Bahan", edit_ingredient_path(@ingredient), 
               class: "#{button_classes(:outline, :small)} w-full" %>
-          <%= link_to "Use in New Recipe", new_recipe_path(ingredient_id: @ingredient.id), 
+          <%= link_to "Gunakan dalam Resep Baru", new_recipe_path(ingredient_id: @ingredient.id), 
               class: "#{button_classes(:primary, :small)} w-full" %>
-          <%= link_to "Delete Ingredient", ingredient_path(@ingredient), method: :delete,
-              confirm: "Are you sure? This will remove it from all recipes.", 
+          <%= link_to "Hapus Bahan", ingredient_path(@ingredient), method: :delete,
+              confirm: "Apakah Anda yakin? Ini akan menghapusnya dari semua resep.", 
               class: "#{button_classes(:danger, :small)} w-full" %>
         </div>
       </div>

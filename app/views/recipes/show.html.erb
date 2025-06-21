@@ -5,12 +5,11 @@
       <p class="text-gray-400 mt-2"><%= @recipe.description %></p>
     </div>
     <div class="space-x-2">
-      <%= link_to "Edit Recipe", edit_recipe_path(@recipe), class: button_classes(:secondary) %>
-      <%= link_to "Create Product", new_product_path(recipe_id: @recipe.id), class: button_classes(:primary) %>
-      <%= link_to "All Recipes", recipes_path, class: button_classes(:outline) %>
+      <%= link_to "Edit Resep", edit_recipe_path(@recipe), class: button_classes(:secondary) %>
+      <%= link_to "Buat Produk", new_product_path(recipe_id: @recipe.id), class: button_classes(:primary) %>
+      <%= link_to "Semua Resep", recipes_path, class: button_classes(:outline) %>
     </div>
   </div>
-
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <!-- Recipe Content -->
     <div class="lg:col-span-2 space-y-6">
@@ -19,42 +18,73 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div class="text-center">
             <div class="text-2xl font-bold text-indigo-400"><%= @recipe.servings %></div>
-            <div class="text-sm text-gray-400">Servings</div>
+            <div class="text-sm text-gray-400">Porsi</div>
           </div>
           <div class="text-center">
             <div class="text-2xl font-bold text-indigo-400"><%= @recipe.preparation_time %></div>
-            <div class="text-sm text-gray-400">Minutes</div>
+            <div class="text-sm text-gray-400">Menit</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-green-400">$<%= number_with_precision(@recipe.total_cost, precision: 2) %></div>
-            <div class="text-sm text-gray-400">Total Cost</div>
+            <div class="text-2xl font-bold text-green-400"><%= format_rupiah(@recipe.total_cost) %></div>
+            <div class="text-sm text-gray-400">Total Biaya</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-green-400">$<%= number_with_precision(@recipe.cost_per_serving, precision: 2) %></div>
-            <div class="text-sm text-gray-400">Per Serving</div>
+            <div class="text-2xl font-bold text-green-400"><%= format_rupiah(@recipe.cost_per_serving) %></div>
+            <div class="text-sm text-gray-400">Biaya per Porsi</div>
           </div>
         </div>
       </div>
-
       <!-- Ingredients -->
       <div class="<%= card_classes %>">
-        <h2 class="text-lg font-semibold text-gray-100 mb-4">Ingredients</h2>
-        
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-100">Bahan-bahan</h2>
+          <div class="flex space-x-2">
+            <%= link_to export_xlsx_recipe_path(@recipe, format: :xlsx), 
+                class: button_classes(:outline, :small) do %>
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              Unduh Excel
+            <% end %>
+            <%= form_with url: import_xlsx_recipe_path(@recipe), multipart: true, local: true, class: "inline-block" do |form| %>
+              <label class="<%= button_classes(:secondary, :small) %> cursor-pointer">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                </svg>
+                Impor Excel
+                <%= form.file_field :file, accept: ".xlsx", class: "hidden", onchange: "this.form.submit()" %>
+              </label>
+            <% end %>
+          </div>
+        </div>
         <% if @recipe_ingredients.any? %>
-          <div class="space-y-3">
+          <div class="space-y-3" data-controller="drag-ingredients" data-drag-ingredients-target="container">
             <% @recipe_ingredients.each do |recipe_ingredient| %>
-              <div class="flex items-center justify-between py-3 border-b border-gray-700 last:border-b-0">
+              <div class="flex items-center justify-between py-3 border-b border-gray-700 last:border-b-0" 
+                   data-drag-ingredients-target="item"
+                   draggable="true">
                 <div class="flex items-center space-x-3">
+                  <div class="drag-handle cursor-move text-gray-400 hover:text-gray-300">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
+                    </svg>
+                  </div>
                   <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
                   <div>
                     <span class="font-medium text-gray-100"><%= recipe_ingredient.ingredient.name %></span>
                     <div class="text-sm text-gray-400">
                       <%= recipe_ingredient.quantity %> <%= recipe_ingredient.ingredient.unit %>
+                      <% begin %>
+                        <% gram_equivalent = UnitConverter.convert_to_grams(recipe_ingredient.quantity, recipe_ingredient.ingredient.unit) %>
+                        <span class="text-xs text-gray-500">(≈ <%= gram_equivalent.round(1) %> gram)</span>
+                        <% rescue %>
+                        <!-- Conversion failed, skip -->
+                      <% end %>
                     </div>
                   </div>
                 </div>
                 <div class="text-sm font-medium text-gray-100">
-                  $<%= number_with_precision(recipe_ingredient.ingredient.price * recipe_ingredient.quantity, precision: 2) %>
+                  <%= format_rupiah(recipe_ingredient.ingredient.price * recipe_ingredient.quantity) %>
                 </div>
               </div>
             <% end %>
@@ -62,65 +92,80 @@
         <% else %>
           <div class="text-center py-8">
             <div class="text-gray-400 text-4xl mb-2">🥕</div>
-            <p class="text-gray-400">No ingredients added yet.</p>
+            <p class="text-gray-400">Belum ada bahan yang ditambahkan.</p>
             <div class="mt-4">
-              <%= link_to "Add Ingredients", edit_recipe_path(@recipe), class: button_classes(:primary, :small) %>
+              <%= link_to "Tambah Bahan", edit_recipe_path(@recipe), class: button_classes(:primary, :small) %>
             </div>
           </div>
         <% end %>
       </div>
-
       <!-- Instructions -->
       <div class="<%= card_classes %>">
-        <h2 class="text-lg font-semibold text-gray-100 mb-4">Instructions</h2>
-        
+        <h2 class="text-lg font-semibold text-gray-100 mb-4">Instruksi Memasak</h2>
         <% if @recipe.instructions.present? %>
-          <div class="prose prose-sm max-w-none">
-            <%= simple_format(@recipe.instructions) %>
+          <div class="space-y-3" data-controller="sortable-instructions" data-sortable-instructions-target="container">
+            <% instructions = @recipe.instructions.split(' - ').map(&:strip).reject(&:empty?) %>
+            <% if instructions.any? && instructions.length > 1 %>
+              <% instructions.each_with_index do |instruction, index| %>
+                <div data-sortable-instructions-target="item" draggable="true" 
+                     class="flex items-start space-x-3 p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 transition-colors">
+                  <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
+                    <span class="text-white text-sm font-medium step-number"><%= index + 1 %></span>
+                  </div>
+                  <div class="flex-1 text-gray-100">
+                    <%= instruction %>
+                  </div>
+                  <div class="drag-handle cursor-move text-gray-400 hover:text-gray-300">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
+                    </svg>
+                  </div>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="text-gray-100 leading-relaxed">
+                <%= simple_format(@recipe.instructions) %>
+              </div>
+            <% end %>
           </div>
         <% else %>
           <div class="text-center py-8">
             <div class="text-gray-400 text-4xl mb-2">📝</div>
-            <p class="text-gray-400">No instructions added yet.</p>
+            <p class="text-gray-400">Belum ada instruksi yang ditambahkan.</p>
             <div class="mt-4">
-              <%= link_to "Add Instructions", edit_recipe_path(@recipe), class: button_classes(:primary, :small) %>
+              <%= link_to "Tambah Instruksi", edit_recipe_path(@recipe), class: button_classes(:primary, :small) %>
             </div>
           </div>
         <% end %>
       </div>
     </div>
-
     <!-- Sidebar -->
     <div class="space-y-6">
       <!-- Cost Breakdown -->
       <div class="<%= card_classes %>">
-        <h3 class="text-lg font-semibold text-gray-100 mb-4">Cost Breakdown</h3>
-        
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Rincian Biaya</h3>
         <div class="space-y-3">
           <% @recipe_ingredients.each do |ri| %>
             <div class="flex justify-between text-sm">
               <span class="text-gray-400"><%= ri.ingredient.name %></span>
-              <span class="font-medium">$<%= number_with_precision(ri.ingredient.price * ri.quantity, precision: 2) %></span>
+              <span class="font-medium"><%= format_rupiah(ri.ingredient.price * ri.quantity) %></span>
             </div>
           <% end %>
-          
           <div class="pt-3 border-t border-gray-700">
             <div class="flex justify-between font-semibold">
-              <span>Total Cost</span>
-              <span>$<%= number_with_precision(@recipe.total_cost, precision: 2) %></span>
+              <span>Total Biaya</span>
+              <span><%= format_rupiah(@recipe.total_cost) %></span>
             </div>
             <div class="flex justify-between text-sm text-gray-400 mt-1">
-              <span>Cost per serving</span>
-              <span>$<%= number_with_precision(@recipe.cost_per_serving, precision: 2) %></span>
+              <span>Biaya per porsi</span>
+              <span><%= format_rupiah(@recipe.cost_per_serving) %></span>
             </div>
           </div>
         </div>
       </div>
-
       <!-- Products -->
       <div class="<%= card_classes %>">
-        <h3 class="text-lg font-semibold text-gray-100 mb-4">Products</h3>
-        
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Produk</h3>
         <% if @recipe.products.any? %>
           <div class="space-y-3">
             <% @recipe.products.each do |product| %>
@@ -128,7 +173,7 @@
                 <%= link_to product.name, product_path(product), 
                     class: "text-sm font-medium text-gray-100 hover:text-indigo-400 block" %>
                 <div class="text-xs text-gray-400 mt-1">
-                  Margin: <%= product.margin %>% • Price: $<%= number_with_precision(product.price, precision: 2) %>
+                  Margin: <%= product.margin %>% • Harga: <%= format_rupiah(product.price) %>
                 </div>
               </div>
             <% end %>
@@ -136,29 +181,165 @@
         <% else %>
           <div class="text-center py-6">
             <div class="text-gray-400 text-3xl mb-2">🛍️</div>
-            <p class="text-gray-400 text-sm mb-3">No products created from this recipe yet.</p>
-            <%= link_to "Create Product", new_product_path(recipe_id: @recipe.id), 
+            <p class="text-gray-400 text-sm mb-3">Belum ada produk yang dibuat dari resep ini.</p>
+            <%= link_to "Buat Produk", new_product_path(recipe_id: @recipe.id), 
                 class: "#{button_classes(:primary, :small)} w-full" %>
           </div>
         <% end %>
       </div>
-
+      <!-- Unit Converter -->
+      <div class="<%= card_classes %>">
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Konversi Satuan</h3>
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Dari</label>
+              <input type="number" id="convert-from" class="w-full text-sm bg-gray-700 border-gray-600 rounded px-2 py-1 text-gray-100" placeholder="Jumlah">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Satuan</label>
+              <select id="unit-from" class="w-full text-sm bg-gray-700 border-gray-600 rounded px-2 py-1 text-gray-100">
+                <option value="cup">Cangkir</option>
+                <option value="tbsp">Sdm</option>
+                <option value="tsp">Sdt</option>
+                <option value="g">Gram</option>
+                <option value="kg">Kg</option>
+                <option value="lb">Pon</option>
+                <option value="oz">Ons</option>
+              </select>
+            </div>
+          </div>
+          <div class="text-center text-gray-400">↓</div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Ke</label>
+              <input type="number" id="convert-to" readonly class="w-full text-sm bg-gray-600 border-gray-600 rounded px-2 py-1 text-gray-100">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Satuan</label>
+              <select id="unit-to" class="w-full text-sm bg-gray-700 border-gray-600 rounded px-2 py-1 text-gray-100">
+                <option value="g" selected>Gram</option>
+                <option value="cup">Cangkir</option>
+                <option value="tbsp">Sdm</option>
+                <option value="tsp">Sdt</option>
+                <option value="kg">Kg</option>
+                <option value="lb">Pon</option>
+                <option value="oz">Ons</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- Quick Actions -->
       <div class="<%= card_classes %>">
-        <h3 class="text-lg font-semibold text-gray-100 mb-4">Quick Actions</h3>
-        
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Aksi Cepat</h3>
         <div class="space-y-2">
-          <%= link_to "Edit Recipe", edit_recipe_path(@recipe), 
+          <%= link_to "Edit Resep", edit_recipe_path(@recipe), 
               class: "#{button_classes(:outline, :small)} w-full" %>
-          <%= link_to "Duplicate Recipe", new_recipe_path(duplicate_from: @recipe.id), 
+          <%= link_to "Duplikasi Resep", new_recipe_path(duplicate_from: @recipe.id), 
               class: "#{button_classes(:secondary, :small)} w-full" %>
-          <%= link_to "Create Product", new_product_path(recipe_id: @recipe.id), 
+          <%= link_to "Buat Produk", new_product_path(recipe_id: @recipe.id), 
               class: "#{button_classes(:primary, :small)} w-full" %>
-          <%= link_to "Delete Recipe", recipe_path(@recipe), method: :delete,
-              confirm: "Are you sure? This will also delete associated products.", 
+          <%= link_to "Hapus Resep", recipe_path(@recipe), method: :delete,
+              confirm: "Apakah Anda yakin ingin menghapus #{@recipe.name}?", 
               class: "#{button_classes(:danger, :small)} w-full" %>
         </div>
       </div>
     </div>
   </div>
 </div>
+<script>
+  // Unit converter functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const fromInput = document.getElementById('convert-from');
+    const toInput = document.getElementById('convert-to');
+    const fromUnit = document.getElementById('unit-from');
+    const toUnit = document.getElementById('unit-to');
+
+    // Basic conversion factors (simplified)
+    const conversions = {
+      'cup': { g: 120 }, // flour approximation
+      'tbsp': { g: 7.5 },
+      'tsp': { g: 2.5 },
+      'g': { g: 1 },
+      'kg': { g: 1000 },
+      'lb': { g: 453.592 },
+      'oz': { g: 28.3495 }
+    };
+
+    function convert() {
+      const fromValue = parseFloat(fromInput.value) || 0;
+      const fromUnitVal = fromUnit.value;
+      const toUnitVal = toUnit.value;
+
+      // Convert to grams first
+      const inGrams = fromValue * (conversions[fromUnitVal]?.g || 1);
+
+      // Convert from grams to target unit
+      const targetConversion = conversions[toUnitVal]?.g || 1;
+      const result = inGrams / targetConversion;
+
+      toInput.value = result.toFixed(2);
+    }
+
+    if (fromInput && toInput && fromUnit && toUnit) {
+      fromInput.addEventListener('input', convert);
+      fromUnit.addEventListener('change', convert);
+      toUnit.addEventListener('change', convert);
+    }
+  });
+
+  // Sortable instructions functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const instructionsContainer = document.querySelector('[data-sortable-instructions-target="container"]');
+
+    if (instructionsContainer) {
+      let draggedElement = null;
+
+      function setupSortable() {
+        const items = instructionsContainer.querySelectorAll('[data-sortable-instructions-target="item"]');
+
+        items.forEach(item => {
+          item.addEventListener('dragstart', function(e) {
+            draggedElement = this;
+            this.style.opacity = '0.5';
+            e.dataTransfer.effectAllowed = 'move';
+          });
+
+          item.addEventListener('dragend', function() {
+            this.style.opacity = '';
+            draggedElement = null;
+            updateStepNumbers();
+          });
+
+          item.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+          });
+
+          item.addEventListener('drop', function(e) {
+            e.preventDefault();
+            if (draggedElement !== this) {
+              const rect = this.getBoundingClientRect();
+              const nextSibling = (e.clientY - rect.top) > (rect.height / 2) ? this.nextSibling : this;
+              instructionsContainer.insertBefore(draggedElement, nextSibling);
+              updateStepNumbers();
+            }
+          });
+        });
+      }
+
+      function updateStepNumbers() {
+        const items = instructionsContainer.querySelectorAll('[data-sortable-instructions-target="item"]');
+        items.forEach((item, index) => {
+          const stepNumber = item.querySelector('.step-number');
+          if (stepNumber) {
+            stepNumber.textContent = (index + 1).toString();
+          }
+        });
+      }
+
+      setupSortable();
+    }
+  });
+</script>

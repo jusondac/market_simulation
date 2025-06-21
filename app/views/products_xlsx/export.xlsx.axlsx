@@ -1,0 +1,45 @@
+wb = xlsx_package.workbook
+
+# Produk sheet
+wb.add_worksheet(name: "Produk") do |sheet|
+  # Header row
+  sheet.add_row [
+    "Nama Produk",
+    "Resep",
+    "Biaya Produksi",
+    "Harga Jual",
+    "Margin (%)",
+    "Keuntungan per Unit",
+    "Dibuat pada"
+  ]
+  
+  # Data rows
+  @products.each do |product|
+    sheet.add_row [
+      product.name,
+      product.recipe.name,
+      product.cost,
+      product.price,
+      product.margin,
+      product.profit_per_unit,
+      product.created_at.strftime("%d/%m/%Y")
+    ]
+  end
+end
+
+# Ringkasan sheet
+wb.add_worksheet(name: "Ringkasan") do |sheet|
+  sheet.add_row ["Statistik Produk"]
+  sheet.add_row []
+  sheet.add_row ["Total Produk", @products.count]
+  sheet.add_row ["Rata-rata Harga Jual", @products.average(:price)&.round(2)]
+  sheet.add_row ["Rata-rata Margin", "#{@products.average(:margin)&.round(2)}%"]
+  sheet.add_row ["Total Potensi Keuntungan", @products.sum(&:profit_per_unit).round(2)]
+  sheet.add_row []
+  sheet.add_row ["Produk Berdasarkan Resep"]
+  
+  # Group by recipe - use fresh query to avoid conflicts
+  Product.joins(:recipe).group('recipes.name').count.each do |recipe_name, count|
+    sheet.add_row [recipe_name, count]
+  end
+end

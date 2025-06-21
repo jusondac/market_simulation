@@ -1,0 +1,65 @@
+wb = xlsx_package.workbook
+
+# Bahan sheet
+wb.add_worksheet(name: "Bahan") do |sheet|
+  # Header row
+  sheet.add_row [
+    "Nama Bahan",
+    "Harga",
+    "Satuan", 
+    "Deskripsi",
+    "Digunakan dalam Resep",
+    "Total Penggunaan"
+  ]
+  
+  # Data rows
+  @ingredient_stats.each do |stat|
+    ingredient = stat[:ingredient]
+    sheet.add_row [
+      ingredient.name,
+      ingredient.price,
+      ingredient.unit,
+      ingredient.description,
+      stat[:recipe_count],
+      stat[:total_usage]
+    ]
+  end
+end
+
+# Unit Conversion Reference sheet
+wb.add_worksheet(name: "Konversi Satuan") do |sheet|
+  sheet.add_row ["Satuan Asal", "Setara dengan", "Satuan Tujuan"]
+  
+  # Common cooking conversions
+  conversions = [
+    ["1 cup", "240", "ml"],
+    ["1 cup", "16", "tbsp"],
+    ["1 tbsp", "3", "tsp"],
+    ["1 lb", "453.6", "g"],
+    ["1 oz", "28.35", "g"],
+    ["1 kg", "1000", "g"],
+    ["1 tsp", "5", "ml"],
+    ["1 tbsp", "15", "ml"]
+  ]
+  
+  conversions.each do |conversion|
+    sheet.add_row conversion
+  end
+end
+
+# Summary sheet
+wb.add_worksheet(name: "Ringkasan") do |sheet|
+  sheet.add_row ["Statistik Bahan"]
+  sheet.add_row []
+  sheet.add_row ["Total Bahan", @ingredients.count]
+  sheet.add_row ["Rata-rata Harga", @ingredients.average(:price)&.round(2)]
+  sheet.add_row ["Bahan Termahal", @ingredients.order(price: :desc).first&.name]
+  sheet.add_row ["Bahan Termurah", @ingredients.order(:price).first&.name]
+  sheet.add_row []
+  sheet.add_row ["Satuan yang Digunakan"]
+  
+  # Group by units - use fresh query to avoid conflicts
+  Ingredient.group(:unit).count.each do |unit, count|
+    sheet.add_row [unit, count]
+  end
+end

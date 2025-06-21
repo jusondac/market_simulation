@@ -1,0 +1,67 @@
+wb = xlsx_package.workbook
+
+# Recipe sheet
+wb.add_worksheet(name: "Resep") do |sheet|
+  sheet.add_row ["Nama Resep", @recipe.name]
+  sheet.add_row ["Deskripsi", @recipe.description]
+  sheet.add_row ["Porsi", @recipe.servings]
+  sheet.add_row ["Waktu Persiapan", "#{@recipe.preparation_time} menit"]
+  sheet.add_row []
+  
+  sheet.add_row ["Instruksi"]
+  if @recipe.instructions.present?
+    instructions = @recipe.instructions.split(/\d+\./).map(&:strip).reject(&:empty?)
+    instructions.each_with_index do |instruction, index|
+      sheet.add_row ["#{index + 1}.", instruction]
+    end
+  end
+  
+  sheet.add_row []
+  sheet.add_row ["Total Biaya", format_rupiah(@recipe.total_cost)]
+  sheet.add_row ["Biaya per Porsi", format_rupiah(@recipe.cost_per_serving)]
+end
+
+# Ingredients sheet
+wb.add_worksheet(name: "Bahan") do |sheet|
+  # Header row
+  sheet.add_row ["Nama Bahan", "Jumlah", "Satuan", "Harga per Satuan", "Total Biaya", "Gram Equivalent"]
+  
+  # Data rows
+  @recipe.recipe_ingredients.includes(:ingredient).each do |ri|
+    gram_equivalent = UnitConverter.convert_to_grams(ri.quantity, ri.ingredient.unit)
+    sheet.add_row [
+      ri.ingredient.name,
+      ri.quantity,
+      ri.ingredient.unit,
+      format_rupiah(ri.ingredient.price),
+      format_rupiah(ri.ingredient.price * ri.quantity),
+      "#{gram_equivalent.round(2)} gram"
+    ]
+  end
+  
+  # Total row
+  sheet.add_row []
+  sheet.add_row ["TOTAL", "", "", "", format_rupiah(@recipe.total_cost), ""]
+end
+
+# Unit conversion reference sheet
+wb.add_worksheet(name: "Konversi Satuan") do |sheet|
+  sheet.add_row ["Panduan Konversi Satuan"]
+  sheet.add_row []
+  
+  sheet.add_row ["Satuan Volume (perkiraan untuk tepung):"]
+  sheet.add_row ["1 cangkir", "= 120 gram"]
+  sheet.add_row ["1 sendok makan", "= 7.5 gram"]
+  sheet.add_row ["1 sendok teh", "= 2.5 gram"]
+  
+  sheet.add_row []
+  sheet.add_row ["Satuan Berat:"]
+  sheet.add_row ["1 kilogram", "= 1000 gram"]
+  sheet.add_row ["1 pon", "= 453.592 gram"]
+  sheet.add_row ["1 ons", "= 28.3495 gram"]
+  
+  sheet.add_row []
+  sheet.add_row ["Catatan:"]
+  sheet.add_row ["", "Konversi volume ke berat bervariasi tergantung jenis bahan"]
+  sheet.add_row ["", "Gunakan timbangan untuk hasil yang lebih akurat"]
+end
