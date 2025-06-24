@@ -27,6 +27,10 @@
       <%= link_to "Tambah Bahan Baru", new_ingredient_path, class: button_classes %>
     </div>
   </div>
+  
+  <!-- Search Form -->
+  <%= render 'shared/search_form', resource_type: 'ingredients' %>
+  
   <div class="<%= card_classes %>">
     <% if @ingredients.any? %>
       <div class="space-y-1">
@@ -48,6 +52,11 @@
                     </h3>
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-300">
                       <%= ingredient.unit %>
+                    </span>
+                  </div>
+                  <div class="flex items-center space-x-2 mt-1">
+                    <span class="text-xs text-gray-500 font-mono">
+                      <%= ingredient.ingredient_code %>
                     </span>
                   </div>
                   <% if ingredient.description.present? %>
@@ -104,6 +113,9 @@
       </div>
     <% end %>
   </div>
+  
+  <!-- Pagination -->
+  <%= render 'shared/pagination', pagy: @pagy %>
 </div>
 <script>
   document.addEventListener('DOMContentLoaded', function() {

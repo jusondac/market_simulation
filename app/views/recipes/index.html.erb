@@ -6,6 +6,10 @@
     </div>
     <%= link_to "Buat Resep Baru", new_recipe_path, class: button_classes %>
   </div>
+  
+  <!-- Search Form -->
+  <%= render 'shared/search_form', resource_type: 'recipes' %>
+  
   <% if @recipes.any? %>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <% @recipes.each do |recipe| %>
@@ -40,6 +44,9 @@
         </div>
       <% end %>
     </div>
+    
+    <!-- Pagination -->
+    <%= render 'shared/pagination', pagy: @pagy %>
   <% else %>
     <div class="<%= card_classes %>">
       <div class="text-center py-12">

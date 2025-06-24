@@ -17,6 +17,13 @@
           </div>
         </div>
       <% end %>
+      <div class="bg-gray-800 border border-gray-700 rounded-md p-4">
+        <div class="text-gray-300 text-sm">
+          <h4 class="font-medium mb-2">📋 Kode Bahan</h4>
+          <p class="font-mono text-lg text-indigo-400"><%= @ingredient.ingredient_code %></p>
+          <p class="text-gray-400 text-xs mt-1">Kode bahan tidak dapat dirubah</p>
+        </div>
+      </div>
       <div>
         <%= form.label :name, "Nama Bahan", class: label_classes %>
         <%= form.text_field :name, class: input_classes, placeholder: "contoh: Tepung Organik" %>

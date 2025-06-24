@@ -1,0 +1,87 @@
+<div class="mb-6">
+  <%= search_form_for @q, local: true, class: "space-y-4" do |f| %>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <%= f.label :name_cont, "Cari nama", class: label_classes %>
+        <%= f.search_field :name_cont, 
+            placeholder: "Masukkan nama...", 
+            class: input_classes,
+            value: params.dig(:q, :name_cont) %>
+      </div>
+      
+      <% if resource_type == "ingredients" %>
+        <div>
+          <%= f.label :unit_eq, "Satuan", class: label_classes %>
+          <%= f.select :unit_eq, 
+              options_for_select([
+                ['Semua Satuan', ''],
+                ['Gelas', 'cup'],
+                ['Sendok Makan', 'tbsp'],
+                ['Sendok Teh', 'tsp'],
+                ['Pound', 'lb'],
+                ['Ons', 'oz'],
+                ['Gram', 'g'],
+                ['Kilogram', 'kg'],
+                ['Buah', 'piece'],
+                ['Kemasan', 'package']
+              ], params.dig(:q, :unit_eq)),
+              {},
+              { class: select_classes } %>
+        </div>
+        
+        <div>
+          <%= f.label :price_gteq, "Harga minimum", class: label_classes %>
+          <%= f.number_field :price_gteq, 
+              step: 0.01,
+              placeholder: "0.00", 
+              class: input_classes,
+              value: params.dig(:q, :price_gteq) %>
+        </div>
+      <% elsif resource_type == "recipes" %>
+        <div>
+          <%= f.label :servings_eq, "Porsi", class: label_classes %>
+          <%= f.number_field :servings_eq, 
+              placeholder: "Jumlah porsi", 
+              class: input_classes,
+              value: params.dig(:q, :servings_eq) %>
+        </div>
+        
+        <div>
+          <%= f.label :preparation_time_lteq, "Waktu maks (menit)", class: label_classes %>
+          <%= f.number_field :preparation_time_lteq, 
+              placeholder: "Waktu maksimal", 
+              class: input_classes,
+              value: params.dig(:q, :preparation_time_lteq) %>
+        </div>
+      <% elsif resource_type == "products" %>
+        <div>
+          <%= f.label :margin_gteq, "Margin minimum (%)", class: label_classes %>
+          <%= f.number_field :margin_gteq, 
+              step: 0.01,
+              placeholder: "0.00", 
+              class: input_classes,
+              value: params.dig(:q, :margin_gteq) %>
+        </div>
+        
+        <div>
+          <%= f.label :recipe_name_cont, "Nama resep", class: label_classes %>
+          <%= f.search_field :recipe_name_cont, 
+              placeholder: "Cari berdasarkan resep...", 
+              class: input_classes,
+              value: params.dig(:q, :recipe_name_cont) %>
+        </div>
+      <% end %>
+    </div>
+    
+    <div class="flex items-center space-x-3">
+      <%= f.submit "Cari", class: button_classes(:primary, :small) %>
+      <%= link_to "Reset", request.path, class: button_classes(:outline, :small) %>
+      
+      <div class="text-sm text-gray-400">
+        <% if respond_to?(:pagy) && @pagy %>
+          Menampilkan <%= @pagy.from %>-<%= @pagy.to %> dari <%= @pagy.count %> hasil
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

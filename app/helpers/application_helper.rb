@@ -1,4 +1,7 @@
 module ApplicationHelper
+  # Include Pagy helpers
+  include Pagy::Frontend
+  
   def nav_link_classes(active = false)
     base_classes = "text-gray-300 hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
     active ? "#{base_classes} text-indigo-400 bg-gray-700" : base_classes

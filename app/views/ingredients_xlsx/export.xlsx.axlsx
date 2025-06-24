@@ -4,26 +4,36 @@ wb = xlsx_package.workbook
 wb.add_worksheet(name: "Bahan") do |sheet|
   # Header row
   sheet.add_row [
+    "Kode Bahan",
     "Nama Bahan",
     "Harga",
     "Satuan", 
     "Deskripsi",
-    "Digunakan dalam Resep",
-    "Total Penggunaan"
   ]
   
   # Data rows
   @ingredient_stats.each do |stat|
     ingredient = stat[:ingredient]
     sheet.add_row [
+      ingredient.ingredient_code,
       ingredient.name,
       ingredient.price,
       ingredient.unit,
       ingredient.description,
-      stat[:recipe_count],
-      stat[:total_usage]
     ]
   end
+
+
+  # Add note about ingredient code
+  sheet.add_row [
+    "PENTING: Kode bahan tidak boleh dirubah!",
+    "",
+    "",
+    "",
+    ""
+  ]
+  sheet.add_row [] # Empty row for spacing
+  
 end
 
 # Unit Conversion Reference sheet
@@ -44,6 +54,28 @@ wb.add_worksheet(name: "Konversi Satuan") do |sheet|
   
   conversions.each do |conversion|
     sheet.add_row conversion
+  end
+end
+
+# Recipes sheet with ingredient codes
+wb.add_worksheet(name: "Resep") do |sheet|
+  sheet.add_row ["Nama Resep", "Kode Bahan", "Nama Bahan", "Jumlah", "Satuan"]
+  sheet.add_row []
+  
+  # Get all recipes with their ingredients
+  Recipe.includes(recipe_ingredients: :ingredient).each do |recipe|
+    recipe.recipe_ingredients.each do |recipe_ingredient|
+      ingredient = recipe_ingredient.ingredient
+      sheet.add_row [
+        recipe.name,
+        ingredient.ingredient_code,
+        ingredient.name,
+        recipe_ingredient.quantity,
+        ingredient.unit
+      ]
+    end
+    # Add empty row between recipes for better readability
+    sheet.add_row []
   end
 end
 

@@ -36,35 +36,73 @@ class IngredientsXlsxController < ApplicationController
 
   def import_from_xlsx(file)
     xlsx = Roo::Excelx.new(file.tempfile)
+    updated_ingredients = []
+    imported_codes = []
 
     # Import ingredients from "Bahan" sheet
     if xlsx.sheets.include?("Bahan")
       xlsx.sheet("Bahan")
       headers = xlsx.row(1)
 
-      (2..xlsx.last_row).each do |i|
+      # Skip header and note rows (start from row 4)
+      start_row = 4
+      (start_row..xlsx.last_row).each do |i|
         row = xlsx.row(i)
         next if row.compact.empty?
 
+        ingredient_code = row[headers.index("Kode Bahan")]
         name = row[headers.index("Nama Bahan")]
         price = row[headers.index("Harga")]
         unit = row[headers.index("Satuan")]
         description = row[headers.index("Deskripsi")]
 
-        next unless name && price && unit
+        next unless ingredient_code && name && price && unit
 
-        # Find or create ingredient
-        ingredient = Ingredient.find_or_initialize_by(name: name)
-        ingredient.assign_attributes(
-          price: price.to_f,
-          unit: unit,
-          description: description
-        )
+        imported_codes << ingredient_code
 
-        ingredient.save!
+        # Find ingredient by code
+        ingredient = Ingredient.find_by(ingredient_code: ingredient_code)
+
+        if ingredient
+          # Update existing ingredient
+          ingredient.assign_attributes(
+            name: name,
+            price: price.to_f,
+            unit: unit,
+            description: description
+          )
+          ingredient.save!
+          updated_ingredients << ingredient
+        else
+          # This should not happen in normal flow since codes shouldn't change
+          # But we'll handle it gracefully
+          Rails.logger.warn "Ingredient with code #{ingredient_code} not found, skipping"
+        end
       end
+
+      # Remove ingredients that are not in the import file
+      existing_ingredients = Ingredient.all
+      ingredients_to_remove = existing_ingredients.reject { |ing| imported_codes.include?(ing.ingredient_code) }
+
+      # Check if any recipes use ingredients that will be removed
+      ingredients_with_recipes = ingredients_to_remove.select { |ing| ing.recipes.any? }
+
+      if ingredients_with_recipes.any?
+        # Remove recipe ingredients first to avoid constraint issues
+        ingredients_with_recipes.each do |ingredient|
+          ingredient.recipe_ingredients.destroy_all
+        end
+
+        # Log which recipes were affected
+        affected_recipes = ingredients_with_recipes.flat_map(&:recipes).uniq
+        Rails.logger.info "Removed ingredients from recipes: #{affected_recipes.map(&:name).join(', ')}"
+      end
+
+      # Now remove the ingredients
+      ingredients_to_remove.each(&:destroy)
+
     else
-      # Fallback to first sheet if "Bahan" sheet doesn't exist
+      # Fallback to old method if "Bahan" sheet doesn't exist
       xlsx.sheet(0)
       headers = xlsx.row(1)
 

@@ -2,7 +2,13 @@ class RecipesController < ApplicationController
   before_action :set_recipe, only: [:show, :edit, :update, :destroy]
 
   def index
-    @recipes = Recipe.includes(:ingredients).order(:name)
+    @q = Recipe.ransack(params[:q])
+    
+    # Apply filters and ordering
+    @recipes_scope = @q.result(distinct: true).includes(:ingredients, :recipe_ingredients)
+    
+    # Add pagination
+    @pagy, @recipes = pagy(@recipes_scope.order(:name), items: 10)
   end
 
   def show
