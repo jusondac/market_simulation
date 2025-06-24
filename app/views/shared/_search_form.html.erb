@@ -8,7 +8,6 @@
             class: input_classes,
             value: params.dig(:q, :name_cont) %>
       </div>
-      
       <% if resource_type == "ingredients" %>
         <div>
           <%= f.label :unit_eq, "Satuan", class: label_classes %>
@@ -28,7 +27,6 @@
               {},
               { class: select_classes } %>
         </div>
-        
         <div>
           <%= f.label :price_gteq, "Harga minimum", class: label_classes %>
           <%= f.number_field :price_gteq, 
@@ -45,7 +43,6 @@
               class: input_classes,
               value: params.dig(:q, :servings_eq) %>
         </div>
-        
         <div>
           <%= f.label :preparation_time_lteq, "Waktu maks (menit)", class: label_classes %>
           <%= f.number_field :preparation_time_lteq, 
@@ -62,7 +59,6 @@
               class: input_classes,
               value: params.dig(:q, :margin_gteq) %>
         </div>
-        
         <div>
           <%= f.label :recipe_name_cont, "Nama resep", class: label_classes %>
           <%= f.search_field :recipe_name_cont, 
@@ -72,11 +68,9 @@
         </div>
       <% end %>
     </div>
-    
     <div class="flex items-center space-x-3">
       <%= f.submit "Cari", class: button_classes(:primary, :small) %>
       <%= link_to "Reset", request.path, class: button_classes(:outline, :small) %>
-      
       <div class="text-sm text-gray-400">
         <% if respond_to?(:pagy) && @pagy %>
           Menampilkan <%= @pagy.from %>-<%= @pagy.to %> dari <%= @pagy.count %> hasil

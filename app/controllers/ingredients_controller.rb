@@ -3,10 +3,10 @@ class IngredientsController < ApplicationController
 
   def index
     @q = Ingredient.ransack(params[:q])
-    
+
     # Apply filters and ordering
     @ingredients_scope = @q.result(distinct: true).includes(:recipes)
-    
+
     # Add pagination
     @pagy, @ingredients = pagy(@ingredients_scope.order(:name), items: 10)
   end

@@ -1,5 +1,5 @@
 # Pagy configuration
-require 'pagy/extras/overflow'
+require "pagy/extras/overflow"
 
 # Set default page size
 Pagy::DEFAULT[:items] = 10
