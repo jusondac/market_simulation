@@ -22,7 +22,7 @@ class IngredientsController < ApplicationController
     @ingredient = Ingredient.new(ingredient_params)
 
     if @ingredient.save
-      redirect_to @ingredient, notice: "Ingredient was successfully created."
+      redirect_to @ingredient, notice: "Bahan berhasil ditambahkan."
     else
       render :new, status: :unprocessable_entity
     end
@@ -42,6 +42,10 @@ class IngredientsController < ApplicationController
   def destroy
     @ingredient.destroy
     redirect_to ingredients_url, notice: "Ingredient was successfully deleted."
+  end
+
+  def unit_converter
+    # Page for unit conversion utility
   end
 
   private

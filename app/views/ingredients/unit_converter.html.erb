@@ -1,0 +1,199 @@
+<div class="px-4 sm:px-0">
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-100">Konversi Satuan</h1>
+    <p class="text-gray-400 mt-2">Alat bantu untuk mengkonversi satuan bahan masakan</p>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Unit Converter Tool -->
+    <div class="<%= card_classes %>">
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold text-gray-100 mb-4">Kalkulator Konversi</h2>
+        <div class="space-y-4" data-controller="unit-converter">
+          <!-- From Unit -->
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Dari</label>
+            <div class="grid grid-cols-2 gap-3">
+              <input type="number" 
+                     step="0.01" 
+                     placeholder="Jumlah" 
+                     class="<%= input_classes %>"
+                     data-unit-converter-target="fromQuantity"
+                     data-action="input->unit-converter#convert">
+              <select class="<%= select_classes %>" 
+                      data-unit-converter-target="fromUnit"
+                      data-action="change->unit-converter#convert">
+                <option value="">Pilih satuan</option>
+                <optgroup label="Berat">
+                  <option value="g">Gram (g)</option>
+                  <option value="kg">Kilogram (kg)</option>
+                  <option value="lb">Pound (lb)</option>
+                  <option value="oz">Ons (oz)</option>
+                </optgroup>
+                <optgroup label="Volume">
+                  <option value="cup">Cangkir (cup)</option>
+                  <option value="tbsp">Sendok Makan (tbsp)</option>
+                  <option value="tsp">Sendok Teh (tsp)</option>
+                </optgroup>
+                <optgroup label="Lainnya">
+                  <option value="piece">Buah (piece)</option>
+                  <option value="package">Kemasan (package)</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          <!-- Jenis Bahan (untuk konversi volume) -->
+          <div data-unit-converter-target="ingredientTypeContainer" class="hidden">
+            <label class="block text-sm font-medium text-gray-300 mb-2">Jenis Bahan (untuk konversi volume)</label>
+            <select class="<%= select_classes %>" data-unit-converter-target="ingredientType" data-action="change->unit-converter#convert">
+              <option value="flour">Tepung</option>
+              <option value="sugar">Gula</option>
+              <option value="butter">Mentega</option>
+              <option value="oil">Minyak</option>
+              <option value="water">Air</option>
+            </select>
+          </div>
+          <!-- To Unit -->
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Ke</label>
+            <div class="grid grid-cols-2 gap-3">
+              <input type="number" 
+                     readonly 
+                     placeholder="Hasil konversi" 
+                     class="<%= input_classes %> bg-gray-700"
+                     data-unit-converter-target="toQuantity">
+              <select class="<%= select_classes %>" 
+                      data-unit-converter-target="toUnit"
+                      data-action="change->unit-converter#convert">
+                <option value="">Pilih satuan</option>
+                <optgroup label="Berat">
+                  <option value="g">Gram (g)</option>
+                  <option value="kg">Kilogram (kg)</option>
+                  <option value="lb">Pound (lb)</option>
+                  <option value="oz">Ons (oz)</option>
+                </optgroup>
+                <optgroup label="Volume">
+                  <option value="cup">Cangkir (cup)</option>
+                  <option value="tbsp">Sendok Makan (tbsp)</option>
+                  <option value="tsp">Sendok Teh (tsp)</option>
+                </optgroup>
+                <optgroup label="Lainnya">
+                  <option value="piece">Buah (piece)</option>
+                  <option value="package">Kemasan (package)</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          <!-- Result Display -->
+          <div class="bg-gray-900 rounded-lg p-4 border border-gray-700" data-unit-converter-target="result">
+            <div class="text-center text-gray-400">
+              <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+              </svg>
+              <p>Masukkan nilai untuk melihat hasil konversi</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Reference Table -->
+    <div class="<%= card_classes %>">
+      <h2 class="text-xl font-semibold text-gray-100 mb-4">Tabel Referensi Konversi</h2>
+      <div class="space-y-6">
+        <!-- Weight Conversions -->
+        <div>
+          <h3 class="text-lg font-medium text-gray-200 mb-3">Konversi Berat</h3>
+          <div class="overflow-x-auto">
+            <table class="min-w-full">
+              <thead>
+                <tr class="border-b border-gray-700">
+                  <th class="text-left py-2 text-gray-300">Dari</th>
+                  <th class="text-left py-2 text-gray-300">Ke</th>
+                  <th class="text-left py-2 text-gray-300">Nilai</th>
+                </tr>
+              </thead>
+              <tbody class="text-gray-400">
+                <tr class="border-b border-gray-800">
+                  <td class="py-2">1 kilogram</td>
+                  <td class="py-2">gram</td>
+                  <td class="py-2">1,000 g</td>
+                </tr>
+                <tr class="border-b border-gray-800">
+                  <td class="py-2">1 pound</td>
+                  <td class="py-2">gram</td>
+                  <td class="py-2">453.6 g</td>
+                </tr>
+                <tr class="border-b border-gray-800">
+                  <td class="py-2">1 ons</td>
+                  <td class="py-2">gram</td>
+                  <td class="py-2">28.35 g</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Volume Conversions -->
+        <div>
+          <h3 class="text-lg font-medium text-gray-200 mb-3">Konversi Volume (Tepung)</h3>
+          <div class="overflow-x-auto">
+            <table class="min-w-full">
+              <thead>
+                <tr class="border-b border-gray-700">
+                  <th class="text-left py-2 text-gray-300">Dari</th>
+                  <th class="text-left py-2 text-gray-300">Ke</th>
+                  <th class="text-left py-2 text-gray-300">Nilai</th>
+                </tr>
+              </thead>
+              <tbody class="text-gray-400">
+                <tr class="border-b border-gray-800">
+                  <td class="py-2">1 cangkir</td>
+                  <td class="py-2">gram</td>
+                  <td class="py-2">120 g</td>
+                </tr>
+                <tr class="border-b border-gray-800">
+                  <td class="py-2">1 sendok makan</td>
+                  <td class="py-2">gram</td>
+                  <td class="py-2">7.5 g</td>
+                </tr>
+                <tr class="border-b border-gray-800">
+                  <td class="py-2">1 sendok teh</td>
+                  <td class="py-2">gram</td>
+                  <td class="py-2">2.5 g</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Notes -->
+        <div class="bg-yellow-900 border border-yellow-700 rounded-lg p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-yellow-100">Catatan Penting</h3>
+              <div class="mt-2 text-sm text-yellow-200">
+                <ul class="list-disc list-inside space-y-1">
+                  <li>Konversi volume ke berat bervariasi tergantung jenis bahan</li>
+                  <li>Nilai di atas adalah perkiraan untuk bahan umum</li>
+                  <li>Untuk hasil yang akurat, gunakan timbangan digital</li>
+                  <li>Satuan "buah" dan "kemasan" tidak dapat dikonversi secara otomatis</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Back to ingredients -->
+  <div class="mt-6">
+    <%= link_to ingredients_path, class: button_classes(:outline) do %>
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      Kembali ke Daftar Bahan
+    <% end %>
+  </div>
+</div>

@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     collection do
       get :export_xlsx, to: "ingredients_xlsx#export"
       post :import_xlsx, to: "ingredients_xlsx#import"
+      get :unit_converter
     end
   end
   resources :products do

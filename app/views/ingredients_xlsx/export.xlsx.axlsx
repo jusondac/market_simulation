@@ -1,5 +1,50 @@
 wb = xlsx_package.workbook
 
+# Catatan/Aturan sheet - Sheet pertama untuk menarik perhatian
+wb.add_worksheet(name: "⚠️ BACA DULU") do |sheet|
+  # Title with warning style
+  sheet.add_row ["PERHATIAN PENTING - ATURAN PENGGUNAAN SHEET INI"], style: sheet.styles.add_style(fg_color: "FF0000", sz: 16, b: true)
+  sheet.add_row []
+  
+  # Important rules
+  sheet.add_row ["🚫 LARANGAN:"], style: sheet.styles.add_style(fg_color: "FF0000", sz: 14, b: true)
+  sheet.add_row ["❌ JANGAN merubah atau menghapus KODE BAHAN di kolom A"]
+  sheet.add_row ["❌ JANGAN merubah nama kolom di baris header"]
+  sheet.add_row ["❌ JANGAN menghapus sheet 'Bahan' - ini adalah sheet utama"]
+  sheet.add_row ["❌ JANGAN mengubah format tanggal atau angka secara manual"]
+  sheet.add_row []
+  
+  # Guidelines  
+  sheet.add_row ["✅ BOLEH DILAKUKAN:"], style: sheet.styles.add_style(fg_color: "008000", sz: 14, b: true)
+  sheet.add_row ["✅ Merubah NAMA BAHAN (kolom B)"]
+  sheet.add_row ["✅ Merubah HARGA (kolom C) - gunakan angka saja, tanpa 'Rp'"]
+  sheet.add_row ["✅ Merubah SATUAN (kolom D) - pilih: g, kg, cup, tbsp, tsp, lb, oz, piece, package"]
+  sheet.add_row ["✅ Merubah atau menambah DESKRIPSI (kolom E)"]
+  sheet.add_row ["✅ Menambah bahan baru di baris kosong - biarkan kode bahan kosong, sistem akan generate otomatis"]
+  sheet.add_row []
+  
+  # Tips
+  sheet.add_row ["💡 TIPS:"], style: sheet.styles.add_style(fg_color: "0000FF", sz: 14, b: true)
+  sheet.add_row ["• Setelah edit, simpan file dan upload kembali ke sistem"]
+  sheet.add_row ["• Gunakan sheet 'Konversi Satuan' sebagai referensi"]
+  sheet.add_row ["• Backup data sebelum melakukan perubahan besar"]
+  sheet.add_row ["• Harga dalam Rupiah, tanpa titik atau koma pemisah"]
+  sheet.add_row []
+  
+  # Contact info
+  sheet.add_row ["📞 Butuh bantuan?"], style: sheet.styles.add_style(fg_color: "800080", sz: 14, b: true)
+  sheet.add_row ["• Hubungi admin sistem jika terjadi error saat upload"]
+  sheet.add_row ["• Jangan edit file ini secara bersamaan dengan user lain"]
+  sheet.add_row []
+  
+  # Last update info
+  sheet.add_row ["📅 File ini dibuat pada: #{Date.current.strftime('%d %B %Y')}"]
+  sheet.add_row ["🔢 Total bahan dalam sistem: #{@ingredient_stats.count}"]
+  
+  # Auto-fit columns
+  sheet.column_widths 80
+end
+
 # Bahan sheet
 wb.add_worksheet(name: "Bahan") do |sheet|
   # Header row
@@ -25,13 +70,14 @@ wb.add_worksheet(name: "Bahan") do |sheet|
 
 
   # Add note about ingredient code
+  sheet.add_row []
   sheet.add_row [
-    "PENTING: Kode bahan tidak boleh dirubah!",
-    "",
-    "",
-    "",
+    "⚠️ PENTING: Kode bahan tidak boleh dirubah!",
+    "Untuk menambah bahan baru, biarkan kode kosong",
+    "Sistem akan generate kode otomatis",
+    "Lihat sheet '⚠️ BACA DULU' untuk aturan lengkap",
     ""
-  ]
+  ], style: sheet.styles.add_style(fg_color: "FF0000", b: true)
   sheet.add_row [] # Empty row for spacing
   
 end
