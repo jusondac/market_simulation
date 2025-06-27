@@ -14,10 +14,14 @@ class UnitsController < ApplicationController
   def create
     @unit = Unit.new(unit_params)
 
-    if @unit.save
-      redirect_to units_path, notice: "Satuan berhasil ditambahkan."
-    else
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      if @unit.save
+        format.html { redirect_to settings_path, notice: "Satuan berhasil ditambahkan." }
+        format.js { head :ok }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.js { head :unprocessable_entity }
+      end
     end
   end
 
@@ -25,16 +29,20 @@ class UnitsController < ApplicationController
   end
 
   def update
-    if @unit.update(unit_params)
-      redirect_to units_path, notice: "Satuan berhasil diperbarui."
-    else
-      render :edit, status: :unprocessable_entity
+    respond_to do |format|
+      if @unit.update(unit_params)
+        format.html { redirect_to settings_path, notice: "Satuan berhasil diperbarui." }
+        format.js { head :ok }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.js { head :unprocessable_entity }
+      end
     end
   end
 
   def destroy
     @unit.destroy
-    redirect_to units_path, notice: "Satuan berhasil dihapus."
+    redirect_to settings_path, notice: "Satuan berhasil dihapus."
   end
 
   private
@@ -44,6 +52,6 @@ class UnitsController < ApplicationController
   end
 
   def unit_params
-    params.require(:unit).permit(:name, :description)
+    params.require(:unit).permit(:name)
   end
 end

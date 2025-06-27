@@ -1,6 +1,6 @@
 class SettingsController < ApplicationController
   def index
-    @units = Unit.by_name.limit(10)
-    @ingredient_types = IngredientType.by_name.limit(10)
+    @units = Unit.includes(:ingredients).by_name
+    @ingredient_types = IngredientType.includes(:ingredients).by_name
   end
 end

@@ -41,32 +41,26 @@
         <div>
           <%= form.label :unit, "Satuan", class: label_classes %>
           <%= form.select :unit, 
-                options_for_select([
-                  ['Gelas', 'cup'],
-                  ['Sendok Makan', 'tbsp'],
-                  ['Sendok Teh', 'tsp'],
-                  ['Pound', 'lb'],
-                  ['Ons', 'oz'],
-                  ['Gram', 'g'],
-                  ['Kilogram', 'kg'],
-                  ['Buah', 'piece'],
-                  ['Kemasan', 'package']
-                ], @ingredient.unit),
+                options_from_collection_for_select(@units, :name, :name, @ingredient.unit),
                 { prompt: 'Pilih satuan' },
                 { class: select_classes } %>
+          <p class="text-xs text-gray-400 mt-1">
+            Belum ada satuan yang diinginkan? 
+            <%= link_to "Tambah satuan baru", settings_path, target: "_blank", class: "text-indigo-400 hover:text-indigo-300" %>
+          </p>
         </div>
       </div>
       <!-- Jenis Bahan -->
       <div>
         <%= form.label :ingredient_type, "Jenis Bahan", class: label_classes %>
         <%= form.select :ingredient_type, 
-              options_for_select([
-                ['Kemasan - Bahan siap pakai dalam kemasan', 'kemasan'],
-                ['Mentah - Bahan mentah yang perlu diolah', 'mentah']
-              ], @ingredient.ingredient_type),
+              options_from_collection_for_select(@ingredient_types, :name, :name, @ingredient.ingredient_type),
               { prompt: 'Pilih jenis bahan' },
               { class: select_classes } %>
-        <p class="text-xs text-gray-400 mt-1">Pilih apakah bahan ini berbentuk kemasan siap pakai atau bahan mentah</p>
+        <p class="text-xs text-gray-400 mt-1">
+          Belum ada jenis yang diinginkan? 
+          <%= link_to "Tambah jenis bahan baru", settings_path, target: "_blank", class: "text-indigo-400 hover:text-indigo-300" %>
+        </p>
       </div>
       <div>
         <%= form.label :description, "Deskripsi", class: label_classes %>

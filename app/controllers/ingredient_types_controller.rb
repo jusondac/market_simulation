@@ -14,10 +14,14 @@ class IngredientTypesController < ApplicationController
   def create
     @ingredient_type = IngredientType.new(ingredient_type_params)
 
-    if @ingredient_type.save
-      redirect_to ingredient_types_path, notice: "Jenis bahan berhasil ditambahkan."
-    else
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      if @ingredient_type.save
+        format.html { redirect_to settings_path, notice: "Jenis bahan berhasil ditambahkan." }
+        format.js { head :ok }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.js { head :unprocessable_entity }
+      end
     end
   end
 
@@ -25,16 +29,20 @@ class IngredientTypesController < ApplicationController
   end
 
   def update
-    if @ingredient_type.update(ingredient_type_params)
-      redirect_to ingredient_types_path, notice: "Jenis bahan berhasil diperbarui."
-    else
-      render :edit, status: :unprocessable_entity
+    respond_to do |format|
+      if @ingredient_type.update(ingredient_type_params)
+        format.html { redirect_to settings_path, notice: "Jenis bahan berhasil diperbarui." }
+        format.js { head :ok }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.js { head :unprocessable_entity }
+      end
     end
   end
 
   def destroy
     @ingredient_type.destroy
-    redirect_to ingredient_types_path, notice: "Jenis bahan berhasil dihapus."
+    redirect_to settings_path, notice: "Jenis bahan berhasil dihapus."
   end
 
   private
@@ -44,6 +52,6 @@ class IngredientTypesController < ApplicationController
   end
 
   def ingredient_type_params
-    params.require(:ingredient_type).permit(:name, :description)
+    params.require(:ingredient_type).permit(:name)
   end
 end

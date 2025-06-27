@@ -4,9 +4,15 @@ class Ingredient < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { case_sensitive: false, message: "sudah ada di database" }
   validates :price, presence: true, numericality: { greater_than: 0 }
-  validates :unit, presence: true
+  validates :unit, presence: true, inclusion: {
+    in: ->(record) { Unit.pluck(:name) },
+    message: "harus dipilih dari satuan yang tersedia"
+  }
   validates :ingredient_code, presence: true, uniqueness: true
-  validates :ingredient_type, presence: true, inclusion: { in: %w[kemasan mentah] }
+  validates :ingredient_type, presence: true, inclusion: {
+    in: ->(record) { IngredientType.pluck(:name) },
+    message: "harus dipilih dari jenis bahan yang tersedia"
+  }
 
   scope :by_name, -> { order(:name) }
   scope :by_price, -> { order(:price) }

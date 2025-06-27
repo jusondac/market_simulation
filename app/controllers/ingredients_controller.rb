@@ -16,6 +16,8 @@ class IngredientsController < ApplicationController
 
   def new
     @ingredient = Ingredient.new
+    @units = Unit.by_name
+    @ingredient_types = IngredientType.by_name
   end
 
   def create
@@ -24,17 +26,23 @@ class IngredientsController < ApplicationController
     if @ingredient.save
       redirect_to @ingredient, notice: "Bahan berhasil ditambahkan."
     else
+      @units = Unit.by_name
+      @ingredient_types = IngredientType.by_name
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
+    @units = Unit.by_name
+    @ingredient_types = IngredientType.by_name
   end
 
   def update
     if @ingredient.update(ingredient_params)
       redirect_to @ingredient, notice: "Ingredient was successfully updated."
     else
+      @units = Unit.by_name
+      @ingredient_types = IngredientType.by_name
       render :edit, status: :unprocessable_entity
     end
   end

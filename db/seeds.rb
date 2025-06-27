@@ -14,17 +14,17 @@ IngredientType.destroy_all
 # Create Units
 puts "Creating units..."
 units_data = [
-  { name: "g", description: "Gram - satuan berat dasar" },
-  { name: "kg", description: "Kilogram - 1000 gram" },
-  { name: "cup", description: "Cangkir - satuan volume" },
-  { name: "tbsp", description: "Sendok Makan - 15ml" },
-  { name: "tsp", description: "Sendok Teh - 5ml" },
-  { name: "lb", description: "Pound - satuan berat imperial" },
-  { name: "oz", description: "Ons - satuan berat" },
-  { name: "piece", description: "Buah - satuan hitung" },
-  { name: "package", description: "Kemasan - satuan kemasan" },
-  { name: "ml", description: "Mililiter - satuan volume" },
-  { name: "l", description: "Liter - 1000ml" }
+  { name: "g" },
+  { name: "kg" },
+  { name: "cup" },
+  { name: "tbsp" },
+  { name: "tsp" },
+  { name: "lb" },
+  { name: "oz" },
+  { name: "piece" },
+  { name: "package" },
+  { name: "ml" },
+  { name: "l" }
 ]
 
 units_data.each do |unit_data|
@@ -34,8 +34,8 @@ end
 # Create Ingredient Types
 puts "Creating ingredient types..."
 ingredient_types_data = [
-  { name: "kemasan", description: "Bahan dalam bentuk kemasan siap pakai" },
-  { name: "mentah", description: "Bahan mentah yang perlu diolah" }
+  { name: "kemasan" },
+  { name: "mentah" }
 ]
 
 ingredient_types_data.each do |type_data|
