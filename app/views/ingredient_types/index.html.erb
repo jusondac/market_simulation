@@ -1,0 +1,76 @@
+<div class="px-4 sm:px-0">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-100">Kelola Jenis Bahan</h1>
+      <p class="text-gray-400 mt-2">Daftar jenis bahan yang tersedia</p>
+    </div>
+    <div class="space-x-2">
+      <%= link_to "Tambah Jenis Bahan", new_ingredient_type_path, class: button_classes %>
+      <%= link_to "Kembali ke Settings", settings_path, class: button_classes(:outline) %>
+    </div>
+  </div>
+  <!-- Search Form -->
+  <%= render 'shared/search_form', resource_type: 'ingredient_types' %>
+  <div class="<%= card_classes %>">
+    <% if @ingredient_types.any? %>
+      <div class="space-y-1">
+        <% @ingredient_types.each_with_index do |ingredient_type, index| %>
+          <div class="group hover:bg-gray-750 rounded-lg transition-colors duration-150">
+            <div class="flex items-center justify-between py-4 px-4">
+              <div class="flex items-center space-x-4 flex-1">
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                    <span class="text-white font-medium text-sm">
+                      <%= ingredient_type.name.first(2).upcase %>
+                    </span>
+                  </div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center space-x-3">
+                    <h3 class="text-sm font-semibold text-gray-100 truncate">
+                      <%= ingredient_type.name.capitalize %>
+                    </h3>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-300">
+                      <%= ingredient_type.name %>
+                    </span>
+                  </div>
+                  <% if ingredient_type.description.present? %>
+                    <p class="text-sm text-gray-400 truncate mt-1">
+                      <%= ingredient_type.description %>
+                    </p>
+                  <% end %>
+                </div>
+              </div>
+              <div class="flex items-center space-x-2 ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                <%= link_to edit_ingredient_type_path(ingredient_type), 
+                    class: "p-2 text-gray-400 hover:text-blue-400 hover:bg-gray-700 rounded-lg transition-colors duration-150",
+                    title: "Edit jenis bahan" do %>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                  </svg>
+                <% end %>
+                <%= link_to ingredient_type_path(ingredient_type), method: :delete,
+                    confirm: "Apakah Anda yakin ingin menghapus jenis bahan '#{ingredient_type.name}'?",
+                    class: "p-2 text-gray-400 hover:text-red-400 hover:bg-gray-700 rounded-lg transition-colors duration-150",
+                    title: "Hapus jenis bahan" do %>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-12">
+        <div class="text-6xl mb-4">🏷️</div>
+        <h3 class="text-lg font-medium text-gray-100 mb-2">Belum ada jenis bahan</h3>
+        <p class="text-gray-400 mb-6">Mulai dengan menambahkan jenis bahan pertama.</p>
+        <%= link_to "Tambah Jenis Bahan Pertama", new_ingredient_type_path, class: button_classes %>
+      </div>
+    <% end %>
+  </div>
+  <!-- Pagination -->
+  <%= render 'shared/pagination', pagy: @pagy %>
+</div>

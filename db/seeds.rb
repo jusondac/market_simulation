@@ -8,26 +8,59 @@ RecipeIngredient.destroy_all
 Recipe.destroy_all
 Ingredient.destroy_all
 Person.destroy_all
+Unit.destroy_all
+IngredientType.destroy_all
+
+# Create Units
+puts "Creating units..."
+units_data = [
+  { name: "g", description: "Gram - satuan berat dasar" },
+  { name: "kg", description: "Kilogram - 1000 gram" },
+  { name: "cup", description: "Cangkir - satuan volume" },
+  { name: "tbsp", description: "Sendok Makan - 15ml" },
+  { name: "tsp", description: "Sendok Teh - 5ml" },
+  { name: "lb", description: "Pound - satuan berat imperial" },
+  { name: "oz", description: "Ons - satuan berat" },
+  { name: "piece", description: "Buah - satuan hitung" },
+  { name: "package", description: "Kemasan - satuan kemasan" },
+  { name: "ml", description: "Mililiter - satuan volume" },
+  { name: "l", description: "Liter - 1000ml" }
+]
+
+units_data.each do |unit_data|
+  Unit.create!(unit_data)
+end
+
+# Create Ingredient Types
+puts "Creating ingredient types..."
+ingredient_types_data = [
+  { name: "kemasan", description: "Bahan dalam bentuk kemasan siap pakai" },
+  { name: "mentah", description: "Bahan mentah yang perlu diolah" }
+]
+
+ingredient_types_data.each do |type_data|
+  IngredientType.create!(type_data)
+end
 
 puts "Creating ingredients..."
 
 # Create ingredients
 ingredients = [
-  { name: "Flour", price: 2.50, unit: "cup", description: "All-purpose flour" },
-  { name: "Sugar", price: 1.00, unit: "cup", description: "White granulated sugar" },
-  { name: "Eggs", price: 0.50, unit: "piece", description: "Fresh eggs" },
-  { name: "Butter", price: 3.00, unit: "cup", description: "Unsalted butter" },
-  { name: "Milk", price: 1.50, unit: "cup", description: "Whole milk" },
-  { name: "Chocolate Chips", price: 4.00, unit: "cup", description: "Semi-sweet chocolate chips" },
-  { name: "Vanilla Extract", price: 0.75, unit: "tsp", description: "Pure vanilla extract" },
-  { name: "Baking Powder", price: 0.25, unit: "tsp", description: "Double-acting baking powder" },
-  { name: "Salt", price: 0.10, unit: "tsp", description: "Table salt" },
-  { name: "Cocoa Powder", price: 1.25, unit: "tbsp", description: "Unsweetened cocoa powder" },
-  { name: "Cream Cheese", price: 2.00, unit: "oz", description: "Philadelphia cream cheese" },
-  { name: "Strawberries", price: 3.50, unit: "cup", description: "Fresh strawberries" },
-  { name: "Banana", price: 0.75, unit: "piece", description: "Ripe banana" },
-  { name: "Oats", price: 1.20, unit: "cup", description: "Rolled oats" },
-  { name: "Honey", price: 2.25, unit: "tbsp", description: "Pure honey" }
+  { name: "Flour", price: 2.50, unit: "cup", description: "All-purpose flour", ingredient_type: "kemasan" },
+  { name: "Sugar", price: 1.00, unit: "cup", description: "White granulated sugar", ingredient_type: "kemasan" },
+  { name: "Eggs", price: 0.50, unit: "piece", description: "Fresh eggs", ingredient_type: "mentah" },
+  { name: "Butter", price: 3.00, unit: "cup", description: "Unsalted butter", ingredient_type: "kemasan" },
+  { name: "Milk", price: 1.50, unit: "cup", description: "Whole milk", ingredient_type: "kemasan" },
+  { name: "Chocolate Chips", price: 4.00, unit: "cup", description: "Semi-sweet chocolate chips", ingredient_type: "kemasan" },
+  { name: "Vanilla Extract", price: 0.75, unit: "tsp", description: "Pure vanilla extract", ingredient_type: "kemasan" },
+  { name: "Baking Powder", price: 0.25, unit: "tsp", description: "Double-acting baking powder", ingredient_type: "kemasan" },
+  { name: "Salt", price: 0.10, unit: "tsp", description: "Table salt", ingredient_type: "kemasan" },
+  { name: "Cocoa Powder", price: 1.25, unit: "tbsp", description: "Unsweetened cocoa powder", ingredient_type: "kemasan" },
+  { name: "Cream Cheese", price: 2.00, unit: "oz", description: "Philadelphia cream cheese", ingredient_type: "kemasan" },
+  { name: "Strawberries", price: 3.50, unit: "cup", description: "Fresh strawberries", ingredient_type: "mentah" },
+  { name: "Banana", price: 0.75, unit: "piece", description: "Ripe banana", ingredient_type: "mentah" },
+  { name: "Oats", price: 1.20, unit: "cup", description: "Rolled oats", ingredient_type: "kemasan" },
+  { name: "Honey", price: 2.25, unit: "tbsp", description: "Pure honey", ingredient_type: "kemasan" }
 ]
 
 ingredients.each do |ingredient_attrs|
@@ -39,28 +72,28 @@ puts "Creating people with different taste preferences..."
 # Create people with different demographics and taste preferences
 people_data = [
   # Kids
-  { name: "Emma", age: 8, taste_preferences: ["sweet", "chocolate", "vanilla", "strawberry"] },
-  { name: "Liam", age: 10, taste_preferences: ["chocolate", "banana", "sweet"] },
-  { name: "Olivia", age: 7, taste_preferences: ["strawberry", "vanilla", "sweet"] },
-  { name: "Noah", age: 9, taste_preferences: ["chocolate", "cookie", "sweet"] },
-  { name: "Sophia", age: 11, taste_preferences: ["vanilla", "strawberry", "sweet"] },
-  
+  { name: "Emma", age: 8, taste_preferences: [ "sweet", "chocolate", "vanilla", "strawberry" ] },
+  { name: "Liam", age: 10, taste_preferences: [ "chocolate", "banana", "sweet" ] },
+  { name: "Olivia", age: 7, taste_preferences: [ "strawberry", "vanilla", "sweet" ] },
+  { name: "Noah", age: 9, taste_preferences: [ "chocolate", "cookie", "sweet" ] },
+  { name: "Sophia", age: 11, taste_preferences: [ "vanilla", "strawberry", "sweet" ] },
+
   # Teenagers
-  { name: "Ava", age: 15, taste_preferences: ["chocolate", "coffee", "sweet"] },
-  { name: "William", age: 17, taste_preferences: ["vanilla", "banana", "healthy"] },
-  { name: "Isabella", age: 14, taste_preferences: ["strawberry", "cream", "sweet"] },
-  { name: "James", age: 16, taste_preferences: ["chocolate", "nuts", "energy"] },
-  { name: "Charlotte", age: 18, taste_preferences: ["healthy", "oats", "honey"] },
-  
+  { name: "Ava", age: 15, taste_preferences: [ "chocolate", "coffee", "sweet" ] },
+  { name: "William", age: 17, taste_preferences: [ "vanilla", "banana", "healthy" ] },
+  { name: "Isabella", age: 14, taste_preferences: [ "strawberry", "cream", "sweet" ] },
+  { name: "James", age: 16, taste_preferences: [ "chocolate", "nuts", "energy" ] },
+  { name: "Charlotte", age: 18, taste_preferences: [ "healthy", "oats", "honey" ] },
+
   # Adults
-  { name: "Benjamin", age: 28, taste_preferences: ["coffee", "dark chocolate", "sophisticated"] },
-  { name: "Amelia", age: 32, taste_preferences: ["healthy", "low sugar", "natural"] },
-  { name: "Lucas", age: 24, taste_preferences: ["sweet", "nostalgic", "comfort"] },
-  { name: "Harper", age: 29, taste_preferences: ["gourmet", "unique", "artisanal"] },
-  { name: "Alexander", age: 35, taste_preferences: ["classic", "simple", "quality"] },
-  { name: "Evelyn", age: 26, taste_preferences: ["healthy", "fruit", "natural"] },
-  { name: "Henry", age: 31, taste_preferences: ["rich", "indulgent", "premium"] },
-  { name: "Abigail", age: 27, taste_preferences: ["balanced", "moderate", "wholesome"] }
+  { name: "Benjamin", age: 28, taste_preferences: [ "coffee", "dark chocolate", "sophisticated" ] },
+  { name: "Amelia", age: 32, taste_preferences: [ "healthy", "low sugar", "natural" ] },
+  { name: "Lucas", age: 24, taste_preferences: [ "sweet", "nostalgic", "comfort" ] },
+  { name: "Harper", age: 29, taste_preferences: [ "gourmet", "unique", "artisanal" ] },
+  { name: "Alexander", age: 35, taste_preferences: [ "classic", "simple", "quality" ] },
+  { name: "Evelyn", age: 26, taste_preferences: [ "healthy", "fruit", "natural" ] },
+  { name: "Henry", age: 31, taste_preferences: [ "rich", "indulgent", "premium" ] },
+  { name: "Abigail", age: 27, taste_preferences: [ "balanced", "moderate", "wholesome" ] }
 ]
 
 people_data.each do |person_attrs|

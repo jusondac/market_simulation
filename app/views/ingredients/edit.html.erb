@@ -56,6 +56,18 @@
                 { class: select_classes } %>
         </div>
       </div>
+      <!-- Jenis Bahan -->
+      <div>
+        <%= form.label :ingredient_type, "Jenis Bahan", class: label_classes %>
+        <%= form.select :ingredient_type, 
+              options_for_select([
+                ['Kemasan - Bahan siap pakai dalam kemasan', 'kemasan'],
+                ['Mentah - Bahan mentah yang perlu diolah', 'mentah']
+              ], @ingredient.ingredient_type),
+              { prompt: 'Pilih jenis bahan' },
+              { class: select_classes } %>
+        <p class="text-xs text-gray-400 mt-1">Pilih apakah bahan ini berbentuk kemasan siap pakai atau bahan mentah</p>
+      </div>
       <div>
         <%= form.label :description, "Deskripsi", class: label_classes %>
         <%= form.text_area :description, rows: 3, class: textarea_classes, 

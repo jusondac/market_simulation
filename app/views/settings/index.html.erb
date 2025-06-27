@@ -1,0 +1,148 @@
+<div class="px-4 sm:px-0">
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-100">Settings</h1>
+    <p class="text-gray-400 mt-2">Kelola pengaturan aplikasi dan data referensi</p>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <!-- Sidebar Menu (1 bagian) -->
+    <div class="lg:col-span-1">
+      <div class="<%= card_classes %> space-y-2">
+        <h2 class="text-lg font-semibold text-gray-100 mb-4">Menu Settings</h2>
+        <%= link_to units_path, 
+            class: "flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors #{request.path.include?('units') ? 'bg-gray-700 text-indigo-400' : 'text-gray-300'}" do %>
+          <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+          </svg>
+          Satuan
+        <% end %>
+        <%= link_to ingredient_types_path, 
+            class: "flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors #{request.path.include?('ingredient_types') ? 'bg-gray-700 text-indigo-400' : 'text-gray-300'}" do %>
+          <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+          </svg>
+          Jenis Bahan
+        <% end %>
+      </div>
+    </div>
+    <!-- Main Content (3 bagian) -->
+    <div class="lg:col-span-3 space-y-6">
+      <!-- Overview Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Units Card -->
+        <div class="<%= card_classes %>">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-100">Satuan</h3>
+            <%= link_to new_unit_path, class: button_classes(:primary, :small) do %>
+              Tambah Satuan
+            <% end %>
+          </div>
+          <div class="text-sm text-gray-400 mb-4">
+            Total: <%= @units.count %> satuan
+          </div>
+          <div class="space-y-2 max-h-64 overflow-y-auto">
+            <% @units.each do |unit| %>
+              <div class="flex items-center justify-between p-3 bg-gray-900 rounded-lg">
+                <div>
+                  <div class="font-medium text-gray-100"><%= unit.name %></div>
+                  <div class="text-sm text-gray-400 truncate"><%= unit.description %></div>
+                </div>
+                <div class="flex space-x-1">
+                  <%= link_to edit_unit_path(unit), 
+                      class: "p-1 text-gray-400 hover:text-blue-400 rounded transition-colors",
+                      title: "Edit" do %>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="mt-4 pt-4 border-t border-gray-700">
+            <%= link_to units_path, class: "text-indigo-400 hover:text-indigo-300 text-sm" do %>
+              Lihat semua satuan →
+            <% end %>
+          </div>
+        </div>
+        <!-- Ingredient Types Card -->
+        <div class="<%= card_classes %>">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-100">Jenis Bahan</h3>
+            <%= link_to new_ingredient_type_path, class: button_classes(:primary, :small) do %>
+              Tambah Jenis
+            <% end %>
+          </div>
+          <div class="text-sm text-gray-400 mb-4">
+            Total: <%= @ingredient_types.count %> jenis
+          </div>
+          <div class="space-y-2 max-h-64 overflow-y-auto">
+            <% @ingredient_types.each do |ingredient_type| %>
+              <div class="flex items-center justify-between p-3 bg-gray-900 rounded-lg">
+                <div>
+                  <div class="font-medium text-gray-100"><%= ingredient_type.name.capitalize %></div>
+                  <div class="text-sm text-gray-400 truncate"><%= ingredient_type.description %></div>
+                </div>
+                <div class="flex space-x-1">
+                  <%= link_to edit_ingredient_type_path(ingredient_type), 
+                      class: "p-1 text-gray-400 hover:text-blue-400 rounded transition-colors",
+                      title: "Edit" do %>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="mt-4 pt-4 border-t border-gray-700">
+            <%= link_to ingredient_types_path, class: "text-indigo-400 hover:text-indigo-300 text-sm" do %>
+              Lihat semua jenis bahan →
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <!-- Quick Actions -->
+      <div class="<%= card_classes %>">
+        <h3 class="text-lg font-semibold text-gray-100 mb-4">Aksi Cepat</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <%= link_to new_unit_path, 
+              class: "flex items-center p-4 bg-gray-900 rounded-lg hover:bg-gray-700 transition-colors group" do %>
+            <div class="flex-shrink-0 w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center group-hover:bg-indigo-500 transition-colors">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+              </svg>
+            </div>
+            <div class="ml-4">
+              <div class="font-medium text-gray-100">Tambah Satuan</div>
+              <div class="text-sm text-gray-400">Buat satuan pengukuran baru</div>
+            </div>
+          <% end %>
+          <%= link_to new_ingredient_type_path, 
+              class: "flex items-center p-4 bg-gray-900 rounded-lg hover:bg-gray-700 transition-colors group" do %>
+            <div class="flex-shrink-0 w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center group-hover:bg-green-500 transition-colors">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+              </svg>
+            </div>
+            <div class="ml-4">
+              <div class="font-medium text-gray-100">Tambah Jenis Bahan</div>
+              <div class="text-sm text-gray-400">Buat kategori bahan baru</div>
+            </div>
+          <% end %>
+          <%= link_to ingredients_path, 
+              class: "flex items-center p-4 bg-gray-900 rounded-lg hover:bg-gray-700 transition-colors group" do %>
+            <div class="flex-shrink-0 w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center group-hover:bg-purple-500 transition-colors">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+              </svg>
+            </div>
+            <div class="ml-4">
+              <div class="font-medium text-gray-100">Kelola Bahan</div>
+              <div class="text-sm text-gray-400">Lihat dan edit bahan</div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

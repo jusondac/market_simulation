@@ -1,4 +1,17 @@
 Rails.application.routes.draw do
+  get "ingredient_types/index"
+  get "ingredient_types/new"
+  get "ingredient_types/create"
+  get "ingredient_types/edit"
+  get "ingredient_types/update"
+  get "ingredient_types/destroy"
+  get "units/index"
+  get "units/new"
+  get "units/create"
+  get "units/edit"
+  get "units/update"
+  get "units/destroy"
+  get "settings/index"
   root "home#index"
 
   resources :recipes do
@@ -19,7 +32,6 @@ Rails.application.routes.draw do
       get :unit_converter
     end
   end
-
   resources :products do
     # XLSX export/import for products
     collection do
@@ -27,7 +39,6 @@ Rails.application.routes.draw do
       post :import_xlsx, to: "products_xlsx#import"
     end
   end
-
   resources :market_simulations, only: [ :index, :show, :new, :create ] do
     member do
       post :simulate
@@ -35,9 +46,12 @@ Rails.application.routes.draw do
   end
 
   # Settings routes
-  resources :settings, only: [ :index ]
-  resources :units, except: [ :show ]
-  resources :ingredient_types, except: [ :show ]
+  resources :settings, only: [:index] do
+    collection do
+      resources :units, except: [:show]
+      resources :ingredient_types, except: [:show]
+    end
+  end
 
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check

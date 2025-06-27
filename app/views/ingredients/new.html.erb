@@ -55,15 +55,28 @@
                 { class: select_classes } %>
         </div>
       </div>
+      <!-- Jenis Bahan -->
       <div>
-        <%= form.label :description, "Deskripsi", class: label_classes %>
-        <%= form.text_area :description, rows: 3, class: textarea_classes, 
+        <%= form.label :ingredient_type, "Jenis Bahan", class: label_classes %>
+        <%= form.select :ingredient_type, 
+              options_for_select([
+                ['Kemasan - Bahan siap pakai dalam kemasan', 'kemasan'],
+                ['Mentah - Bahan mentah yang perlu diolah', 'mentah']
+              ], @ingredient.ingredient_type),
+              { prompt: 'Pilih jenis bahan' },
+              { class: select_classes } %>
+        <p class="text-xs text-gray-400 mt-1">Pilih apakah bahan ini berbentuk kemasan siap pakai atau bahan mentah</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= form.label :description, "Deskripsi", class: label_classes %>
+          <%= form.text_area :description, rows: 3, class: textarea_classes, 
             placeholder: "Deskripsi opsional tentang bahan..." %>
-      </div>
-      <div class="flex items-center justify-between pt-4 border-t border-gray-700">
-        <%= link_to "Batal", ingredients_path, class: button_classes(:outline) %>
-        <%= form.submit "Buat Bahan", class: button_classes %>
-      </div>
-    <% end %>
+        </div>
+        <div class="flex items-center justify-between pt-4 border-t border-gray-700">
+          <%= link_to "Batal", ingredients_path, class: button_classes(:outline) %>
+          <%= form.submit "Buat Bahan", class: button_classes %>
+        </div>
+      <% end %>
+    </div>
   </div>
-</div>

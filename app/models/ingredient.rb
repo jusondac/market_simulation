@@ -6,6 +6,7 @@ class Ingredient < ApplicationRecord
   validates :price, presence: true, numericality: { greater_than: 0 }
   validates :unit, presence: true
   validates :ingredient_code, presence: true, uniqueness: true
+  validates :ingredient_type, presence: true, inclusion: { in: %w[kemasan mentah] }
 
   scope :by_name, -> { order(:name) }
   scope :by_price, -> { order(:price) }
@@ -17,7 +18,7 @@ class Ingredient < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    [ "created_at", "description", "id", "ingredient_code", "name", "price", "unit", "updated_at" ]
+    [ "created_at", "description", "id", "ingredient_code", "name", "price", "unit", "updated_at", "ingredient_type" ]
   end
 
   private

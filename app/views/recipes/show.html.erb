@@ -240,7 +240,7 @@
               class: "#{button_classes(:secondary, :small)} w-full" %>
           <%= link_to "Buat Produk", new_product_path(recipe_id: @recipe.id), 
               class: "#{button_classes(:primary, :small)} w-full" %>
-          <%= link_to "Hapus Resep", recipe_path(@recipe), method: :delete,
+          <%= button_to "Hapus Resep", recipe_path(@recipe), method: :delete,
               confirm: "Apakah Anda yakin ingin menghapus #{@recipe.name}?", 
               class: "#{button_classes(:danger, :small)} w-full" %>
         </div>

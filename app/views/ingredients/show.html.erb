@@ -27,6 +27,16 @@
             <dt class="text-sm font-medium text-gray-400">Satuan</dt>
             <dd class="text-lg font-semibold text-gray-100"><%= @ingredient.unit %></dd>
           </div>
+          <% if @ingredient.ingredient_type.present? %>
+            <div>
+              <dt class="text-sm font-medium text-gray-400">Jenis Bahan</dt>
+              <dd class="text-lg font-semibold text-gray-100">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium <%= @ingredient.ingredient_type == 'kemasan' ? 'bg-blue-900 text-blue-300' : 'bg-green-900 text-green-300' %>">
+                  <%= @ingredient.ingredient_type.capitalize %>
+                </span>
+              </dd>
+            </div>
+          <% end %>
         </dl>
         <% if @ingredient.description.present? %>
           <div class="mt-6">

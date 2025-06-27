@@ -62,6 +62,11 @@
                     <span class="text-xs text-gray-500 font-mono">
                       <%= ingredient.ingredient_code %>
                     </span>
+                    <% if ingredient.ingredient_type.present? %>
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium <%= ingredient.ingredient_type == 'kemasan' ? 'bg-blue-900 text-blue-300' : 'bg-green-900 text-green-300' %>">
+                        <%= ingredient.ingredient_type.capitalize %>
+                      </span>
+                    <% end %>
                   </div>
                   <% if ingredient.description.present? %>
                     <p class="text-sm text-gray-400 truncate mt-1">
