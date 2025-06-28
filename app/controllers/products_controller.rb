@@ -5,7 +5,7 @@ class ProductsController < ApplicationController
     @q = Product.ransack(params[:q])
 
     # Apply filters and ordering
-    @products_scope = @q.result(distinct: true).includes(:recipe)
+    @products_scope = @q.result(distinct: true).includes(:recipe, :product_recipes)
 
     # Add pagination
     @pagy, @products = pagy(@products_scope.order(:name), items: 10)

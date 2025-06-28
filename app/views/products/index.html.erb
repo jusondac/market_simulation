@@ -48,9 +48,19 @@
             </div>
           </div>
           <div class="mb-4">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-700 text-blue-300">
-              Berdasarkan: <%= product.recipe.name %>
-            </span>
+            <% if product.recipe.present? %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-700 text-blue-300">
+                Berdasarkan: <%= product.recipe.name %>
+              </span>
+            <% elsif product.product_recipes.any? %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-700 text-purple-300">
+                Multi-resep: <%= product.product_recipes.count %> resep
+              </span>
+            <% else %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-300">
+                Tidak ada resep
+              </span>
+            <% end %>
           </div>
           <div class="space-y-2 mb-4">
             <div class="flex justify-between text-sm">
