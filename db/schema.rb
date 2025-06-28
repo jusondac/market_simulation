@@ -10,14 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_27_202554) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_28_110225) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
 
+  create_table "ingredient_details", force: :cascade do |t|
+    t.bigint "ingredient_id", null: false
+    t.decimal "package_size"
+    t.string "package_unit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ingredient_id"], name: "index_ingredient_details_on_ingredient_id"
+  end
+
   create_table "ingredient_types", force: :cascade do |t|
     t.string "name"
-    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -108,11 +116,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_27_202554) do
 
   create_table "units", force: :cascade do |t|
     t.string "name"
-    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "ingredient_details", "ingredients"
   add_foreign_key "products", "recipes"
   add_foreign_key "recipe_ingredients", "ingredients"
   add_foreign_key "recipe_ingredients", "recipes"

@@ -16,6 +16,7 @@ class IngredientsController < ApplicationController
 
   def new
     @ingredient = Ingredient.new
+    @ingredient.build_ingredient_detail
     @units = Unit.by_name
     @ingredient_types = IngredientType.by_name
   end
@@ -33,6 +34,7 @@ class IngredientsController < ApplicationController
   end
 
   def edit
+    @ingredient.build_ingredient_detail if @ingredient.ingredient_detail.nil?
     @units = Unit.by_name
     @ingredient_types = IngredientType.by_name
   end
@@ -63,6 +65,7 @@ class IngredientsController < ApplicationController
   end
 
   def ingredient_params
-    params.require(:ingredient).permit(:name, :price, :unit, :description, :ingredient_code, :ingredient_type)
+    params.require(:ingredient).permit(:name, :price, :unit, :description, :ingredient_code, :ingredient_type,
+                                      ingredient_detail_attributes: [ :id, :package_size, :package_unit, :_destroy ])
   end
 end

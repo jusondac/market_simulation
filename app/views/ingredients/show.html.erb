@@ -21,11 +21,18 @@
           </div>
           <div>
             <dt class="text-sm font-medium text-gray-400">Harga per satuan</dt>
-            <dd class="text-lg font-semibold text-gray-100"><%= format_rupiah(@ingredient.price) %></dd>
+            <dd class="text-lg font-semibold text-gray-100">
+              <% if @ingredient.ingredient_type == 'kemasan' && @ingredient.ingredient_detail&.package_size.present? %>
+                <%= format_rupiah(@ingredient.unit_price) %> per <%= @ingredient.effective_unit %>
+                <div class="text-sm text-gray-400">(<%= format_rupiah(@ingredient.price) %> per <%= @ingredient.unit %>)</div>
+              <% else %>
+                <%= format_rupiah(@ingredient.price) %>
+              <% end %>
+            </dd>
           </div>
           <div>
             <dt class="text-sm font-medium text-gray-400">Satuan</dt>
-            <dd class="text-lg font-semibold text-gray-100"><%= @ingredient.unit %></dd>
+            <dd class="text-lg font-semibold text-gray-100"><%= @ingredient.effective_unit %></dd>
           </div>
           <% if @ingredient.ingredient_type.present? %>
             <div>
@@ -35,6 +42,12 @@
                   <%= @ingredient.ingredient_type.capitalize %>
                 </span>
               </dd>
+            </div>
+          <% end %>
+          <% if @ingredient.ingredient_type == 'kemasan' && @ingredient.ingredient_detail&.package_size.present? %>
+            <div>
+              <dt class="text-sm font-medium text-gray-400">Ukuran Kemasan</dt>
+              <dd class="text-lg font-semibold text-gray-100"><%= @ingredient.ingredient_detail.package_size %> <%= @ingredient.ingredient_detail.package_unit %></dd>
             </div>
           <% end %>
         </dl>
@@ -58,11 +71,11 @@
                   <%= link_to recipe.name, recipe_path(recipe), 
                       class: "text-gray-100 hover:text-indigo-400 font-medium" %>
                   <div class="text-sm text-gray-400">
-                    Menggunakan <%= recipe_ingredient&.quantity %> <%= @ingredient.unit %>
+                    Menggunakan <%= recipe_ingredient&.quantity %> <%= @ingredient.effective_unit %>
                   </div>
                 </div>
                 <div class="text-sm text-gray-400">
-                  Biaya: <%= format_rupiah(@ingredient.price * (recipe_ingredient&.quantity || 0)) %>
+                  Biaya: <%= format_rupiah(recipe_ingredient&.calculate_cost || 0) %>
                 </div>
               </div>
             <% end %>
@@ -91,11 +104,11 @@
             <div class="text-3xl font-bold text-green-400">
               <%= @ingredient.recipe_ingredients.sum(:quantity).round(2) %>
             </div>
-            <div class="text-sm text-gray-400">Total <%= @ingredient.unit %> digunakan</div>
+            <div class="text-sm text-gray-400">Total <%= @ingredient.effective_unit %> digunakan</div>
           </div>
           <div class="text-center">
             <div class="text-3xl font-bold text-green-400">
-              <%= format_rupiah(@ingredient.recipe_ingredients.sum { |ri| ri.quantity * @ingredient.price }) %>
+              <%= format_rupiah(@ingredient.total_recipe_cost) %>
             </div>
             <div class="text-sm text-gray-400">Total nilai dalam resep</div>
           </div>

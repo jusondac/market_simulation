@@ -6,6 +6,8 @@ export default class extends Controller {
   connect() {
     this.setupSortable()
     this.updateNumbering()
+    // Initialize from existing textarea content
+    this.initializeFromTextarea()
   }
 
   setupSortable() {

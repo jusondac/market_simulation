@@ -44,11 +44,45 @@ end
 
 # puts "Creating ingredients..."
 
-# # Create ingredients
+# # Create ingredients with package details examples
+# # Regular ingredients (mentah type)
 # ingredients = [
-#   { name: "Flour", price: 2.50, unit: "cup", description: "All-purpose flour", ingredient_type: "kemasan" },
-#   { name: "Sugar", price: 1.00, unit: "cup", description: "White granulated sugar", ingredient_type: "kemasan" },
-#   { name: "Eggs", price: 0.50, unit: "piece", description: "Fresh eggs", ingredient_type: "mentah" },
+#   { name: "Flour", price: 5000, unit: "kg", description: "All-purpose flour", ingredient_type: "mentah" },
+#   { name: "Sugar", price: 8000, unit: "kg", description: "White granulated sugar", ingredient_type: "mentah" },
+#   { name: "Eggs", price: 2500, unit: "piece", description: "Fresh eggs", ingredient_type: "mentah" },
+# ]
+
+# # Package ingredients (kemasan type) - will need ingredient_details
+# package_ingredients = [
+#   {
+#     name: "Basreng",
+#     price: 10000,
+#     unit: "package",
+#     description: "Spicy fried meatballs snack",
+#     ingredient_type: "kemasan",
+#     ingredient_detail: { package_size: 10, package_unit: "piece" }
+#   },
+#   {
+#     name: "Tepung Bumbu Sajiku",
+#     price: 3500,
+#     unit: "package",
+#     description: "Seasoned flour mix",
+#     ingredient_type: "kemasan",
+#     ingredient_detail: { package_size: 80, package_unit: "g" }
+#   }
+# ]
+
+# # Create regular ingredients
+# ingredients.each do |ingredient_data|
+#   Ingredient.create!(ingredient_data)
+# end
+
+# # Create package ingredients with details
+# package_ingredients.each do |ingredient_data|
+#   ingredient_detail_data = ingredient_data.delete(:ingredient_detail)
+#   ingredient = Ingredient.create!(ingredient_data)
+#   ingredient.create_ingredient_detail!(ingredient_detail_data)
+# end
 #   { name: "Butter", price: 3.00, unit: "cup", description: "Unsalted butter", ingredient_type: "kemasan" },
 #   { name: "Milk", price: 1.50, unit: "cup", description: "Whole milk", ingredient_type: "kemasan" },
 #   { name: "Chocolate Chips", price: 4.00, unit: "cup", description: "Semi-sweet chocolate chips", ingredient_type: "kemasan" },

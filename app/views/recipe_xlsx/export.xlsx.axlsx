@@ -32,9 +32,9 @@ wb.add_worksheet(name: "Bahan") do |sheet|
     sheet.add_row [
       ri.ingredient.name,
       ri.quantity,
-      ri.ingredient.unit,
-      format_rupiah(ri.ingredient.price),
-      format_rupiah(ri.ingredient.price * ri.quantity),
+      ri.ingredient.effective_unit,
+      format_rupiah(ri.ingredient.unit_price),
+      format_rupiah(ri.calculate_cost),
       "#{gram_equivalent.round(2)} gram"
     ]
   end

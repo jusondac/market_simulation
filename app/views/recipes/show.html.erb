@@ -73,7 +73,7 @@
                   <div>
                     <span class="font-medium text-gray-100"><%= recipe_ingredient.ingredient.name %></span>
                     <div class="text-sm text-gray-400">
-                      <%= recipe_ingredient.quantity %> <%= recipe_ingredient.ingredient.unit %>
+                      <%= recipe_ingredient.quantity %> <%= recipe_ingredient.ingredient.effective_unit %>
                       <% begin %>
                         <% gram_equivalent = UnitConverter.convert_to_grams(recipe_ingredient.quantity, recipe_ingredient.ingredient.unit) %>
                         <span class="text-xs text-gray-500">(≈ <%= gram_equivalent.round(1) %> gram)</span>
@@ -84,7 +84,7 @@
                   </div>
                 </div>
                 <div class="text-sm font-medium text-gray-100">
-                  <%= format_rupiah(recipe_ingredient.ingredient.price * recipe_ingredient.quantity) %>
+                  <%= format_rupiah(recipe_ingredient.calculate_cost) %>
                 </div>
               </div>
             <% end %>
@@ -146,18 +146,60 @@
         <h3 class="text-lg font-semibold text-gray-100 mb-4">Rincian Biaya</h3>
         <div class="space-y-3">
           <% @recipe_ingredients.each do |ri| %>
-            <div class="flex justify-between text-sm">
-              <span class="text-gray-400"><%= ri.ingredient.name %></span>
-              <span class="font-medium"><%= format_rupiah(ri.ingredient.price * ri.quantity) %></span>
+            <div class="border-b border-gray-700 pb-2 mb-2 last:border-b-0">
+              <div class="flex justify-between items-start">
+                <div class="flex-1">
+                  <div class="font-medium text-gray-100"><%= ri.ingredient.name %></div>
+                  <div class="text-xs text-gray-400 mt-1">
+                    <%= ri.quantity %> <%= ri.ingredient.effective_unit %>
+                    <% if ri.ingredient.ingredient_type == 'kemasan' && ri.ingredient.ingredient_detail&.package_size.present? %>
+                      <span class="text-blue-400">
+                        • <%= format_rupiah(ri.ingredient.unit_price) %>/<%= ri.ingredient.effective_unit %>
+                      </span>
+                      <div class="text-gray-500">
+                        (dari <%= format_rupiah(ri.ingredient.price) %>/<%= ri.ingredient.unit %>
+                        isi <%= ri.ingredient.ingredient_detail.package_size %> <%= ri.ingredient.effective_unit %>)
+                      </div>
+                    <% else %>
+                      <span class="text-green-400">
+                        • <%= format_rupiah(ri.ingredient.price) %>/<%= ri.ingredient.unit %>
+                      </span>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-medium text-gray-100"><%= format_rupiah(ri.calculate_cost) %></div>
+                  <% if ri.ingredient.ingredient_type == 'kemasan' && ri.ingredient.ingredient_detail&.package_size.present? %>
+                    <div class="text-xs text-blue-400">kemasan</div>
+                  <% else %>
+                    <div class="text-xs text-green-400">reguler</div>
+                  <% end %>
+                </div>
+              </div>
             </div>
           <% end %>
-          <div class="pt-3 border-t border-gray-700">
-            <div class="flex justify-between font-semibold">
+          <div class="pt-4 border-t border-gray-700 space-y-3">
+            <!-- Summary by ingredient type -->
+            <% kemasan_cost = @recipe_ingredients.select { |ri| ri.ingredient.ingredient_type == 'kemasan' }.sum(&:calculate_cost) %>
+            <% reguler_cost = @recipe_ingredients.select { |ri| ri.ingredient.ingredient_type != 'kemasan' }.sum(&:calculate_cost) %>
+            <% if kemasan_cost > 0 %>
+              <div class="flex justify-between text-sm">
+                <span class="text-blue-400">Biaya bahan kemasan</span>
+                <span class="text-blue-400"><%= format_rupiah(kemasan_cost) %></span>
+              </div>
+            <% end %>
+            <% if reguler_cost > 0 %>
+              <div class="flex justify-between text-sm">
+                <span class="text-green-400">Biaya bahan reguler</span>
+                <span class="text-green-400"><%= format_rupiah(reguler_cost) %></span>
+              </div>
+            <% end %>
+            <div class="flex justify-between font-semibold text-lg pt-2 border-t border-gray-600">
               <span>Total Biaya</span>
               <span><%= format_rupiah(@recipe.total_cost) %></span>
             </div>
-            <div class="flex justify-between text-sm text-gray-400 mt-1">
-              <span>Biaya per porsi</span>
+            <div class="flex justify-between text-sm text-gray-400">
+              <span>Biaya per porsi (<%= @recipe.servings %> porsi)</span>
               <span><%= format_rupiah(@recipe.cost_per_serving) %></span>
             </div>
           </div>

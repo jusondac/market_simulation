@@ -110,8 +110,8 @@
       ingredients: recipe.recipe_ingredients.includes(:ingredient).map { |ri| {
         name: ri.ingredient.name,
         quantity: ri.quantity,
-        unit: ri.ingredient.unit,
-        cost: ri.ingredient.price * ri.quantity
+        unit: ri.ingredient.effective_unit,
+        cost: ri.calculate_cost
       }}
     }}.to_json %>
   </script>

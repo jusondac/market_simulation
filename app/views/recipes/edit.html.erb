@@ -3,7 +3,7 @@
     <h1 class="text-3xl font-bold text-gray-100">Edit Resep</h1>
     <p class="text-gray-400 mt-2">Perbarui detail resep dan bahan-bahan</p>
   </div>
-  <%= form_with model: @recipe, local: true, data: { controller: "nested-form quick-add" } do |form| %>
+  <%= form_with model: @recipe, local: true, data: { controller: "nested-form quick-add cost-calculator" } do |form| %>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Recipe Details -->
       <div class="lg:col-span-2 space-y-6">
@@ -34,7 +34,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <%= form.label :servings, "Porsi", class: label_classes %>
-                <%= form.number_field :servings, class: input_classes, placeholder: "4" %>
+                <%= form.number_field :servings, class: input_classes, placeholder: "4", 
+                      data: { cost_calculator_target: "servings", action: "input->cost-calculator#updateCost" } %>
               </div>
               <div>
                 <%= form.label :preparation_time, "Waktu Persiapan (menit)", class: label_classes %>
@@ -82,13 +83,20 @@
                     <div>
                       <%= ingredient_form.label :ingredient_id, "Bahan", class: "block text-sm font-medium text-gray-300" %>
                       <%= ingredient_form.select :ingredient_id, 
-                            options_from_collection_for_select(@ingredients, :id, :name, ingredient_form.object.ingredient_id),
-                            { prompt: 'Pilih bahan' },
-                            { class: select_classes } %>
+                            options_for_select([['Pilih bahan', '']] + @ingredients.map { |ingredient|
+                              [ingredient.name, ingredient.id, {
+                                'data-price' => ingredient.ingredient_type == 'kemasan' ? ingredient.unit_price : ingredient.price,
+                                'data-unit' => ingredient.effective_unit,
+                                'data-type' => ingredient.ingredient_type
+                              }]
+                            }, ingredient_form.object.ingredient_id),
+                            {},
+                            { class: select_classes, data: { action: "change->cost-calculator#updateCost" } } %>
                     </div>
                     <div>
                       <%= ingredient_form.label :quantity, "Jumlah", class: "block text-sm font-medium text-gray-300" %>
-                      <%= ingredient_form.number_field :quantity, step: 0.01, class: input_classes, placeholder: "1.5" %>
+                      <%= ingredient_form.number_field :quantity, step: 0.01, class: input_classes, placeholder: "1.5", 
+                            data: { action: "input->cost-calculator#updateCost" } %>
                     </div>
                   </div>
                   <button type="button" data-action="click->nested-form#remove" 
@@ -116,10 +124,16 @@
                   <div>
                     <label class="block text-sm font-medium text-gray-300">Bahan</label>
                     <select name="recipe[recipe_ingredients_attributes][NEW_RECORD][ingredient_id]" 
-                            class="<%= input_classes %>">
+                            class="<%= input_classes %>"
+                            data-action="change->cost-calculator#updateCost">
                       <option value="">Pilih bahan</option>
                       <% @ingredients.each do |ingredient| %>
-                        <option value="<%= ingredient.id %>"><%= ingredient.name %></option>
+                        <option value="<%= ingredient.id %>" 
+                                data-price="<%= ingredient.ingredient_type == 'kemasan' ? ingredient.unit_price : ingredient.price %>"
+                                data-unit="<%= ingredient.effective_unit %>"
+                                data-type="<%= ingredient.ingredient_type %>">
+                          <%= ingredient.name %>
+                        </option>
                       <% end %>
                     </select>
                   </div>
@@ -127,7 +141,8 @@
                     <label class="block text-sm font-medium text-gray-300">Jumlah</label>
                     <input type="number" step="0.01" 
                            name="recipe[recipe_ingredients_attributes][NEW_RECORD][quantity]" 
-                           class="<%= input_classes %>" placeholder="1.5">
+                           class="<%= input_classes %>" placeholder="1.5"
+                           data-action="input->cost-calculator#updateCost">
                   </div>
                 </div>
                 <button type="button" data-action="click->nested-form#remove" 
@@ -145,16 +160,41 @@
       <!-- Sidebar -->
       <div class="space-y-6">
         <div class="<%= card_classes %>">
-          <h3 class="text-lg font-semibold text-gray-100 mb-4">Biaya Saat Ini</h3>
-          <div class="space-y-3">
-            <div class="flex justify-between">
-              <span class="text-gray-400">Total Biaya</span>
-              <span class="font-medium"><%= format_rupiah(@recipe.total_cost) %></span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-400">Biaya per porsi</span>
-              <span class="font-medium"><%= format_rupiah(@recipe.cost_per_serving) %></span>
-            </div>
+          <h3 class="text-lg font-semibold text-gray-100 mb-4">Rincian Biaya</h3>
+          <div data-cost-calculator-target="container" class="space-y-3">
+            <% if @recipe.recipe_ingredients.any? %>
+              <% @recipe.recipe_ingredients.includes(:ingredient).each do |ri| %>
+                <div class="flex justify-between items-center text-sm border-b border-gray-700 pb-2" data-cost-calculator-target="item">
+                  <div>
+                    <div class="text-gray-100"><%= ri.ingredient.name %></div>
+                    <div class="text-xs text-gray-400">
+                      <%= ri.quantity %> <%= ri.ingredient.effective_unit %>
+                      <% if ri.ingredient.ingredient_type == 'kemasan' %>
+                        <span class="text-blue-400 ml-1">📦</span>
+                      <% end %>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div class="font-medium"><%= format_rupiah(ri.calculate_cost) %></div>
+                  </div>
+                </div>
+              <% end %>
+              <div class="pt-3 border-t border-gray-600">
+                <div class="flex justify-between font-semibold">
+                  <span class="text-gray-400">Total Biaya</span>
+                  <span class="font-medium" data-cost-calculator-target="total"><%= format_rupiah(@recipe.total_cost) %></span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-400">Biaya per porsi</span>
+                  <span class="font-medium" data-cost-calculator-target="perServing"><%= format_rupiah(@recipe.cost_per_serving) %></span>
+                </div>
+              </div>
+            <% else %>
+              <div class="text-center text-gray-400 py-4">
+                <div class="text-2xl mb-2">💰</div>
+                <p class="text-sm">Tambahkan bahan untuk melihat rincian biaya</p>
+              </div>
+            <% end %>
           </div>
         </div>
         <div class="<%= card_classes %>">
@@ -166,13 +206,20 @@
                       data-action="click->quick-add#quickAdd"
                 data-quick-add-ingredient-id-param="<%= ingredient.id %>"
                 data-quick-add-ingredient-name-param="<%= ingredient.name %>"
-                data-quick-add-ingredient-unit-param="<%= ingredient.unit %>">
+                data-quick-add-ingredient-unit-param="<%= ingredient.effective_unit %>">
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-indigo-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <span class="font-medium text-gray-100"><%= ingredient.name %></span>
                 </div>
                 <div class="text-right">
-                  <div class="text-gray-400"><%= format_rupiah(ingredient.price) %>/<%= ingredient.unit %></div>
+                  <div class="text-gray-400">
+                    <% if ingredient.ingredient_type == 'kemasan' && ingredient.ingredient_detail&.package_size.present? %>
+                      <%= format_rupiah(ingredient.unit_price) %>/<%= ingredient.effective_unit %>
+                      <div class="text-xs text-gray-500">(<%= format_rupiah(ingredient.price) %>/<%= ingredient.unit %>)</div>
+                    <% else %>
+                      <%= format_rupiah(ingredient.price) %>/<%= ingredient.unit %>
+                    <% end %>
+                  </div>
                   <div class="text-xs text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity">Klik untuk menambah</div>
                 </div>
               </button>
@@ -195,21 +242,3 @@
     </div>
   <% end %>
 </div>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Initialize sortable instructions if controller exists
-    const instructionsController = document.querySelector('[data-controller~="sortable-instructions"]');
-    if (instructionsController) {
-      // Get the Stimulus controller instance
-      const application = window.Stimulus || document.querySelector('[data-controller]')?.application;
-      if (application) {
-        setTimeout(() => {
-          const controller = application.getControllerForElementAndIdentifier(instructionsController, 'sortable-instructions');
-          if (controller && controller.initializeFromTextarea) {
-            controller.initializeFromTextarea();
-          }
-        }, 100);
-      }
-    }
-  });
-</script>
