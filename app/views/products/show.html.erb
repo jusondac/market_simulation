@@ -2,7 +2,11 @@
   <div class="flex items-center justify-between mb-6">
     <div>
       <h1 class="text-3xl font-bold text-gray-100"><%= @product.name %></h1>
-      <p class="text-gray-400 mt-2">Based on <%= link_to @product.recipe.name, recipe_path(@product.recipe), class: "text-indigo-400 hover:text-indigo-300" %></p>
+      <% if @product.recipe.present? %>
+        <p class="text-gray-400 mt-2">Based on <%= link_to @product.recipe.name, recipe_path(@product.recipe), class: "text-indigo-400 hover:text-indigo-300" %></p>
+      <% elsif @product.product_recipes.any? %>
+        <p class="text-gray-400 mt-2">Multi-recipe product with <%= @product.product_recipes.count %> recipe<%= 's' if @product.product_recipes.count > 1 %></p>
+      <% end %>
     </div>
     <div class="space-x-2">
       <%= link_to "Edit Product", edit_product_path(@product), class: button_classes(:secondary) %>
@@ -18,7 +22,7 @@
         <h2 class="text-lg font-semibold text-gray-100 mb-4">Pricing Overview</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="text-center">
-            <div class="text-2xl font-bold text-red-400">$<%= number_with_precision(@product.cost, precision: 2) %></div>
+            <div class="text-2xl font-bold text-red-400"><%= format_rupiah(@product.cost) %></div>
             <div class="text-sm text-gray-400">Cost</div>
           </div>
           <div class="text-center">
@@ -26,11 +30,11 @@
             <div class="text-sm text-gray-400">Margin</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-green-400">$<%= number_with_precision(@product.price, precision: 2) %></div>
+            <div class="text-2xl font-bold text-green-400"><%= format_rupiah(@product.price) %></div>
             <div class="text-sm text-gray-400">Selling Price</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-green-400">$<%= number_with_precision(@product.profit_per_unit, precision: 2) %></div>
+            <div class="text-2xl font-bold text-green-400"><%= format_rupiah(@product.profit_per_unit) %></div>
             <div class="text-sm text-gray-400">Profit</div>
           </div>
         </div>
@@ -42,41 +46,101 @@
         </div>
       </div>
       <!-- Recipe Details -->
-      <div class="<%= card_classes %>">
-        <h2 class="text-lg font-semibold text-gray-100 mb-4">Recipe: <%= @product.recipe.name %></h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div class="text-center">
-            <div class="text-lg font-bold text-indigo-400"><%= @product.recipe.servings %></div>
-            <div class="text-sm text-gray-400">Servings</div>
-          </div>
-          <div class="text-center">
-            <div class="text-lg font-bold text-indigo-400"><%= @product.recipe.preparation_time %></div>
-            <div class="text-sm text-gray-400">Minutes</div>
-          </div>
-          <div class="text-center">
-            <div class="text-lg font-bold text-indigo-400">$<%= number_with_precision(@product.recipe.cost_per_serving, precision: 2) %></div>
-            <div class="text-sm text-gray-400">Cost/Serving</div>
-          </div>
-        </div>
-        <div class="space-y-3">
-          <h3 class="font-medium text-gray-100">Ingredients:</h3>
-          <% @product.recipe.recipe_ingredients.includes(:ingredient).each do |ri| %>
-            <div class="flex items-center justify-between py-2 border-b border-gray-700 last:border-b-0">
-              <div class="flex items-center space-x-2">
-                <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
-                <span class="text-gray-100"><%= ri.ingredient.name %></span>
-                <span class="text-sm text-gray-400">(<%= ri.quantity %> <%= ri.ingredient.effective_unit %>)</span>
-              </div>
-              <span class="text-sm font-medium text-gray-100">
-                $<%= number_with_precision(ri.calculate_cost, precision: 2) %>
-              </span>
+      <% if @product.recipe.present? %>
+        <!-- Single Recipe Mode -->
+        <div class="<%= card_classes %>">
+          <h2 class="text-lg font-semibold text-gray-100 mb-4">Recipe: <%= @product.recipe.name %></h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="text-center">
+              <div class="text-lg font-bold text-indigo-400"><%= @product.recipe.servings %></div>
+              <div class="text-sm text-gray-400">Servings</div>
             </div>
-          <% end %>
+            <div class="text-center">
+              <div class="text-lg font-bold text-indigo-400"><%= @product.recipe.preparation_time %></div>
+              <div class="text-sm text-gray-400">Minutes</div>
+            </div>
+            <div class="text-center">
+              <div class="text-lg font-bold text-indigo-400"><%= format_rupiah(@product.recipe.cost_per_serving) %></div>
+              <div class="text-sm text-gray-400">Cost/Serving</div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <h3 class="font-medium text-gray-100">Ingredients:</h3>
+            <% @product.recipe.recipe_ingredients.includes(:ingredient).each do |ri| %>
+              <div class="flex items-center justify-between py-2 border-b border-gray-700 last:border-b-0">
+                <div class="flex items-center space-x-2">
+                  <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                  <span class="text-gray-100"><%= ri.ingredient.name %></span>
+                  <span class="text-sm text-gray-400">(<%= ri.quantity %> <%= ri.ingredient.effective_unit %>)</span>
+                </div>
+                <span class="text-sm font-medium text-gray-100">
+                  <%= format_rupiah(ri.calculate_cost) %>
+                </span>
+              </div>
+            <% end %>
+          </div>
+          <div class="mt-4 pt-4 border-t border-gray-700">
+            <%= link_to "View Full Recipe", recipe_path(@product.recipe), class: button_classes(:outline, :small) %>
+          </div>
         </div>
-        <div class="mt-4 pt-4 border-t border-gray-700">
-          <%= link_to "View Full Recipe", recipe_path(@product.recipe), class: button_classes(:outline, :small) %>
+      <% elsif @product.product_recipes.any? %>
+        <!-- Multiple Recipes Mode -->
+        <div class="<%= card_classes %>">
+          <h2 class="text-lg font-semibold text-gray-100 mb-4">Product Recipes</h2>
+          <div class="space-y-4">
+            <% @product.product_recipes.includes(:recipe).each do |product_recipe| %>
+              <div class="border border-gray-600 rounded-lg p-4 bg-gray-800">
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="font-medium text-gray-100">
+                    <%= product_recipe.recipe_type.present? ? product_recipe.recipe_type.titleize : 'Recipe Component' %>
+                  </h3>
+                  <div class="text-sm text-gray-400">
+                    Quantity: <%= product_recipe.quantity %>
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div class="text-center">
+                    <div class="text-lg font-bold text-indigo-400"><%= product_recipe.recipe.servings %></div>
+                    <div class="text-sm text-gray-400">Base Servings</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="text-lg font-bold text-indigo-400"><%= format_rupiah(product_recipe.recipe.total_cost) %></div>
+                    <div class="text-sm text-gray-400">Recipe Cost</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="text-lg font-bold text-green-400"><%= format_rupiah(product_recipe.total_cost) %></div>
+                    <div class="text-sm text-gray-400">Total Cost</div>
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  <h4 class="font-medium text-gray-100 text-sm">
+                    <%= link_to product_recipe.recipe.name, recipe_path(product_recipe.recipe), 
+                        class: "text-indigo-400 hover:text-indigo-300" %> - Ingredients:
+                  </h4>
+                  <% product_recipe.recipe.recipe_ingredients.includes(:ingredient).each do |ri| %>
+                    <div class="flex items-center justify-between py-1 text-sm">
+                      <div class="flex items-center space-x-2">
+                        <div class="w-1.5 h-1.5 bg-indigo-400 rounded-full"></div>
+                        <span class="text-gray-200"><%= ri.ingredient.name %></span>
+                        <span class="text-gray-400">(<%= ri.quantity * product_recipe.quantity %> <%= ri.ingredient.effective_unit %>)</span>
+                      </div>
+                      <span class="text-gray-100">
+                        <%= format_rupiah(ri.calculate_cost * product_recipe.quantity) %>
+                      </span>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="mt-6 p-4 bg-blue-900 rounded-lg">
+            <div class="flex justify-between items-center">
+              <span class="text-blue-300 font-medium">Total Recipe Cost:</span>
+              <span class="text-blue-300 font-bold text-lg"><%= format_rupiah(@product.total_recipe_cost) %></span>
+            </div>
+          </div>
         </div>
-      </div>
+      <% end %>
     </div>
     <!-- Sidebar -->
     <div class="space-y-6">
@@ -92,7 +156,7 @@
             <div class="text-sm text-gray-400">Units Sold (All Simulations)</div>
           </div>
           <div class="text-center">
-            <div class="text-3xl font-bold text-green-400">$<%= number_with_precision(total_profit, precision: 2) %></div>
+            <div class="text-3xl font-bold text-green-400"><%= format_rupiah(total_profit) %></div>
             <div class="text-sm text-gray-400">Total Profit Generated</div>
           </div>
           <div class="text-center">
@@ -105,7 +169,7 @@
             <div class="text-sm text-blue-300">
               <div class="font-medium">Average per simulation:</div>
               <div><%= (total_sold.to_f / simulations_count).round(1) %> units sold</div>
-              <div>$<%= number_with_precision(total_profit / simulations_count, precision: 2) %> profit</div>
+              <div><%= format_rupiah(total_profit / simulations_count) %> profit</div>
             </div>
           </div>
         <% end %>
@@ -114,23 +178,45 @@
       <div class="<%= card_classes %>">
         <h3 class="text-lg font-semibold text-gray-100 mb-4">Production Calculator</h3>
         <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Units to Produce</label>
-            <input type="number" id="production-units" value="10" min="1" 
-                   class="<%= input_classes %>" placeholder="10">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-1">Units to Produce</label>
+              <input type="number" id="production-units" value="10" min="1" 
+                     class="<%= input_classes %>" placeholder="10">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-1">Profit Margin (%)</label>
+              <input type="number" id="profit-margin" value="<%= @product.margin %>" min="0" step="0.1"
+                     class="<%= input_classes %>" placeholder="<%= @product.margin %>"
+                     title="Margin akan tersimpan otomatis setelah 2 detik tidak ada perubahan">
+            </div>
           </div>
           <div id="production-results" class="space-y-2">
             <div class="flex justify-between text-sm">
-              <span class="text-gray-400">Total Cost:</span>
-              <span id="total-cost" class="font-medium">$<%= number_with_precision(@product.cost * 10, precision: 2) %></span>
+              <span class="text-gray-400">Cost per Unit:</span>
+              <span id="cost-per-unit" class="font-medium"><%= format_rupiah(@product.cost) %></span>
             </div>
             <div class="flex justify-between text-sm">
-              <span class="text-gray-400">Total Revenue:</span>
-              <span id="total-revenue" class="font-medium">$<%= number_with_precision(@product.price * 10, precision: 2) %></span>
+              <span class="text-gray-400">Price per Unit:</span>
+              <span id="price-per-unit" class="font-medium"><%= format_rupiah(@product.price) %></span>
             </div>
-            <div class="flex justify-between text-sm pt-2 border-t border-gray-700">
-              <span class="text-gray-100 font-medium">Total Profit:</span>
-              <span id="total-profit" class="font-bold text-green-400">$<%= number_with_precision(@product.profit_per_unit * 10, precision: 2) %></span>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-400">Profit per Unit:</span>
+              <span id="profit-per-unit-display" class="font-medium text-green-400"><%= format_rupiah(@product.profit_per_unit) %></span>
+            </div>
+            <div class="border-t border-gray-700 pt-2 mt-3">
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400">Total Cost:</span>
+                <span id="total-cost" class="font-medium"><%= format_rupiah(@product.cost * 10) %></span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400">Total Revenue:</span>
+                <span id="total-revenue" class="font-medium"><%= format_rupiah(@product.price * 10) %></span>
+              </div>
+              <div class="flex justify-between text-sm pt-2 border-t border-gray-700">
+                <span class="text-gray-100 font-medium">Total Profit:</span>
+                <span id="total-profit" class="font-bold text-green-400"><%= format_rupiah(@product.profit_per_unit * 10) %></span>
+              </div>
             </div>
           </div>
         </div>
@@ -154,23 +240,176 @@
   </div>
 </div>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const unitsInput = document.getElementById('production-units');
-    const costPerUnit = <%= @product.cost %>;
-    const pricePerUnit = <%= @product.price %>;
-    const profitPerUnit = <%= @product.profit_per_unit %>;
+  (function() {
+    'use strict';
 
-    function updateCalculation() {
-      const units = parseInt(unitsInput.value) || 0;
-      const totalCost = costPerUnit * units;
-      const totalRevenue = pricePerUnit * units;
-      const totalProfit = profitPerUnit * units;
-
-      document.getElementById('total-cost').textContent = `$${totalCost.toFixed(2)}`;
-      document.getElementById('total-revenue').textContent = `$${totalRevenue.toFixed(2)}`;
-      document.getElementById('total-profit').textContent = `$${totalProfit.toFixed(2)}`;
+    // Wait for DOM to be fully loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeCalculator);
+    } else {
+      initializeCalculator();
     }
 
-    unitsInput.addEventListener('input', updateCalculation);
-  });
+    function initializeCalculator() {
+      const unitsInput = document.getElementById('production-units');
+      const marginInput = document.getElementById('profit-margin');
+      const costPerUnit = <%= @product.cost %>;
+      let marginUpdateTimeout;
+
+      // Check if elements exist
+      if (!unitsInput || !marginInput) {
+        console.error('Required inputs not found:', { unitsInput, marginInput });
+        return;
+      }
+
+      console.log('Initializing calculator with cost per unit:', costPerUnit);
+
+      function updateCalculation() {
+        const units = parseInt(unitsInput.value) || 0;
+        const margin = parseFloat(marginInput.value) || 0;
+
+        // Calculate values
+        const pricePerUnit = costPerUnit * (1 + margin / 100);
+        const profitPerUnit = pricePerUnit - costPerUnit;
+        const totalCost = costPerUnit * units;
+        const totalRevenue = pricePerUnit * units;
+        const totalProfit = profitPerUnit * units;
+
+        // Format currency function
+        function formatRupiah(amount) {
+          return 'Rp ' + Math.round(amount).toLocaleString('id-ID');
+        }
+
+        // Update displays with error checking
+        const elements = {
+          'cost-per-unit': formatRupiah(costPerUnit),
+          'price-per-unit': formatRupiah(pricePerUnit),
+          'profit-per-unit-display': formatRupiah(profitPerUnit),
+          'total-cost': formatRupiah(totalCost),
+          'total-revenue': formatRupiah(totalRevenue),
+          'total-profit': formatRupiah(totalProfit)
+        };
+
+        Object.keys(elements).forEach(id => {
+          const element = document.getElementById(id);
+          if (element) {
+            element.textContent = elements[id];
+          } else {
+            console.warn('Element not found:', id);
+          }
+        });
+      }
+
+      function updateMargin() {
+        const newMargin = parseFloat(marginInput.value) || 0;
+
+        // Visual feedback
+        marginInput.style.borderColor = '#3b82f6';
+        marginInput.style.borderWidth = '2px';
+
+        fetch('<%= product_path(@product) %>', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            product: { margin: newMargin }
+          })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Success
+          marginInput.style.borderColor = '#10b981';
+          showNotification('Margin berhasil diupdate!', 'success');
+          updatePricingOverview(newMargin);
+
+          setTimeout(() => {
+            marginInput.style.borderColor = '';
+            marginInput.style.borderWidth = '';
+          }, 2000);
+        })
+        .catch(error => {
+          // Error
+          marginInput.style.borderColor = '#ef4444';
+          showNotification('Gagal mengupdate margin', 'error');
+
+          setTimeout(() => {
+            marginInput.style.borderColor = '';
+            marginInput.style.borderWidth = '';
+          }, 3000);
+        });
+      }
+
+      function handleMarginChange() {
+        if (marginUpdateTimeout) {
+          clearTimeout(marginUpdateTimeout);
+        }
+
+        updateCalculation();
+
+        marginUpdateTimeout = setTimeout(() => {
+          updateMargin();
+        }, 2000);
+      }
+
+      function updatePricingOverview(newMargin) {
+        const pricePerUnit = costPerUnit * (1 + newMargin / 100);
+        const profitPerUnit = pricePerUnit - costPerUnit;
+        const profitMarginPercentage = ((profitPerUnit / pricePerUnit) * 100).toFixed(2);
+
+        // Update pricing cards
+        const pricingSection = document.querySelector('.grid.grid-cols-2.md\\:grid-cols-4');
+        if (pricingSection) {
+          const cards = pricingSection.querySelectorAll('.text-center .text-2xl');
+
+          if (cards[1]) cards[1].textContent = newMargin + '%';
+          if (cards[2]) cards[2].textContent = 'Rp ' + Math.round(pricePerUnit).toLocaleString('id-ID');
+          if (cards[3]) cards[3].textContent = 'Rp ' + Math.round(profitPerUnit).toLocaleString('id-ID');
+        }
+
+        // Update profit margin percentage
+        const profitDisplay = document.querySelector('.bg-green-900 .font-bold');
+        if (profitDisplay) {
+          profitDisplay.textContent = profitMarginPercentage + '%';
+        }
+      }
+
+      function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          padding: 12px 20px;
+          border-radius: 6px;
+          color: white;
+          z-index: 9999;
+          font-weight: 500;
+          background-color: ${type === 'success' ? '#059669' : '#dc2626'};
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 3000);
+      }
+
+      // Add event listeners
+      unitsInput.addEventListener('input', updateCalculation);
+      marginInput.addEventListener('input', handleMarginChange);
+
+      // Initial calculation
+      updateCalculation();
+    }
+  })();
 </script>

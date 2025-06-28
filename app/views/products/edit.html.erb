@@ -22,17 +22,9 @@
         <!-- Product Details -->
         <div class="space-y-6">
           <div>
-            <%= form.label :recipe_id, "Base Recipe", class: label_classes %>
-            <%= form.select :recipe_id, 
-                  options_from_collection_for_select(@recipes, :id, :name, @product.recipe_id),
-                  { prompt: 'Select a recipe' },
-                  { class: select_classes, data: { action: "change->product-calculator#updateCost" } } %>
-            <p class="text-sm text-gray-400 mt-1">Choose the recipe this product is based on</p>
-          </div>
-          <div>
             <%= form.label :name, "Product Name", class: label_classes %>
             <%= form.text_field :name, class: input_classes, 
-                placeholder: "e.g., Artisan Chocolate Chip Cookie Pack (12 pieces)" %>
+                placeholder: "e.g., Basreng Karedok (dengan sambal khusus)" %>
             <p class="text-sm text-gray-400 mt-1">Give your product a marketable name</p>
           </div>
           <div>
@@ -41,25 +33,85 @@
                 placeholder: "150", data: { action: "input->product-calculator#updatePrice" } %>
             <p class="text-sm text-gray-400 mt-1">What percentage markup do you want?</p>
           </div>
+          <!-- Recipe Mode Selection -->
+          <div class="space-y-4">
+            <label class="<%= label_classes %>">Recipe Configuration</label>
+            <div class="space-y-3">
+              <label class="flex items-center">
+                <input type="radio" 
+                       name="recipe_mode" 
+                       value="single" 
+                       class="mr-3 text-blue-600"
+                       data-action="change->product-calculator#toggleRecipeMode"
+                <%= @product.recipe_id.present? ? 'checked' : '' %>>
+                <span class="text-gray-300">Single Recipe (Legacy)</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" 
+                       name="recipe_mode" 
+                       value="multiple" 
+                       class="mr-3 text-blue-600"
+                       data-action="change->product-calculator#toggleRecipeMode"
+                <%= @product.product_recipes.any? ? 'checked' : '' %>>
+                <span class="text-gray-300">Multiple Recipes (New)</span>
+              </label>
+            </div>
+          </div>
+          <!-- Single Recipe Mode -->
+          <div id="single-recipe-section" <%= 'class="hidden"' if @product.product_recipes.any? %>>
+            <div>
+              <%= form.label :recipe_id, "Base Recipe", class: label_classes %>
+              <%= form.select :recipe_id, 
+                    options_from_collection_for_select(@recipes, :id, :name, @product.recipe_id),
+                    { prompt: 'Select a recipe' },
+                    { class: select_classes, data: { action: "change->product-calculator#updateCost" } } %>
+              <p class="text-sm text-gray-400 mt-1">Choose the recipe this product is based on</p>
+            </div>
+          </div>
+          <!-- Multiple Recipes Mode -->
+          <div id="multiple-recipes-section" <%= 'class="hidden"' unless @product.product_recipes.any? %>>
+            <%= render 'multiple_recipes_form', form: form %>
+          </div>
         </div>
         <!-- Cost Calculator -->
         <div class="<%= card_classes %> bg-gray-900">
           <h3 class="text-lg font-semibold text-gray-100 mb-4">Cost Calculator</h3>
           <div id="cost-breakdown" class="space-y-4">
-            <div class="flex justify-between items-center">
-              <span class="text-gray-400">Recipe Cost per Serving:</span>
-              <span id="recipe-cost" class="font-medium">
-                $<%= number_with_precision(@product.recipe.cost_per_serving, precision: 2) %>
-              </span>
-            </div>
-            <div class="flex justify-between items-center">
-              <span class="text-gray-400">Servings per Product:</span>
-              <span id="servings-count" class="font-medium"><%= @product.recipe.servings %></span>
-            </div>
+            <% if @product.recipe.present? %>
+              <!-- Single Recipe Mode -->
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400">Recipe Cost per Serving:</span>
+                <span id="recipe-cost" class="font-medium">
+                  <%= format_rupiah(@product.recipe.cost_per_serving) %>
+                </span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400">Servings per Product:</span>
+                <span id="servings-count" class="font-medium"><%= @product.recipe.servings %></span>
+              </div>
+            <% elsif @product.product_recipes.any? %>
+              <!-- Multiple Recipes Mode -->
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400">Total Recipe Cost:</span>
+                <span id="recipe-cost" class="font-medium">
+                  <%= format_rupiah(@product.total_recipe_cost) %>
+                </span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400">Recipe Components:</span>
+                <span id="servings-count" class="font-medium"><%= @product.product_recipes.count %></span>
+              </div>
+            <% else %>
+              <!-- No Recipe -->
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400">Recipe Cost:</span>
+                <span id="recipe-cost" class="font-medium text-gray-500">No recipe assigned</span>
+              </div>
+            <% end %>
             <div class="flex justify-between items-center pt-2 border-t border-gray-700">
               <span class="text-gray-400">Total Product Cost:</span>
               <span id="product-cost" class="font-medium text-lg">
-                $<%= number_with_precision(@product.cost, precision: 2) %>
+                <%= format_rupiah(@product.cost) %>
               </span>
             </div>
             <div class="flex justify-between items-center">
@@ -69,13 +121,13 @@
             <div class="flex justify-between items-center pt-2 border-t border-gray-700">
               <span class="text-gray-100 font-semibold">Selling Price:</span>
               <span id="selling-price" class="font-bold text-xl text-green-400">
-                $<%= number_with_precision(@product.price, precision: 2) %>
+                <%= format_rupiah(@product.price) %>
               </span>
             </div>
             <div class="flex justify-between items-center">
               <span class="text-gray-400">Profit per Unit:</span>
               <span id="profit-per-unit" class="font-medium text-green-400">
-                $<%= number_with_precision(@product.profit_per_unit, precision: 2) %>
+                <%= format_rupiah(@product.profit_per_unit) %>
               </span>
             </div>
           </div>
@@ -83,7 +135,7 @@
             <h4 class="font-medium text-blue-900 mb-2">Current Performance</h4>
             <div class="text-sm text-blue-300 space-y-1">
               <div>Units sold in simulations: <%= @product.simulation_results.sum(:quantity_sold) %></div>
-              <div>Total profit generated: $<%= number_with_precision(@product.simulation_results.sum(:profit), precision: 2) %></div>
+              <div>Total profit generated: <%= format_rupiah(@product.simulation_results.sum(:profit)) %></div>
               <div>Used in <%= @product.market_simulations.count %> simulations</div>
             </div>
           </div>

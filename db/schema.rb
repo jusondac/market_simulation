@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_28_110225) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_28_114046) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -58,8 +58,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_28_110225) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "products", force: :cascade do |t|
+  create_table "product_recipes", force: :cascade do |t|
+    t.bigint "product_id", null: false
     t.bigint "recipe_id", null: false
+    t.string "recipe_type"
+    t.decimal "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_product_recipes_on_product_id"
+    t.index ["recipe_id"], name: "index_product_recipes_on_recipe_id"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.bigint "recipe_id"
     t.string "name"
     t.decimal "price"
     t.decimal "margin"
@@ -121,6 +132,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_28_110225) do
   end
 
   add_foreign_key "ingredient_details", "ingredients"
+  add_foreign_key "product_recipes", "products"
+  add_foreign_key "product_recipes", "recipes"
   add_foreign_key "products", "recipes"
   add_foreign_key "recipe_ingredients", "ingredients"
   add_foreign_key "recipe_ingredients", "recipes"

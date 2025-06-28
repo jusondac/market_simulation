@@ -17,29 +17,54 @@ class ProductsController < ApplicationController
   def new
     @product = Product.new
     @recipes = Recipe.all.order(:name)
+    @product.product_recipes.build # Build empty product_recipe for form
   end
 
   def create
     @product = Product.new(product_params)
 
+    # Jika menggunakan multiple recipes, hapus recipe_id yang lama
+    if params[:recipe_mode] == "multiple"
+      @product.recipe_id = nil
+    end
+
     if @product.save
       redirect_to @product, notice: "Product was successfully created."
     else
       @recipes = Recipe.all.order(:name)
+      # Build empty product_recipe jika belum ada untuk error handling
+      @product.product_recipes.build if @product.product_recipes.empty?
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
     @recipes = Recipe.all.order(:name)
+    # Build empty product_recipe jika belum ada
+    @product.product_recipes.build if @product.product_recipes.empty?
   end
 
   def update
+    # Jika menggunakan multiple recipes, hapus recipe_id yang lama
+    if params[:recipe_mode] == "multiple"
+      @product.recipe_id = nil
+    end
+
     if @product.update(product_params)
-      redirect_to @product, notice: "Product was successfully updated."
+      respond_to do |format|
+        format.html { redirect_to @product, notice: "Product was successfully updated." }
+        format.json { render json: { status: "success", message: "Product updated successfully" } }
+      end
     else
-      @recipes = Recipe.all.order(:name)
-      render :edit, status: :unprocessable_entity
+      respond_to do |format|
+        format.html do
+          @recipes = Recipe.all.order(:name)
+          # Build empty product_recipe jika belum ada untuk error handling
+          @product.product_recipes.build if @product.product_recipes.empty?
+          render :edit, status: :unprocessable_entity
+        end
+        format.json { render json: { status: "error", errors: @product.errors.full_messages } }
+      end
     end
   end
 
@@ -55,6 +80,7 @@ class ProductsController < ApplicationController
   end
 
   def product_params
-    params.require(:product).permit(:recipe_id, :name, :margin)
+    params.require(:product).permit(:recipe_id, :name, :margin,
+      product_recipes_attributes: [ :id, :recipe_id, :recipe_type, :quantity, :_destroy ])
   end
 end
