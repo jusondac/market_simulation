@@ -20,19 +20,26 @@
             <dd class="text-lg font-semibold text-gray-100 font-mono"><%= @ingredient.ingredient_code %></dd>
           </div>
           <div>
-            <dt class="text-sm font-medium text-gray-400">Harga per satuan</dt>
+            <dt class="text-sm font-medium text-gray-400">Jumlah Stok</dt>
             <dd class="text-lg font-semibold text-gray-100">
-              <% if @ingredient.ingredient_type == 'kemasan' && @ingredient.ingredient_detail&.package_size.present? %>
-                <%= format_rupiah(@ingredient.unit_price) %> per <%= @ingredient.effective_unit %>
-                <div class="text-sm text-gray-400">(<%= format_rupiah(@ingredient.price) %> per <%= @ingredient.unit %>)</div>
-              <% else %>
-                <%= format_rupiah(@ingredient.price) %>
-              <% end %>
+              <%= number_with_precision(@ingredient.quantity, precision: 2, strip_insignificant_zeros: true) %> <%= @ingredient.unit %>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-400">Harga Total</dt>
+            <dd class="text-lg font-semibold text-gray-100">
+              <%= format_rupiah(@ingredient.price) %>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-400">Harga per Satuan</dt>
+            <dd class="text-lg font-semibold text-gray-100">
+              <%= format_rupiah(@ingredient.price_per_unit) %> per <%= @ingredient.unit %>
             </dd>
           </div>
           <div>
             <dt class="text-sm font-medium text-gray-400">Satuan</dt>
-            <dd class="text-lg font-semibold text-gray-100"><%= @ingredient.effective_unit %></dd>
+            <dd class="text-lg font-semibold text-gray-100"><%= @ingredient.unit %></dd>
           </div>
           <% if @ingredient.ingredient_type.present? %>
             <div>

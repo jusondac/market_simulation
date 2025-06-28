@@ -1,42 +1,65 @@
 <div class="px-4 sm:px-0">
-  <div class="mb-6">
+  <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-100">Edit Bahan</h1>
     <p class="text-gray-400 mt-2">Perbarui detail bahan</p>
   </div>
-  <div class="<%= card_classes %>" data-controller="ingredient-form">
-    <%= form_with model: @ingredient, local: true, class: "space-y-6" do |form| %>
-      <% if @ingredient.errors.any? %>
-        <div class="bg-red-900 border border-red-700 rounded-md p-4">
-          <div class="text-red-300 text-sm">
-            <h4 class="font-medium mb-2">Silakan perbaiki kesalahan berikut:</h4>
-            <ul class="list-disc list-inside space-y-1">
-              <% @ingredient.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
+  <%= form_with model: @ingredient, local: true, data: { controller: "ingredient-form" }, class: "space-y-8" do |form| %>
+    <% if @ingredient.errors.any? %>
+      <div class="bg-red-900 border border-red-700 rounded-lg p-4">
+        <div class="text-red-300 text-sm">
+          <h4 class="font-medium mb-2">Silakan perbaiki kesalahan berikut:</h4>
+          <ul class="list-disc list-inside space-y-1">
+            <% @ingredient.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+    <!-- Informasi Dasar -->
+    <div class="space-y-6">
+      <div class="border-b border-gray-700 pb-4">
+        <h3 class="text-lg font-medium text-gray-100">Informasi Dasar</h3>
+        <p class="text-sm text-gray-400">Detail dasar bahan</p>
+      </div>
+      <div class="bg-gray-800 border border-gray-700 rounded-lg p-4">
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
+          </svg>
+          <div>
+            <span class="text-gray-300 text-sm font-medium">Kode Bahan: </span>
+            <span class="font-mono text-indigo-400"><%= @ingredient.ingredient_code %></span>
           </div>
         </div>
-      <% end %>
-      <div class="bg-gray-800 border border-gray-700 rounded-md p-4">
-        <div class="text-gray-300 text-sm">
-          <h4 class="font-medium mb-2">📋 Kode Bahan</h4>
-          <p class="font-mono text-lg text-indigo-400"><%= @ingredient.ingredient_code %></p>
-          <p class="text-gray-400 text-xs mt-1">Kode bahan tidak dapat dirubah</p>
-        </div>
+        <p class="text-xs text-gray-400 mt-2">Kode bahan tidak dapat dirubah</p>
       </div>
       <div>
         <%= form.label :name, "Nama Bahan", class: label_classes %>
         <%= form.text_field :name, class: input_classes, placeholder: "contoh: Tepung Organik" %>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    </div>
+    <!-- Detail Inventaris -->
+    <div class="space-y-6">
+      <div class="border-b border-gray-700 pb-4">
+        <h3 class="text-lg font-medium text-gray-100">Detail Inventaris</h3>
+        <p class="text-sm text-gray-400">Atur jumlah, harga, dan satuan</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
-          <%= form.label :price, "Harga per satuan", class: label_classes %>
+          <%= form.label :price, "Harga Total", class: label_classes %>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <span class="text-gray-400 sm:text-sm">Rp</span>
             </div>
             <%= form.number_field :price, step: 0.01, class: "#{input_classes} pl-12", placeholder: "0.00" %>
           </div>
+          <p class="text-xs text-gray-400 mt-1">Harga total untuk jumlah yang dimasukkan</p>
+        </div>
+        <div>
+          <%= form.label :quantity, "Jumlah / berat", class: label_classes %>
+          <%= form.number_field :quantity, step: 0.01, class: input_classes, placeholder: "1000" %>
+          <p class="text-xs text-gray-400 mt-1">Jumlah stok yang tersedia</p>
         </div>
         <div>
           <%= form.label :unit, "Satuan", class: label_classes %>
@@ -50,7 +73,13 @@
           </p>
         </div>
       </div>
-      <!-- Jenis Bahan -->
+    </div>
+    <!-- Kategori Bahan -->
+    <div class="space-y-6">
+      <div class="border-b border-gray-700 pb-4">
+        <h3 class="text-lg font-medium text-gray-100">Kategori Bahan</h3>
+        <p class="text-sm text-gray-400">Pilih jenis bahan sesuai dengan karakteristiknya</p>
+      </div>
       <div>
         <%= form.label :ingredient_type, "Jenis Bahan", class: label_classes %>
         <%= form.select :ingredient_type, 
@@ -68,12 +97,15 @@
         </p>
       </div>
       <!-- Package Fields (hanya untuk kemasan) -->
-      <div id="package-fields" class="<%= @ingredient.ingredient_type == 'kemasan' ? '' : 'hidden' %>" data-ingredient-form-target="packageFields">
-        <div class="bg-blue-900 border border-blue-700 rounded-md p-4 mb-4">
-          <div class="text-blue-300 text-sm">
-            <h4 class="font-medium mb-2">📦 Informasi Kemasan</h4>
-            <p>Masukkan informasi ukuran kemasan untuk bahan yang sudah dikemas</p>
-          </div>
+      <div id="package-fields" class="<%= @ingredient.ingredient_type == 'kemasan' ? 'space-y-4' : 'hidden space-y-4' %>" data-ingredient-form-target="packageFields">
+        <div class="border-b border-gray-700 pb-4">
+          <h4 class="text-lg font-medium text-gray-100 flex items-center space-x-2">
+            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+            <span>Informasi Kemasan</span>
+          </h4>
+          <p class="text-sm text-gray-400">Masukkan informasi ukuran kemasan untuk bahan yang sudah dikemas</p>
         </div>
         <%= form.fields_for :ingredient_detail do |detail_form| %>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -93,19 +125,27 @@
           </div>
         <% end %>
       </div>
+    </div>
+    <!-- Deskripsi -->
+    <div class="space-y-6">
+      <div class="border-b border-gray-700 pb-4">
+        <h3 class="text-lg font-medium text-gray-100">Deskripsi</h3>
+        <p class="text-sm text-gray-400">Tambahkan deskripsi tambahan (opsional)</p>
+      </div>
       <div>
         <%= form.label :description, "Deskripsi", class: label_classes %>
         <%= form.text_area :description, rows: 3, class: textarea_classes, 
-            placeholder: "Deskripsi opsional tentang bahan..." %>
+              placeholder: "Deskripsi opsional tentang bahan..." %>
       </div>
-      <div class="flex items-center justify-between pt-4 border-t border-gray-700">
-        <div class="space-x-2">
-          <%= link_to "Batal", ingredient_path(@ingredient), class: button_classes(:outline) %>
-          <%= link_to "Hapus", ingredient_path(@ingredient), method: :delete, 
+    </div>
+    <!-- Form Actions -->
+    <div class="flex items-center justify-between pt-8 border-t border-gray-700">
+      <div class="space-x-2">
+        <%= link_to "Batal", ingredient_path(@ingredient), class: button_classes(:outline) %>
+        <%= link_to "Hapus", ingredient_path(@ingredient), method: :delete, 
                       confirm: "Apakah Anda yakin?", class: button_classes(:danger) %>
-        </div>
-        <%= form.submit "Perbarui Bahan", class: button_classes %>
       </div>
-    <% end %>
-  </div>
+      <%= form.submit "Perbarui Bahan", class: button_classes %>
+    </div>
+  <% end %>
 </div>

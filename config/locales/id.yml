@@ -148,11 +148,13 @@ id:
       too_long: "terlalu panjang (maksimum %{count} karakter)"
       greater_than: "harus lebih besar dari %{count}"
       greater_than_or_equal_to: "harus lebih besar atau sama dengan %{count}"
+      not_a_number: "harus berupa angka"
       
   activerecord:
     models:
       recipe: "Resep"
       ingredient: "Bahan"
+      ingredient_detail: "Detail Bahan"
       product: "Produk"
       recipe_ingredient: "Bahan Resep"
       
@@ -168,7 +170,12 @@ id:
         name: "Nama Bahan"
         description: "Deskripsi"
         price: "Harga"
+        quantity: "Jumlah"
         unit: "Satuan"
+        
+      ingredient_detail:
+        package_size: "Isi Kemasan"
+        package_unit: "Satuan Isi"
         
       product:
         name: "Nama Produk"

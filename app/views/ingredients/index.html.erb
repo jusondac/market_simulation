@@ -37,91 +37,118 @@
   <%= render 'shared/search_form', resource_type: 'ingredients' %>
   <div class="<%= card_classes %>">
     <% if @ingredients.any? %>
-      <div class="space-y-1">
-        <% @ingredients.each_with_index do |ingredient, index| %>
-          <div class="group hover:bg-gray-750 rounded-lg transition-colors duration-150">
-            <div class="flex items-center justify-between py-4 px-4">
-              <div class="flex items-center space-x-4 flex-1">
-                <div class="flex-shrink-0">
-                  <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <span class="text-white font-medium text-sm">
-                      <%= ingredient.name.first.upcase %>
-                    </span>
-                  </div>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center space-x-3">
-                    <h3 class="text-sm font-semibold text-gray-100 truncate">
-                      <%= ingredient.name %>
-                    </h3>
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-300">
-                      <%= ingredient.unit %>
-                    </span>
-                  </div>
-                  <div class="flex items-center space-x-2 mt-1">
-                    <span class="text-xs text-gray-500 font-mono">
-                      <%= ingredient.ingredient_code %>
-                    </span>
-                    <% if ingredient.ingredient_type.present? %>
-                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium <%= ingredient.ingredient_type == 'kemasan' ? 'bg-blue-900 text-blue-300' : 'bg-green-900 text-green-300' %>">
-                        <%= ingredient.ingredient_type.capitalize %>
-                      </span>
-                    <% end %>
-                  </div>
-                  <% if ingredient.description.present? %>
-                    <p class="text-sm text-gray-400 truncate mt-1">
-                      <%= ingredient.description %>
-                    </p>
-                  <% end %>
-                  <% if ingredient.ingredient_type == 'kemasan' && ingredient.ingredient_detail&.package_size.present? %>
-                    <div class="text-xs text-blue-400 mt-1">
-                      📦 <%= ingredient.ingredient_detail.package_size %> <%= ingredient.ingredient_detail.package_unit %> per kemasan
+      <!-- Modern Table View -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-700">
+          <thead class="bg-gray-800">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                Nama Bahan
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                Jenis
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                Jumlah
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                Satuan
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                Harga
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                Harga/Satuan
+              </th>
+              <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
+                Aksi
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-gray-900 divide-y divide-gray-700">
+            <% @ingredients.each do |ingredient| %>
+              <tr class="group hover:bg-gray-800 transition-colors duration-150">
+                <!-- Nama Bahan -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10">
+                      <div class="h-10 w-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                        <span class="text-white text-sm font-medium">
+                          <%= ingredient.name.first.upcase %>
+                        </span>
+                      </div>
                     </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-100">
+                        <%= ingredient.name %>
+                      </div>
+                      <div class="text-xs text-gray-500 font-mono">
+                        <%= ingredient.ingredient_code %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <!-- Jenis -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <% if ingredient.ingredient_type.present? %>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= ingredient.ingredient_type == 'kemasan' ? 'bg-blue-900 text-blue-300' : 'bg-green-900 text-green-300' %>">
+                      <%= ingredient.ingredient_type.capitalize %>
+                    </span>
                   <% end %>
-                </div>
-                <div class="text-right">
-                  <div class="text-lg font-bold text-gray-100">
-                    <% if ingredient.ingredient_type == 'kemasan' && ingredient.ingredient_detail&.package_size.present? %>
-                      <%= format_rupiah(ingredient.unit_price) %>
-                      <div class="text-xs text-gray-500">(<%= format_rupiah(ingredient.price) %>/<%= ingredient.unit %>)</div>
-                    <% else %>
-                      <%= format_rupiah(ingredient.price) %>
+                </td>
+                <!-- Jumlah -->
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                  <%= number_with_precision(ingredient.quantity, precision: 2, strip_insignificant_zeros: true) %>
+                </td>
+                <!-- Satuan -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-700 text-gray-300">
+                    <%= ingredient.unit %>
+                  </span>
+                </td>
+                <!-- Harga -->
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                  <%= format_rupiah(ingredient.price) %>
+                </td>
+                <!-- Harga/Satuan -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-100">
+                    <%= format_rupiah(ingredient.price_per_unit) %>
+                  </div>
+                  <div class="text-xs text-gray-500">per <%= ingredient.unit %></div>
+                </td>
+                <!-- Actions -->
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div class="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                    <%= link_to ingredient_path(ingredient), 
+                        class: "text-gray-400 hover:text-indigo-400 transition-colors duration-150",
+                        title: "Lihat detail" do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                      </svg>
+                    <% end %>
+                    <%= link_to edit_ingredient_path(ingredient), 
+                        class: "text-gray-400 hover:text-blue-400 transition-colors duration-150",
+                        title: "Edit bahan" do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                      </svg>
+                    <% end %>
+                    <%= link_to ingredient_path(ingredient), method: :delete, 
+                        confirm: "Apakah Anda yakin ingin menghapus #{ingredient.name}? Ini akan menghapusnya dari semua resep.",
+                        class: "text-gray-400 hover:text-red-400 transition-colors duration-150",
+                        title: "Hapus bahan" do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      </svg>
                     <% end %>
                   </div>
-                  <div class="text-xs text-gray-400">per <%= ingredient.effective_unit %></div>
-                </div>
-              </div>
-              <div class="flex items-center space-x-2 ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-                <%= link_to ingredient_path(ingredient), 
-                    class: "p-2 text-gray-400 hover:text-indigo-400 hover:bg-gray-700 rounded-lg transition-colors duration-150",
-                    title: "Lihat detail" do %>
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                  </svg>
-                <% end %>
-                <%= link_to edit_ingredient_path(ingredient), 
-                    class: "p-2 text-gray-400 hover:text-blue-400 hover:bg-gray-700 rounded-lg transition-colors duration-150",
-                    title: "Edit bahan" do %>
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                  </svg>
-                <% end %>
-                <%= link_to ingredient_path(ingredient), method: :delete, 
-                    confirm: "Apakah Anda yakin ingin menghapus #{ingredient.name}? Ini akan menghapusnya dari semua resep.",
-                    class: "p-2 text-gray-400 hover:text-red-400 hover:bg-gray-700 rounded-lg transition-colors duration-150",
-                    title: "Hapus bahan" do %>
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                  </svg>
-                <% end %>
-              </div>
-            </div>
-            <% unless index == @ingredients.length - 1 %>
-              <div class="border-b border-gray-700 mx-4"></div>
+                </td>
+              </tr>
             <% end %>
-          </div>
-        <% end %>
+          </tbody>
+        </table>
       </div>
     <% else %>
       <div class="text-center py-12">

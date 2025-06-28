@@ -5,6 +5,7 @@ class Ingredient < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { case_sensitive: false, message: "sudah ada di database" }
   validates :price, presence: true, numericality: { greater_than: 0 }
+  validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :unit, presence: true, inclusion: {
     in: ->(record) { Unit.pluck(:name) },
     message: "harus dipilih dari satuan yang tersedia"
@@ -16,7 +17,7 @@ class Ingredient < ApplicationRecord
   }
 
   # Nested attributes for ingredient_detail
-  accepts_nested_attributes_for :ingredient_detail, allow_destroy: true
+  accepts_nested_attributes_for :ingredient_detail, allow_destroy: true, reject_if: :should_reject_ingredient_detail?
 
   # Delegate package methods to ingredient_detail
   delegate :package_size, :package_unit, to: :ingredient_detail, allow_nil: true
@@ -46,6 +47,11 @@ class Ingredient < ApplicationRecord
     end
   end
 
+  def price_per_unit
+    return 0 if quantity.nil? || quantity.zero?
+    price / quantity
+  end
+
   def effective_unit
     if ingredient_type == "kemasan" && ingredient_detail&.package_unit.present?
       ingredient_detail.package_unit
@@ -59,10 +65,15 @@ class Ingredient < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    [ "created_at", "description", "id", "ingredient_code", "name", "price", "unit", "updated_at", "ingredient_type" ]
+    [ "created_at", "description", "id", "ingredient_code", "name", "price", "quantity", "unit", "updated_at", "ingredient_type" ]
   end
 
   private
+
+  def should_reject_ingredient_detail?(attributes)
+    # Reject ingredient_detail if ingredient_type is not 'kemasan' or if all attributes are blank
+    ingredient_type != "kemasan" || attributes.values.all?(&:blank?)
+  end
 
   def generate_ingredient_code
     return if ingredient_code.present?
