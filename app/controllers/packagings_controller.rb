@@ -2,7 +2,9 @@ class PackagingsController < ApplicationController
   before_action :set_packaging, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @packagings = Packaging.all.order(:name)
+    @q = Packaging.ransack(params[:q])
+    @packagings = @q.result(distinct: true).order(:name)
+    @pagy, @packagings = pagy(@packagings, limit: 15)
   end
 
   def show

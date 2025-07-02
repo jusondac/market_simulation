@@ -66,6 +66,31 @@
               class: input_classes,
               value: params.dig(:q, :recipe_name_cont) %>
         </div>
+      <% elsif resource_type == "packagings" %>
+        <div>
+          <%= f.label :material_eq, "Material", class: label_classes %>
+          <%= f.select :material_eq, 
+              options_for_select([
+                ['Semua Material', ''],
+                ['Plastik', 'plastik'],
+                ['Kertas', 'kertas'],
+                ['Aluminium', 'aluminium'],
+                ['Kaca', 'kaca'],
+                ['Karton', 'karton'],
+                ['Logam', 'logam'],
+                ['Bio Degradable', 'bio_degradable']
+              ], params.dig(:q, :material_eq)),
+              {},
+              { class: select_classes } %>
+        </div>
+        <div>
+          <%= f.label :price_gteq, "Harga minimum", class: label_classes %>
+          <%= f.number_field :price_gteq, 
+              step: 0.01,
+              placeholder: "0.00", 
+              class: input_classes,
+              value: params.dig(:q, :price_gteq) %>
+        </div>
       <% end %>
     </div>
     <div class="flex items-center space-x-3">
