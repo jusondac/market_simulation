@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_28_190142) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_02_211343) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -50,6 +50,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_28_190142) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "packagings", force: :cascade do |t|
+    t.string "name"
+    t.string "size"
+    t.string "box"
+    t.decimal "price"
+    t.integer "capacity"
+    t.integer "material"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "people", force: :cascade do |t|
     t.string "name"
     t.integer "age"
@@ -57,6 +68,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_28_190142) do
     t.text "taste_preferences"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "product_packagings", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "packaging_id", null: false
+    t.decimal "price_per_package"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["packaging_id"], name: "index_product_packagings_on_packaging_id"
+    t.index ["product_id"], name: "index_product_packagings_on_product_id"
   end
 
   create_table "product_recipes", force: :cascade do |t|
@@ -133,6 +154,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_28_190142) do
   end
 
   add_foreign_key "ingredient_details", "ingredients"
+  add_foreign_key "product_packagings", "packagings"
+  add_foreign_key "product_packagings", "products"
   add_foreign_key "product_recipes", "products"
   add_foreign_key "product_recipes", "recipes"
   add_foreign_key "products", "recipes"

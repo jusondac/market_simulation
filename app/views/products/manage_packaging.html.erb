@@ -1,0 +1,123 @@
+<% content_for :title, "Kelola Packaging - #{@product.name}" %>
+<div class="max-w-6xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Kelola Packaging - <%= @product.name %></h1>
+    <%= link_to "Kembali ke Produk", product_path(@product), class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Packaging yang tersedia -->
+    <div class="bg-white shadow-md rounded-lg">
+      <div class="p-6 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-900">Packaging Tersedia</h2>
+      </div>
+      <div class="p-6">
+        <% if @available_packagings.any? %>
+          <div class="space-y-4">
+            <% @available_packagings.each do |packaging| %>
+              <% unless @product.packagings.include?(packaging) %>
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                      <h3 class="text-lg font-medium text-gray-900"><%= packaging.name %></h3>
+                      <p class="text-sm text-gray-600">
+                        <%= packaging.size %> • <%= packaging.box %> • Kapasitas: <%= packaging.capacity %> unit
+                      </p>
+                      <p class="text-sm text-gray-600">
+                        Material: <span class="font-medium"><%= packaging.material.humanize %></span>
+                      </p>
+                      <p class="text-lg font-semibold text-green-600 mt-2">
+                        Rp <%= number_with_delimiter(packaging.price) %>
+                      </p>
+                    </div>
+                    <div class="ml-4">
+                      <%= form_with url: add_packaging_product_path(@product), method: :post, local: true do |form| %>
+                        <%= form.hidden_field :packaging_id, value: packaging.id %>
+                        <%= form.submit "Tambah", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm" %>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-gray-500">Tidak ada packaging yang tersedia.</p>
+        <% end %>
+      </div>
+    </div>
+    <!-- Packaging yang sudah dipilih -->
+    <div class="bg-white shadow-md rounded-lg">
+      <div class="p-6 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-900">Packaging Produk</h2>
+      </div>
+      <div class="p-6">
+        <% if @product_packagings.any? %>
+          <div class="space-y-4">
+            <% @product_packagings.each do |product_packaging| %>
+              <div class="border border-gray-200 rounded-lg p-4 bg-green-50">
+                <div class="flex justify-between items-start">
+                  <div class="flex-1">
+                    <h3 class="text-lg font-medium text-gray-900"><%= product_packaging.packaging.name %></h3>
+                    <p class="text-sm text-gray-600">
+                      <%= product_packaging.packaging.size %> • <%= product_packaging.packaging.box %> • Kapasitas: <%= product_packaging.packaging.capacity %> unit
+                    </p>
+                    <p class="text-sm text-gray-600">
+                      Material: <span class="font-medium"><%= product_packaging.packaging.material.humanize %></span>
+                    </p>
+                    <div class="mt-3 space-y-1">
+                      <p class="text-sm text-gray-600">
+                        Harga Packaging: <span class="font-medium">Rp <%= number_with_delimiter(product_packaging.packaging.price) %></span>
+                      </p>
+                      <p class="text-lg font-semibold text-blue-600">
+                        Harga per Package: Rp <%= number_with_delimiter(product_packaging.price_per_package) %>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="ml-4">
+                    <%= form_with url: remove_packaging_product_path(@product), method: :delete, local: true do |form| %>
+                      <%= form.hidden_field :product_packaging_id, value: product_packaging.id %>
+                      <%= form.submit "Hapus", class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm", 
+                          data: { confirm: "Apakah Anda yakin ingin menghapus packaging ini?" } %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-8">
+            <p class="text-gray-500">Produk ini belum memiliki packaging.</p>
+            <p class="text-sm text-gray-400 mt-2">Pilih packaging dari daftar sebelah kiri untuk menambahkannya.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <% if @product_packagings.any? %>
+    <div class="mt-8 bg-white shadow-md rounded-lg">
+      <div class="p-6 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-900">Ringkasan Harga</h2>
+      </div>
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="text-center">
+            <p class="text-sm text-gray-600">Harga Produk (Cost)</p>
+            <p class="text-2xl font-bold text-gray-900">Rp <%= number_with_delimiter(@product.cost || 0) %></p>
+          </div>
+          <div class="text-center">
+            <p class="text-sm text-gray-600">Harga Termurah per Package</p>
+            <p class="text-2xl font-bold text-green-600">
+              Rp <%= number_with_delimiter(@product_packagings.minimum(:price_per_package) || 0) %>
+            </p>
+          </div>
+          <div class="text-center">
+            <p class="text-sm text-gray-600">Harga Termahal per Package</p>
+            <p class="text-2xl font-bold text-red-600">
+              Rp <%= number_with_delimiter(@product_packagings.maximum(:price_per_package) || 0) %>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

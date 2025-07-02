@@ -1,0 +1,55 @@
+<% content_for :title, "Packaging" %>
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-3xl font-bold text-gray-900">Packaging</h1>
+  <%= link_to "Tambah Packaging", new_packaging_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+</div>
+<div class="bg-white shadow-md rounded-lg overflow-hidden">
+  <% if @packagings.any? %>
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ukuran</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Box</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kapasitas</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Material</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <% @packagings.each do |packaging| %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <%= link_to packaging.name, packaging_path(packaging), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900"><%= packaging.size %></td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900"><%= packaging.box %></td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900"><%= packaging.capacity %></td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900">Rp <%= number_with_delimiter(packaging.price) %></td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900">
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                <%= packaging.material.humanize %>
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+              <%= link_to "Lihat", packaging_path(packaging), class: "text-blue-600 hover:text-blue-900" %>
+              <%= link_to "Edit", edit_packaging_path(packaging), class: "text-green-600 hover:text-green-900" %>
+              <%= link_to "Hapus", packaging_path(packaging), method: :delete, 
+                  data: { 
+                    confirm: "Apakah Anda yakin ingin menghapus packaging #{packaging.name}?",
+                    turbo_method: :delete 
+                  }, 
+                  class: "text-red-600 hover:text-red-900" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="p-6 text-center">
+      <p class="text-gray-500">Belum ada packaging yang tersedia.</p>
+      <%= link_to "Tambah Packaging Pertama", new_packaging_path, class: "text-blue-600 hover:text-blue-800 font-medium" %>
+    </div>
+  <% end %>
+</div>

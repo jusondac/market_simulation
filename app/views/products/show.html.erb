@@ -10,6 +10,7 @@
     </div>
     <div class="space-x-2">
       <%= link_to "Edit Product", edit_product_path(@product), class: button_classes(:secondary) %>
+      <%= link_to "Kelola Packaging", manage_packaging_product_path(@product), class: button_classes(:secondary) %>
       <%= link_to "Add to Market", new_market_simulation_path(product_id: @product.id), class: button_classes(:primary) %>
       <%= link_to "All Products", products_path, class: button_classes(:outline) %>
     </div>
@@ -141,6 +142,62 @@
           </div>
         </div>
       <% end %>
+      <!-- Packaging Details -->
+      <div class="<%= card_classes %>">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold text-gray-100">Packaging Options</h2>
+          <%= link_to "Kelola Packaging", manage_packaging_product_path(@product), class: "text-indigo-400 hover:text-indigo-300 text-sm" %>
+        </div>
+        <% if @product.has_packaging? %>
+          <div class="space-y-4">
+            <% @product.product_packagings.includes(:packaging).each do |product_packaging| %>
+              <div class="border border-gray-600 rounded-lg p-4">
+                <div class="flex justify-between items-start">
+                  <div class="flex-1">
+                    <h3 class="font-medium text-gray-100"><%= product_packaging.packaging.name %></h3>
+                    <p class="text-sm text-gray-400">
+                      <%= product_packaging.packaging.size %> • Kapasitas: <%= product_packaging.packaging.capacity %> unit
+                    </p>
+                    <p class="text-sm text-gray-400">
+                      Material: <span class="px-2 py-1 bg-blue-800 text-blue-200 rounded text-xs">
+                        <%= product_packaging.packaging.material.humanize %>
+                      </span>
+                    </p>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-sm text-gray-400">Harga per Package</div>
+                    <div class="text-lg font-bold text-green-400">
+                      <%= format_rupiah(product_packaging.price_per_package) %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+            <div class="mt-4 p-4 bg-green-900 rounded-lg">
+              <div class="grid grid-cols-2 gap-4 text-center">
+                <div>
+                  <div class="text-sm text-green-300">Termurah</div>
+                  <div class="text-lg font-bold text-green-300">
+                    <%= format_rupiah(@product.cheapest_packaging_price) %>
+                  </div>
+                </div>
+                <div>
+                  <div class="text-sm text-green-300">Termahal</div>
+                  <div class="text-lg font-bold text-green-300">
+                    <%= format_rupiah(@product.most_expensive_packaging_price) %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div class="text-center py-6">
+            <p class="text-gray-400 mb-3">Produk ini belum memiliki packaging.</p>
+            <%= link_to "Tambah Packaging Pertama", manage_packaging_product_path(@product), 
+                class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded" %>
+          </div>
+        <% end %>
+      </div>
     </div>
     <!-- Sidebar -->
     <div class="space-y-6">

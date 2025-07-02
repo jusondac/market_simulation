@@ -5,12 +5,15 @@ class Product < ApplicationRecord
   has_many :simulation_products, dependent: :destroy
   has_many :market_simulations, through: :simulation_products
   has_many :simulation_results, dependent: :destroy
+  has_many :product_packagings, dependent: :destroy
+  has_many :packagings, through: :product_packagings
 
   accepts_nested_attributes_for :product_recipes, allow_destroy: true, reject_if: :all_blank
 
   validates :name, presence: true
   validates :price, presence: true, numericality: { greater_than: 0 }
   validates :margin, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  # validate :must_have_at_least_one_packaging, on: :update
 
   before_validation :calculate_cost_and_price
 
@@ -19,7 +22,7 @@ class Product < ApplicationRecord
   end
 
   def profit_margin_percentage
-    return 0 if price.zero?
+    return 0 if price.nil? || price.zero? || cost.nil?
     ((profit_per_unit / price) * 100).round(2)
   end
 
@@ -43,6 +46,20 @@ class Product < ApplicationRecord
       # Baru: jumlahkan semua product_recipes
       product_recipes.sum(&:total_cost)
     end
+  end
+
+  def has_packaging?
+    product_packagings.any?
+  end
+
+  def cheapest_packaging_price
+    return 0 unless has_packaging?
+    product_packagings.minimum(:price_per_package) || 0
+  end
+
+  def most_expensive_packaging_price
+    return 0 unless has_packaging?
+    product_packagings.maximum(:price_per_package) || 0
   end
 
   private

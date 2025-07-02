@@ -3,6 +3,8 @@ puts "Clearing existing data..."
 SimulationResult.destroy_all
 SimulationProduct.destroy_all
 MarketSimulation.destroy_all
+ProductPackaging.destroy_all
+Packaging.destroy_all
 Product.destroy_all
 RecipeIngredient.destroy_all
 Recipe.destroy_all
@@ -272,8 +274,195 @@ puts "Creating recipes..."
 #   cost: 0
 # )
 
+# Create Packaging
+puts "Creating packaging..."
+packaging_data = [
+  # Botol Plastik
+  {
+    name: "Botol Plastik PET 330ml",
+    size: "330ml",
+    box: "Kardus 24 pcs",
+    price: 1500,
+    capacity: 330,
+    material: "plastik"
+  },
+  {
+    name: "Botol Plastik PET 500ml",
+    size: "500ml",
+    box: "Kardus 24 pcs",
+    price: 2000,
+    capacity: 500,
+    material: "plastik"
+  },
+  {
+    name: "Botol Plastik PET 1L",
+    size: "1 Liter",
+    box: "Kardus 12 pcs",
+    price: 3500,
+    capacity: 1000,
+    material: "plastik"
+  },
+
+  # Gelas Plastik
+  {
+    name: "Gelas Plastik PP 240ml",
+    size: "240ml (8oz)",
+    box: "Sleeve 50 pcs",
+    price: 800,
+    capacity: 240,
+    material: "plastik"
+  },
+  {
+    name: "Gelas Plastik PP 350ml",
+    size: "350ml (12oz)",
+    box: "Sleeve 50 pcs",
+    price: 1000,
+    capacity: 350,
+    material: "plastik"
+  },
+
+  # Kantong Plastik
+  {
+    name: "Kantong Plastik HDPE 1kg",
+    size: "1kg",
+    box: "Roll 100 pcs",
+    price: 500,
+    capacity: 1000,
+    material: "plastik"
+  },
+  {
+    name: "Kantong Plastik HDPE 500g",
+    size: "500g",
+    box: "Roll 100 pcs",
+    price: 350,
+    capacity: 500,
+    material: "plastik"
+  },
+
+  # Kemasan Kertas
+  {
+    name: "Paper Cup 8oz",
+    size: "8oz (240ml)",
+    box: "Sleeve 50 pcs",
+    price: 1200,
+    capacity: 240,
+    material: "kertas"
+  },
+  {
+    name: "Paper Cup 12oz",
+    size: "12oz (350ml)",
+    box: "Sleeve 50 pcs",
+    price: 1500,
+    capacity: 350,
+    material: "kertas"
+  },
+  {
+    name: "Paper Bowl 16oz",
+    size: "16oz (480ml)",
+    box: "Sleeve 25 pcs",
+    price: 2000,
+    capacity: 480,
+    material: "kertas"
+  },
+
+  # Kotak Kardus
+  {
+    name: "Kotak Kardus Food Grade 500ml",
+    size: "500ml",
+    box: "Bundle 50 pcs",
+    price: 1800,
+    capacity: 500,
+    material: "karton"
+  },
+  {
+    name: "Kotak Kardus Food Grade 1L",
+    size: "1 Liter",
+    box: "Bundle 25 pcs",
+    price: 2800,
+    capacity: 1000,
+    material: "karton"
+  },
+
+  # Aluminium Container
+  {
+    name: "Aluminium Tray 650ml",
+    size: "650ml",
+    box: "Sleeve 25 pcs",
+    price: 2500,
+    capacity: 650,
+    material: "aluminium"
+  },
+  {
+    name: "Aluminium Tray 1L",
+    size: "1 Liter",
+    box: "Sleeve 25 pcs",
+    price: 3200,
+    capacity: 1000,
+    material: "aluminium"
+  },
+
+  # Jar Kaca
+  {
+    name: "Jar Kaca 250ml",
+    size: "250ml",
+    box: "Kardus 24 pcs",
+    price: 4500,
+    capacity: 250,
+    material: "kaca"
+  },
+  {
+    name: "Jar Kaca 500ml",
+    size: "500ml",
+    box: "Kardus 12 pcs",
+    price: 6500,
+    capacity: 500,
+    material: "kaca"
+  },
+
+  # Bio-degradable
+  {
+    name: "Kompostable Cup 350ml",
+    size: "350ml (12oz)",
+    box: "Sleeve 50 pcs",
+    price: 2200,
+    capacity: 350,
+    material: "bio_degradable"
+  },
+  {
+    name: "Kompostable Food Box 750ml",
+    size: "750ml",
+    box: "Bundle 25 pcs",
+    price: 3800,
+    capacity: 750,
+    material: "bio_degradable"
+  },
+
+  # Kaleng
+  {
+    name: "Kaleng Aluminium 330ml",
+    size: "330ml",
+    box: "Shrink 24 pcs",
+    price: 3000,
+    capacity: 330,
+    material: "logam"
+  },
+  {
+    name: "Kaleng Aluminium 500ml",
+    size: "500ml",
+    box: "Shrink 24 pcs",
+    price: 4200,
+    capacity: 500,
+    material: "logam"
+  }
+]
+
+packaging_data.each do |pack_data|
+  Packaging.create!(pack_data)
+end
+
 puts "Seed data created successfully!"
 puts "#{Person.count} people created"
+puts "#{Packaging.count} packaging created"
 # puts "#{Ingredient.count} ingredients created"
 # puts "#{Recipe.count} recipes created"
 # puts "#{Product.count} products created"

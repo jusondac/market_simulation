@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product: one
+  packaging: one
+  price_per_package: 9.99
+
+two:
+  product: two
+  packaging: two
+  price_per_package: 9.99

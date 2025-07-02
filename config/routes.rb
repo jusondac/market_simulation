@@ -26,7 +26,15 @@ Rails.application.routes.draw do
       get :export_xlsx, to: "products_xlsx#export"
       post :import_xlsx, to: "products_xlsx#import"
     end
+
+    member do
+      get :manage_packaging
+      post :add_packaging
+      delete :remove_packaging
+    end
   end
+
+  resources :packagings
 
   resources :market_simulations, only: [ :index, :show, :new, :create ] do
     member do

@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_product, only: [ :show, :edit, :update, :destroy, :manage_packaging, :add_packaging, :remove_packaging ]
 
   def index
     @q = Product.ransack(params[:q])
@@ -71,6 +71,28 @@ class ProductsController < ApplicationController
   def destroy
     @product.destroy
     redirect_to products_url, notice: "Product was successfully deleted."
+  end
+
+  def manage_packaging
+    @available_packagings = Packaging.all.order(:name)
+    @product_packagings = @product.product_packagings.includes(:packaging)
+  end
+
+  def add_packaging
+    @packaging = Packaging.find(params[:packaging_id])
+    @product_packaging = @product.product_packagings.build(packaging: @packaging)
+
+    if @product_packaging.save
+      redirect_to manage_packaging_product_path(@product), notice: "Packaging berhasil ditambahkan."
+    else
+      redirect_to manage_packaging_product_path(@product), alert: "Gagal menambahkan packaging."
+    end
+  end
+
+  def remove_packaging
+    @product_packaging = @product.product_packagings.find(params[:product_packaging_id])
+    @product_packaging.destroy
+    redirect_to manage_packaging_product_path(@product), notice: "Packaging berhasil dihapus."
   end
 
   private
