@@ -32,7 +32,7 @@
             <%= link_to "Resep", recipes_path, class: nav_link_classes(request.path.start_with?('/recipes')) %>
             <%= link_to "Bahan", ingredients_path, class: nav_link_classes(request.path.start_with?('/ingredients')) %>
             <%= link_to "Produk", products_path, class: nav_link_classes(request.path.start_with?('/products')) %>
-            <%= link_to "Packaging", packagings_path, class: nav_link_classes(request.path.start_with?('/packagings')) %>
+            <%= link_to "Kemasan", packagings_path, class: nav_link_classes(request.path.start_with?('/packagings')) %>
             <%= link_to "Pasar", market_simulations_path, class: nav_link_classes(request.path.start_with?('/market_simulations')) %>
             <%= link_to "Settings", settings_path, class: nav_link_classes(request.path.start_with?('/settings') || request.path.start_with?('/units') || request.path.start_with?('/ingredient_types')) %>
           </div>
@@ -53,7 +53,7 @@
           <%= link_to "Resep", recipes_path, class: mobile_nav_link_classes(request.path.start_with?('/recipes')) %>
           <%= link_to "Bahan", ingredients_path, class: mobile_nav_link_classes(request.path.start_with?('/ingredients')) %>
           <%= link_to "Produk", products_path, class: mobile_nav_link_classes(request.path.start_with?('/products')) %>
-          <%= link_to "Packaging", packagings_path, class: mobile_nav_link_classes(request.path.start_with?('/packagings')) %>
+          <%= link_to "Kemasan", packagings_path, class: mobile_nav_link_classes(request.path.start_with?('/packagings')) %>
           <%= link_to "Pasar", market_simulations_path, class: mobile_nav_link_classes(request.path.start_with?('/market_simulations')) %>
           <%= link_to "Settings", settings_path, class: mobile_nav_link_classes(request.path.start_with?('/settings') || request.path.start_with?('/units') || request.path.start_with?('/ingredient_types')) %>
         </div>

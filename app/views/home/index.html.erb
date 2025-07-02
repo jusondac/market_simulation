@@ -9,7 +9,7 @@
     </p>
   </div>
   <!-- Quick Actions -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
     <%= link_to new_recipe_path, class: "#{card_classes} hover:shadow-md transition-shadow group" do %>
       <div class="text-center">
         <div class="text-3xl mb-3">📖</div>
@@ -22,6 +22,13 @@
         <div class="text-3xl mb-3">🥕</div>
         <h3 class="text-lg font-semibold text-gray-100 group-hover:text-indigo-400">Tambah Bahan</h3>
         <p class="text-gray-400 text-sm">Kelola inventaris bahan Anda</p>
+      </div>
+    <% end %>
+    <%= link_to new_packaging_path, class: "#{card_classes} hover:shadow-md transition-shadow group" do %>
+      <div class="text-center">
+        <div class="text-3xl mb-3">📦</div>
+        <h3 class="text-lg font-semibold text-gray-100 group-hover:text-indigo-400">Tambah Kemasan</h3>
+        <p class="text-gray-400 text-sm">Kelola jenis kemasan produk</p>
       </div>
     <% end %>
     <%= link_to new_product_path, class: "#{card_classes} hover:shadow-md transition-shadow group" do %>
@@ -40,7 +47,7 @@
     <% end %>
   </div>
   <!-- Recent Items -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
     <!-- Recent Recipes -->
     <div class="<%= card_classes %>">
       <div class="flex items-center justify-between mb-4">
@@ -86,6 +93,30 @@
           <% end %>
         <% else %>
           <p class="text-gray-400 text-sm">Belum ada produk. <%= link_to "Buat produk pertama Anda", new_product_path, class: "text-indigo-400 hover:text-indigo-300" %>!</p>
+        <% end %>
+      </div>
+    </div>
+    <!-- Recent Packagings -->
+    <div class="<%= card_classes %>">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-100">Kemasan Terbaru</h2>
+        <%= link_to "Lihat Semua", packagings_path, class: "text-indigo-400 hover:text-indigo-300 text-sm font-medium" %>
+      </div>
+      <div class="space-y-3">
+        <% if @recent_packagings.any? %>
+          <% @recent_packagings.each do |packaging| %>
+            <div class="flex items-center justify-between py-2 border-b border-gray-700 last:border-b-0">
+              <div>
+                <%= link_to packaging.name, packaging_path(packaging), class: "text-gray-100 hover:text-indigo-400 font-medium" %>
+                <div class="text-sm text-gray-400"><%= packaging.material.humanize %> - <%= packaging.size %></div>
+              </div>
+              <div class="text-sm text-gray-100 font-medium">
+                <%= format_rupiah(packaging.price) %>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="text-gray-400 text-sm">Belum ada kemasan. <%= link_to "Tambah kemasan pertama Anda", new_packaging_path, class: "text-indigo-400 hover:text-indigo-300" %>!</p>
         <% end %>
       </div>
     </div>

@@ -1,71 +1,83 @@
-<% content_for :title, @packaging.name %>
-<div class="max-w-4xl mx-auto">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold text-gray-900"><%= @packaging.name %></h1>
-    <div class="space-x-2">
-      <%= link_to "Edit", edit_packaging_path(@packaging), class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
-      <%= link_to "Kembali", packagings_path, class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
+<div class="px-4 sm:px-0">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-100"><%= @packaging.name %></h1>
+      <p class="text-gray-400 mt-2">Detail informasi kemasan</p>
+    </div>
+    <div class="flex space-x-2">
+      <%= link_to "Edit", edit_packaging_path(@packaging), class: button_classes(:secondary) %>
+      <%= link_to "Semua Kemasan", packagings_path, class: button_classes(:outline) %>
     </div>
   </div>
-  <div class="bg-white shadow-md rounded-lg overflow-hidden">
-    <div class="p-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Packaging Details Card -->
+    <div class="<%= card_classes %>">
+      <h2 class="text-xl font-semibold text-gray-100 mb-6">Informasi Kemasan</h2>
+      <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-500 mb-1">Nama</label>
-          <p class="text-lg text-gray-900"><%= @packaging.name %></p>
+          <label class="<%= label_classes %>">Nama Kemasan</label>
+          <p class="text-lg text-gray-100"><%= @packaging.name %></p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="<%= label_classes %>">Ukuran</label>
+            <p class="text-gray-100"><%= @packaging.size %></p>
+          </div>
+          <div>
+            <label class="<%= label_classes %>">Box/Kemasan</label>
+            <p class="text-gray-100"><%= @packaging.box %></p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="<%= label_classes %>">Kapasitas</label>
+            <p class="text-gray-100"><%= @packaging.capacity %> unit</p>
+          </div>
+          <div>
+            <label class="<%= label_classes %>">Harga</label>
+            <p class="text-lg font-semibold text-green-400"><%= format_rupiah(@packaging.price) %></p>
+          </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-500 mb-1">Ukuran</label>
-          <p class="text-lg text-gray-900"><%= @packaging.size %></p>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-500 mb-1">Box/Kemasan</label>
-          <p class="text-lg text-gray-900"><%= @packaging.box %></p>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-500 mb-1">Kapasitas</label>
-          <p class="text-lg text-gray-900"><%= @packaging.capacity %> unit</p>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-500 mb-1">Harga</label>
-          <p class="text-lg text-gray-900">Rp <%= number_with_delimiter(@packaging.price) %></p>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-500 mb-1">Material</label>
-          <p class="text-lg text-gray-900">
-            <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-              <%= @packaging.material.humanize %>
-            </span>
-          </p>
+          <label class="<%= label_classes %>">Material</label>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-700 text-purple-300">
+            <%= @packaging.material.humanize %>
+          </span>
         </div>
       </div>
     </div>
-  </div>
-  <% if @packaging.products.any? %>
-    <div class="mt-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-4">Produk yang Menggunakan Packaging Ini</h2>
-      <div class="bg-white shadow-md rounded-lg overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produk</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga per Package</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <% @packaging.product_packagings.includes(:product).each do |product_packaging| %>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <%= link_to product_packaging.product.name, product_path(product_packaging.product), class: "text-blue-600 hover:text-blue-800" %>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-gray-900">
-                  Rp <%= number_with_delimiter(product_packaging.price_per_package) %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
+    <!-- Products Using This Packaging -->
+    <div class="<%= card_classes %>">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-gray-100">Produk Menggunakan Kemasan Ini</h2>
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-700 text-indigo-300">
+          <%= @packaging.products.count %> produk
+        </span>
       </div>
+      <% if @packaging.products.any? %>
+        <div class="space-y-3">
+          <% @packaging.product_packagings.includes(:product).each do |product_packaging| %>
+            <div class="flex items-center justify-between py-3 px-4 bg-gray-700 rounded-lg">
+              <div>
+                <%= link_to product_packaging.product.name, product_path(product_packaging.product), 
+                    class: "text-gray-100 hover:text-indigo-400 font-medium" %>
+                <div class="text-sm text-gray-400">Per kemasan</div>
+              </div>
+              <div class="text-right">
+                <div class="text-sm font-medium text-gray-100">
+                  <%= format_rupiah(product_packaging.price_per_package) %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="text-center py-8">
+          <div class="text-4xl mb-3">📦</div>
+          <p class="text-gray-400 mb-4">Belum ada produk yang menggunakan kemasan ini</p>
+          <%= link_to "Lihat Produk", products_path, class: button_classes(:outline, :small) %>
+        </div>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 </div>

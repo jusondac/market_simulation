@@ -1,8 +1,12 @@
-<% content_for :title, "Tambah Packaging Baru" %>
-<div class="max-w-2xl mx-auto">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold text-gray-900">Tambah Packaging Baru</h1>
-    <%= link_to "Kembali", packagings_path, class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
+<div class="px-4 sm:px-0">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-100">Tambah Kemasan Baru</h1>
+      <p class="text-gray-400 mt-2">Buat jenis kemasan baru untuk produk Anda</p>
+    </div>
+    <div>
+      <%= link_to "Kembali", packagings_path, class: button_classes(:outline) %>
+    </div>
   </div>
   <%= render 'form', packaging: @packaging %>
 </div>
